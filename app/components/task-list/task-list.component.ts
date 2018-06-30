@@ -17,4 +17,8 @@ export class TaskListComponent implements OnInit {
   ngOnInit(): void {
     this.tasks$ = this.tasksService.getTasks();
   }
+
+  public toTaskDetail(item: Task) {
+    
+  }
 }

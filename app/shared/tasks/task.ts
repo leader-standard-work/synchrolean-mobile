@@ -2,13 +2,20 @@ export class Task {
   private static count: number = 0;
 
   private id: number;
-  private info: string;
+  private description: string;
   private completed: boolean;
 
-  constructor(info: string) {
+  constructor(description: string) {
     this.id = Task.count;
     Task.count++;
-    this.info = info;
+    this.description = description;
     this.completed = false;
+  }
+
+  public getId(): number {
+    return this.id;
+  }
+  public getDescription(): string {
+    return this.description;
   }
 }

@@ -13,12 +13,21 @@ export class TaskService {
     this.tasks = new Array<Task>();
   }
 
-  getTasks(): Observable<Task[]> {
+  public getTasks(): Observable<Task[]> {
     return of(this.tasks);
   }
 
-  addTask(description: string): void {
+  public addTask(description: string): void {
     this.tasks.push(new Task(description));
     console.log(this.tasks);
+  }
+
+  public getTaskById(id: number) : Task {
+    for ( let task of this.tasks) {
+      if (task.getId() === id) {
+        return task;
+      }
+    }
+    return null;
   }
 }
