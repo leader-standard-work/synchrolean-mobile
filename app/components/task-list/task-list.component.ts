@@ -19,8 +19,6 @@ export class TaskListComponent implements OnInit {
   }
 
   getTasks(): Array<Task> {
-    this.tasks = this.tasksService.getTasks();
     return this.tasks;
   }
-
 }

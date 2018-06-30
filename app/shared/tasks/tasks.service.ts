@@ -16,7 +16,8 @@ export class TaskService {
     return this.tasks;
   }
 
-  addTask(): void {
-    this.tasks.push(new Task('New Task'));
+  addTask(description: string): void {
+    this.tasks.push(new Task(description));
+    console.log('New Task: ' + description);
   }
 }
