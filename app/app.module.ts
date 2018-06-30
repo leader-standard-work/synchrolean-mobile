@@ -8,6 +8,7 @@ import { TNSCheckBoxModule } from 'nativescript-checkbox/angular';
 import { TaskListComponent } from '~/components/task-list/task-list.component';
 import { TaskFormComponent } from './components/task-form/task-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { TaskService } from '~/shared/tasks/tasks.service';
 // Uncomment and add to NgModule imports if you need to use two-way binding
 // import { NativeScriptFormsModule } from "nativescript-angular/forms";
 
@@ -24,7 +25,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     TNSCheckBoxModule
   ],
   declarations: [AppComponent, TaskListComponent, TaskFormComponent],
-  schemas: [NO_ERRORS_SCHEMA]
+  schemas: [NO_ERRORS_SCHEMA],
+  providers: [TaskService]
 })
 /*
 Pass your application module to the bootstrapModule function located in main.ts to start your app

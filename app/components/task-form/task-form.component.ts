@@ -6,8 +6,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
   selector: 'task-form',
   moduleId: module.id,
   templateUrl: './task-form.component.html',
-  styleUrls: ['./task-form.component.css'],
-  providers: [TaskService]
+  styleUrls: ['./task-form.component.css']
 })
 export class TaskFormComponent implements OnInit {
   private tasksService: TaskService;
