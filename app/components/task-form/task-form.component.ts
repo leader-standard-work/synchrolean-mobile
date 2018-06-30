@@ -25,7 +25,7 @@ export class TaskFormComponent implements OnInit {
   ngOnInit(): void {}
 
   onSave() {
-    console.log('Description: ' + this.taskFormGroup.value.description);
     this.tasksService.addTask(this.taskFormGroup.value.description);
+    this.taskFormGroup.reset();
   }
 }
