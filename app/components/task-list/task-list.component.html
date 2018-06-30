@@ -1,0 +1,15 @@
+<ActionBar class="action-bar">
+    <Label class="action-bar-title" text="Tasks"></Label>
+    <ActionItem nsRouterLink="/task-form" ios.systemIcon="4" ios.position="right" text="Add" android.position="actionBar"></ActionItem>
+</ActionBar>
+
+<GridLayout class="page">
+    <ListView [items]="getTasks()">
+        <ng-template let-item="item" let-i="index">
+            <GridLayout>
+                <Label [text]="item.info" class="list-group-item"></Label>
+                <CheckBox [checked]="item.completed" horizontalAlignment="right" boxtype="circle" style="font-size: 40px;"></CheckBox>
+            </GridLayout>
+        </ng-template>
+    </ListView>
+</GridLayout>
