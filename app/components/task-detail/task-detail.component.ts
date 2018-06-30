@@ -27,4 +27,9 @@ export class TaskDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {}
+
+  public getRoute(): string {
+    let route = '/task-edit/:' + this.task.getId().toString();
+    return route;
+  }
 }
