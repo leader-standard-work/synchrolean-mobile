@@ -22,12 +22,20 @@ export class TaskService {
     console.log(this.tasks);
   }
 
-  public getTaskById(id: number) : Task {
-    for ( let task of this.tasks) {
+  public getTaskById(id: number): Task {
+    for (let task of this.tasks) {
       if (task.getId() === id) {
         return task;
       }
     }
     return null;
+  }
+
+  public updateTask(id: number, description: string) {
+    for (let task of this.tasks) {
+      if (task.getId() === id) {
+        task.setDescription(description);
+      }
+    }
   }
 }

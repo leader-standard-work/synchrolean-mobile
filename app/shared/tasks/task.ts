@@ -15,6 +15,9 @@ export class Task {
   public getId(): number {
     return this.id;
   }
+  public setDescription(description: string) {
+    this.description = description;
+  }
   public getDescription(): string {
     return this.description;
   }
