@@ -21,4 +21,8 @@ export class Task {
   public getDescription(): string {
     return this.description;
   }
+
+  public complete() {
+    this.completed = this.completed ? false : true;
+  }
 }

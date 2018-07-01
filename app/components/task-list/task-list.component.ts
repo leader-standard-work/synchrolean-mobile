@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
   selector: 'tasks-list',
   moduleId: module.id,
   templateUrl: './task-list.component.html',
-  styleUrls: ['./task-list.component.css'],
+  styleUrls: ['./task-list.component.css']
 })
 export class TaskListComponent implements OnInit {
   public tasks$: Observable<Array<Task>>;
@@ -16,9 +16,5 @@ export class TaskListComponent implements OnInit {
 
   ngOnInit(): void {
     this.tasks$ = this.tasksService.getTasks();
-  }
-
-  public toTaskDetail(item: Task) {
-    
   }
 }
