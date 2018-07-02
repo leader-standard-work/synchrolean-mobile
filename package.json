@@ -7,6 +7,9 @@
 		"id": "org.nativescript.Synchrolean",
 		"tns-ios": {
 			"version": "4.1.1"
+		},
+		"tns-android": {
+			"version": "4.1.3"
 		}
 	},
 	"dependencies": {
@@ -21,6 +24,7 @@
 		"@angular/router": "~6.0.0",
 		"nativescript-angular": "~6.0.0",
 		"nativescript-checkbox": "^3.0.3",
+		"nativescript-sqlite": "^2.2.1",
 		"nativescript-theme-core": "~1.0.4",
 		"reflect-metadata": "~0.1.8",
 		"rxjs": "~6.1.0",
@@ -28,6 +32,10 @@
 		"zone.js": "^0.8.26"
 	},
 	"devDependencies": {
+		"babel-traverse": "6.4.5",
+		"babel-types": "6.4.5",
+		"babylon": "6.4.5",
+		"lazy": "1.0.11",
 		"nativescript-dev-typescript": "~0.7.0",
 		"typescript": "~2.7.2"
 	}

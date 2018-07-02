@@ -1,13 +1,10 @@
 export class Task {
-  private static count: number = 0;
 
   private id: number;
   private description: string;
   private completed: boolean;
 
   constructor(description: string) {
-    this.id = Task.count;
-    Task.count++;
     this.description = description;
     this.completed = false;
   }
@@ -23,6 +20,15 @@ export class Task {
   }
 
   public complete() {
-    this.completed = this.completed ? false : true;
+      this.completed = this.completed ? false : true;}
+      
+  public isComplete(): boolean {
+    return this.completed;
+  }
+
+  public populate(nwid: number, nwdescription: string, nwcomplete: boolean) : void{
+    this.id = nwid;
+    this.description = nwdescription;
+    this.completed= nwcomplete;
   }
 }

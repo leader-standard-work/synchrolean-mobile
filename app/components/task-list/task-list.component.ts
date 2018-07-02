@@ -11,10 +11,12 @@ import { Observable } from 'rxjs';
   styleUrls: ['./task-list.component.css']
 })
 export class TaskListComponent implements OnInit {
-  public tasks$: Observable<Array<Task>>;
-  constructor(private tasksService: TaskService) {}
+  public tasks: Array<Task>;
+  constructor(private tasksService: TaskService) { this.tasks = this.tasksService.getTasks()}
 
   ngOnInit(): void {
-    this.tasks$ = this.tasksService.getTasks();
+    this.tasks = this.tasksService.getTasks();
   }
+
+  
 }

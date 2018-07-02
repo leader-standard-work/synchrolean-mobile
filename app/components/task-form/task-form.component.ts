@@ -5,6 +5,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { PageRoute, RouterExtensions } from 'nativescript-angular/router';
 import { switchMap } from 'rxjs/operators';
 import { Task } from '~/shared/tasks/task';
+import { Router } from '@angular/router';
 
 enum Mode {
   New,
@@ -23,6 +24,7 @@ export class TaskFormComponent implements OnInit {
   private formBuilder: FormBuilder;
   private routerExtensions: RouterExtensions;
   private mode: Mode = Mode.New;
+  private router: Router;
 
   public taskFormGroup: FormGroup;
   public title: string = 'New Task';
@@ -31,7 +33,7 @@ export class TaskFormComponent implements OnInit {
   constructor(
     tasksService: TaskService,
     formBuilder: FormBuilder,
-    pageRoute: PageRoute
+    pageRoute: PageRoute,
   ) {
     let desc = '';
     this.tasksService = tasksService;
@@ -57,17 +59,19 @@ export class TaskFormComponent implements OnInit {
   ngOnInit(): void {}
 
   onSave() {
+    let description = this.taskFormGroup.value.description;
     switch (this.mode) {
       case Mode.New: {
-        this.tasksService.addTask(this.taskFormGroup.value.description);
+        this.tasksService.addTask(description);
+        this.router.navigate(['\task-list']);
         this.taskFormGroup.reset();
         break;
       }
       case Mode.Edit: {
-        let description = this.taskFormGroup.value.description;
         this.tasksService.updateTask(this.task.getId(), description);
         break;
       }
     }
+    //this.router.navigate(["/task-list"]);
   }
 }
