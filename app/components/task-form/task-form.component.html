@@ -4,7 +4,9 @@
 </ActionBar>
 <StackLayout class="form">
     <StackLayout class="input-field" [formGroup]="taskFormGroup">
-        <TextField class="input" formControlName="description" hint="add task here" required></TextField>
+        <TextField class="input" formControlName="description" hint="task description" required></TextField>
+        <StackLayout class="hr-light m-10"></StackLayout>
+        <TextField class="input" formControlName="note" hint="notes"></TextField>
     </StackLayout>
     <StackLayout class="hr-light m-10"></StackLayout>
 </StackLayout>

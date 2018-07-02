@@ -33,9 +33,10 @@ export class TaskFormComponent implements OnInit {
   constructor(
     tasksService: TaskService,
     formBuilder: FormBuilder,
-    pageRoute: PageRoute,
+    pageRoute: PageRoute
   ) {
     let desc = '';
+    let note = '';
     this.tasksService = tasksService;
     this.pageRoute = pageRoute;
     this.pageRoute.activatedRoute
@@ -52,7 +53,8 @@ export class TaskFormComponent implements OnInit {
 
     this.formBuilder = formBuilder;
     this.taskFormGroup = this.formBuilder.group({
-      description: [desc, Validators.required]
+      description: [desc, Validators.required],
+      note: [note, Validators]
     });
   }
 
@@ -63,7 +65,6 @@ export class TaskFormComponent implements OnInit {
     switch (this.mode) {
       case Mode.New: {
         this.tasksService.addTask(description);
-        this.router.navigate(['\task-list']);
         this.taskFormGroup.reset();
         break;
       }
