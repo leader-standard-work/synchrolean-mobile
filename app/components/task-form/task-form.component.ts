@@ -22,9 +22,7 @@ export class TaskFormComponent implements OnInit {
   private tasksService: TaskService;
   private pageRoute: PageRoute;
   private formBuilder: FormBuilder;
-  private routerExtensions: RouterExtensions;
   private mode: Mode = Mode.New;
-  private router: Router;
 
   public taskFormGroup: FormGroup;
   public title: string = 'New Task';
@@ -73,6 +71,5 @@ export class TaskFormComponent implements OnInit {
         break;
       }
     }
-    //this.router.navigate(["/task-list"]);
   }
 }

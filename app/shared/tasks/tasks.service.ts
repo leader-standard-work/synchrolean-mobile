@@ -24,10 +24,11 @@ export class TaskService implements OnInit {
   public addTask(description: string): void {
     //change to insert
     this.tasks.push(new Task(description));
-    console.log(this.tasks);
+    console.log('THIS RIGHT HERE' + this.tasks);
   }
 
   public getTaskById(id: number): Task {
+    console.log('Task ID: ' + id);
     for (let task of this.tasks) {
       if (task.getId() === id) {
         return task;
