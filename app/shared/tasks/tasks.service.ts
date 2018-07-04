@@ -17,18 +17,15 @@ export class TaskService implements OnInit {
   ngOnInit(): void {}
 
   public getTasks(): Observable<Task[]> {
-    //get table
     return of(this.tasks);
   }
 
-  public addTask(description: string): void {
-    //change to insert
-    this.tasks.push(new Task(description));
-    console.log('THIS RIGHT HERE' + this.tasks);
+  public addTask(description: string, note: string): void {
+    this.tasks.push(new Task(description, note));
+    console.log(this.tasks);
   }
 
   public getTaskById(id: number): Task {
-    console.log('Task ID: ' + id);
     for (let task of this.tasks) {
       if (task.getId() === id) {
         return task;
@@ -37,13 +34,11 @@ export class TaskService implements OnInit {
     return null;
   }
 
-  public updateTask(id: number, description: string) {
+  public updateTask(id: number, description: string, note: string) {
     for (let task of this.tasks) {
-      //change to select
       if (task.getId() === id) {
-        //fille task and change info
         task.setDescription(description);
-        //run update
+        task.setNote(note);
       }
     }
   }

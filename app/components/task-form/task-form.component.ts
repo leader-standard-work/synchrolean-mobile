@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { TaskService } from '~/shared/tasks/tasks.service';
-
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { PageRoute, RouterExtensions } from 'nativescript-angular/router';
 import { switchMap } from 'rxjs/operators';
+import { PageRoute, RouterExtensions } from 'nativescript-angular/router';
+
+import { TaskService } from '~/shared/tasks/tasks.service';
 import { Task } from '~/shared/tasks/task';
-import { Router } from '@angular/router';
 
 enum Mode {
   New,
@@ -21,6 +20,7 @@ enum Mode {
 export class TaskFormComponent implements OnInit {
   private tasksService: TaskService;
   private pageRoute: PageRoute;
+  private routerExtensions: RouterExtensions;
   private formBuilder: FormBuilder;
   private mode: Mode = Mode.New;
 
@@ -31,11 +31,13 @@ export class TaskFormComponent implements OnInit {
   constructor(
     tasksService: TaskService,
     formBuilder: FormBuilder,
-    pageRoute: PageRoute
+    pageRoute: PageRoute,
+    routerExtensions: RouterExtensions
   ) {
     let desc = '';
     let note = '';
     this.tasksService = tasksService;
+    this.routerExtensions = routerExtensions;
     this.pageRoute = pageRoute;
     this.pageRoute.activatedRoute
       .pipe(switchMap(activatedRoute => activatedRoute.params))
@@ -45,6 +47,7 @@ export class TaskFormComponent implements OnInit {
 
     if (this.task != null) {
       desc = this.task.getDescription();
+      note = this.task.getNote();
       this.title = 'Edit Task';
       this.mode = Mode.Edit;
     }
@@ -52,7 +55,7 @@ export class TaskFormComponent implements OnInit {
     this.formBuilder = formBuilder;
     this.taskFormGroup = this.formBuilder.group({
       description: [desc, Validators.required],
-      note: [note, Validators]
+      note: note
     });
   }
 
@@ -60,16 +63,29 @@ export class TaskFormComponent implements OnInit {
 
   onSave() {
     let description = this.taskFormGroup.value.description;
-    switch (this.mode) {
-      case Mode.New: {
-        this.tasksService.addTask(description);
-        this.taskFormGroup.reset();
-        break;
+    let note = this.taskFormGroup.value.note;
+    let options = {
+      title: 'Descripton Required',
+      okButtonText: 'Ok'
+    };
+
+    if (description !== '') {
+      switch (this.mode) {
+        case Mode.New: {
+          options.title = 'New task added';
+          this.tasksService.addTask(description, note);
+          this.taskFormGroup.reset();
+          alert(options);
+          break;
+        }
+        case Mode.Edit: {
+          this.tasksService.updateTask(this.task.getId(), description, note);
+          this.routerExtensions.backToPreviousPage();
+          break;
+        }
       }
-      case Mode.Edit: {
-        this.tasksService.updateTask(this.task.getId(), description);
-        break;
-      }
+    } else {
+      alert(options);
     }
   }
 }

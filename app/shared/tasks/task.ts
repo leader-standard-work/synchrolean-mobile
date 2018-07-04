@@ -4,13 +4,14 @@ export class Task {
   private id: number;
   private description: string;
   private completed: boolean;
-  private 
+  private note: string;
 
-  constructor(description: string) {
+  constructor(description: string, note: string = '') {
     this.id = Task.count;
     Task.count++;
     this.description = description;
     this.completed = false;
+    this.note = note;
   }
 
   public getId(): number {
@@ -21,6 +22,14 @@ export class Task {
   }
   public getDescription(): string {
     return this.description;
+  }
+
+  public setNote(note: string) {
+    this.note = note;
+  }
+
+  public getNote(): string {
+    return this.note;
   }
 
   public complete() {
