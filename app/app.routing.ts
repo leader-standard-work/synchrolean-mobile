@@ -13,7 +13,7 @@ const routes: Routes = [
   { path: 'task-list', component: TaskListComponent },
   { path: 'task-form', component: TaskFormComponent },
   { path: 'task-detail/:id', component: TaskDetailComponent },
-  { path: 'login-main', component: LoginMainComponent }//Demming -- Route to login main page
+  { path: 'task-edit/:id', component: TaskFormComponent }
 ];
 
 @NgModule({

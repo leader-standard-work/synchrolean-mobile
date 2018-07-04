@@ -8,7 +8,7 @@
     <ListView [items]="tasks$ | async">
         <ng-template let-item="item" let-i="index">
             <GridLayout>
-                <Label [text]="item.description" class="list-group-item" [nsRouterLink]="['/task-detail', item.id]"></Label>
+                <Label [text]="item.description" class="list-group-item" [nsRouterLink]="['/task-detail', item.getId()]"></Label>
                 <CheckBox [checked]="item.completed" horizontalAlignment="right" boxtype="circle" style="font-size: 40px;"></CheckBox>
             </GridLayout>
         </ng-template>

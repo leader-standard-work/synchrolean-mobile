@@ -8,17 +8,18 @@ import { Observable } from 'rxjs';
   selector: 'tasks-list',
   moduleId: module.id,
   templateUrl: './task-list.component.html',
-  styleUrls: ['./task-list.component.css'],
+  styleUrls: ['./task-list.component.css']
 })
 export class TaskListComponent implements OnInit {
   public tasks$: Observable<Array<Task>>;
-  constructor(private tasksService: TaskService) {}
+  private tasksService: TaskService;
 
-  ngOnInit(): void {
+  constructor(tasksService: TaskService) {
+    this.tasksService = tasksService;
     this.tasks$ = this.tasksService.getTasks();
   }
 
-  public toTaskDetail(item: Task) {
-    
+  ngOnInit(): void {
+    this.tasks$ = this.tasksService.getTasks();
   }
 }

@@ -18,6 +18,7 @@ export class TaskDetailComponent implements OnInit {
 
   constructor(taskService: TaskService, pageRoute: PageRoute) {
     this.tasksService = taskService;
+    this.pageRoute = pageRoute;
     this.pageRoute.activatedRoute
       .pipe(switchMap(activatedRoute => activatedRoute.params))
       .forEach(params => {
@@ -26,4 +27,9 @@ export class TaskDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {}
+
+  public getRoute(): string {
+    let route = '/task-edit/:' + this.task.getId().toString();
+    return route;
+  }
 }
