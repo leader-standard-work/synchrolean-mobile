@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { switchMap } from 'rxjs/operators';
 import { PageRoute, RouterExtensions } from 'nativescript-angular/router';
+import { action, alert } from 'ui/dialogs';
 
 import { TaskService } from '~/shared/tasks/tasks.service';
 import { Task } from '~/shared/tasks/task';
@@ -94,10 +95,19 @@ export class TaskFormComponent implements OnInit {
   }
 
   onDelete() {
-    this.tasksService.deleteTask(this.task.getId());
-    this.routerExtensions.navigate(['/task-list'], {
-      clearHistory: true,
-      transition: { name: 'slideRight' }
+    let options = {
+      cancelButtonText: 'Cancel',
+      actions: ['Delete']
+    };
+
+    action(options).then(result => {
+      if (result === 'Delete') {
+        this.tasksService.deleteTask(this.task.getId());
+        this.routerExtensions.navigate(['/task-list'], {
+          clearHistory: true,
+          transition: { name: 'slideRight' }
+        });
+      }
     });
   }
 }
