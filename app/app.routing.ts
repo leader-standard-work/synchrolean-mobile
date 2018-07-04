@@ -5,7 +5,6 @@ import { Routes } from '@angular/router';
 import { TaskListComponent } from './components/task-list/task-list.component';
 import { TaskFormComponent } from './components/task-form/task-form.component';
 import { TaskDetailComponent } from '~/components/task-detail/task-detail.component';
-//Demming -- Import for routing to login-main page 
 import { LoginMainComponent } from '~/components/login-main/login-main.component';
 
 const routes: Routes = [
@@ -13,7 +12,8 @@ const routes: Routes = [
   { path: 'task-list', component: TaskListComponent },
   { path: 'task-form', component: TaskFormComponent },
   { path: 'task-detail/:id', component: TaskDetailComponent },
-  { path: 'task-edit/:id', component: TaskFormComponent }
+  { path: 'task-edit/:id', component: TaskFormComponent },
+  { path: 'login-main', component: LoginMainComponent}
 ];
 
 @NgModule({
