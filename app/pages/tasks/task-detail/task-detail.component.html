@@ -3,6 +3,7 @@
     </ActionItem>
 </ActionBar>
 <StackLayout>
+    <Label text="{{ task.getDuration() }}" textAlignment="center"></Label>
     <Label text="Description: {{ task.getDescription() }}" textWrap="true"></Label>
     <Label text="Note: {{ task.getNote() }}" textWrap="true"></Label>
 </StackLayout>
