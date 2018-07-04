@@ -42,4 +42,12 @@ export class TaskService implements OnInit {
       }
     }
   }
+
+  public deleteTask(id: number) {
+    this.tasks.forEach((item, index) => {
+      if (item.getId() === id) {
+        this.tasks.splice(index, 1);
+      }
+    });
+  }
 }

@@ -9,4 +9,5 @@
         <TextField class="input" formControlName="note" hint="Notes"></TextField>
     </StackLayout>
     <StackLayout class="hr-light m-10"></StackLayout>
+    <Button text="delete" [visibility]="deleteButtonVisible" (tap)="onDelete()"></Button>
 </StackLayout>

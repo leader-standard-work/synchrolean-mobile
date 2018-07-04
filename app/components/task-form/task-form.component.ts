@@ -27,6 +27,7 @@ export class TaskFormComponent implements OnInit {
   public taskFormGroup: FormGroup;
   public title: string = 'New Task';
   public task: Task;
+  public deleteButtonVisible: string = 'collapse';
 
   constructor(
     tasksService: TaskService,
@@ -36,9 +37,11 @@ export class TaskFormComponent implements OnInit {
   ) {
     let desc = '';
     let note = '';
+
     this.tasksService = tasksService;
     this.routerExtensions = routerExtensions;
     this.pageRoute = pageRoute;
+
     this.pageRoute.activatedRoute
       .pipe(switchMap(activatedRoute => activatedRoute.params))
       .forEach(params => {
@@ -50,6 +53,7 @@ export class TaskFormComponent implements OnInit {
       note = this.task.getNote();
       this.title = 'Edit Task';
       this.mode = Mode.Edit;
+      this.deleteButtonVisible = 'visible';
     }
 
     this.formBuilder = formBuilder;
@@ -87,5 +91,13 @@ export class TaskFormComponent implements OnInit {
     } else {
       alert(options);
     }
+  }
+
+  onDelete() {
+    this.tasksService.deleteTask(this.task.getId());
+    this.routerExtensions.navigate(['/task-list'], {
+      clearHistory: true,
+      transition: { name: 'slideRight' }
+    });
   }
 }
