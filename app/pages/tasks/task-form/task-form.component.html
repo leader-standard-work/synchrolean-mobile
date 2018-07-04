@@ -3,11 +3,17 @@
     </ActionItem>
 </ActionBar>
 <StackLayout class="form">
+    <SegmentedBar [items]="durationBarItems" [selectedIndex]="durationBarIndex" (selectedIndexChanged)="onDurationSelected($event)"></SegmentedBar>
+    <StackLayout class="hr-light m-10"></StackLayout>
+
     <StackLayout class="input-field" [formGroup]="taskFormGroup">
         <TextField class="input" formControlName="description" hint="Description" required></TextField>
         <StackLayout class="hr-light m-10"></StackLayout>
+
         <TextField class="input" formControlName="note" hint="Notes"></TextField>
+
     </StackLayout>
     <StackLayout class="hr-light m-10"></StackLayout>
+
     <Button text="delete" [visibility]="deleteButtonVisible" (tap)="onDelete()"></Button>
 </StackLayout>

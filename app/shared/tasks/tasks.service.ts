@@ -1,6 +1,6 @@
 import { Injectable, OnInit } from '@angular/core';
 
-import { Task } from './task';
+import { Task, Duration } from './task';
 import { Observable, of } from 'rxjs';
 
 @Injectable({
@@ -20,8 +20,8 @@ export class TaskService implements OnInit {
     return of(this.tasks);
   }
 
-  public addTask(description: string, note: string): void {
-    this.tasks.push(new Task(description, note));
+  public addTask(description: string, duration: Duration, note: string): void {
+    this.tasks.push(new Task(description, duration, note));
     console.log(this.tasks);
   }
 
@@ -34,11 +34,17 @@ export class TaskService implements OnInit {
     return null;
   }
 
-  public updateTask(id: number, description: string, note: string) {
+  public updateTask(
+    id: number,
+    description: string,
+    duration: Duration,
+    note: string
+  ) {
     for (let task of this.tasks) {
       if (task.getId() === id) {
         task.setDescription(description);
         task.setNote(note);
+        task.setDuration(duration);
       }
     }
   }

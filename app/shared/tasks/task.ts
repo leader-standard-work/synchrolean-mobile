@@ -1,3 +1,10 @@
+export enum Duration {
+  Once = 'Once',
+  Daily = 'Daily',
+  Weekly = 'Weekly',
+  Monthly = 'Monthly'
+}
+
 export class Task {
   private static count: number = 0;
 
@@ -5,13 +12,19 @@ export class Task {
   private description: string;
   private completed: boolean;
   private note: string;
+  private duration: Duration;
 
-  constructor(description: string, note: string = '') {
+  constructor(
+    description: string,
+    duration: Duration = Duration.Once,
+    note: string = ''
+  ) {
     this.id = Task.count;
     Task.count++;
     this.description = description;
     this.completed = false;
     this.note = note;
+    this.duration = duration;
   }
 
   public getId(): number {
@@ -22,6 +35,14 @@ export class Task {
   }
   public getDescription(): string {
     return this.description;
+  }
+
+  public setDuration(duration: Duration) {
+    this.duration = duration;
+  }
+
+  public getDuration(): Duration {
+    return this.duration;
   }
 
   public setNote(note: string) {
