@@ -5,12 +5,12 @@ import { AppRoutingModule } from './app.routing';
 import { AppComponent } from './app.component';
 import { TNSCheckBoxModule } from 'nativescript-checkbox/angular';
 
-import { TaskListComponent } from '~/components/task-list/task-list.component';
-import { TaskFormComponent } from './components/task-form/task-form.component';
+import { TaskListComponent } from '~/pages/tasks/task-list/task-list.component';
+import { TaskFormComponent } from './pages/tasks/task-form/task-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TaskService } from '~/shared/tasks/tasks.service';
-import { TaskDetailComponent } from '~/components/task-detail/task-detail.component';
-import { LoginMainComponent } from '~/components/login-main/login-main.component';
+import { TaskDetailComponent } from '~/pages/tasks/task-detail/task-detail.component';
+import { LoginMainComponent } from '~/pages/account/login-main/login-main.component';
 
 // Uncomment and add to NgModule imports if you need to use two-way binding
 // import { NativeScriptFormsModule } from "nativescript-angular/forms";
@@ -32,7 +32,7 @@ import { LoginMainComponent } from '~/components/login-main/login-main.component
     TaskListComponent,
     TaskFormComponent,
     TaskDetailComponent,
-    LoginMainComponent,
+    LoginMainComponent
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [TaskService]

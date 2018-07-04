@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Task } from '../../shared/tasks/task';
-import { TaskService } from '../../shared/tasks/tasks.service';
+import { Task } from '~/shared/tasks/task';
+import { TaskService } from '~/shared/tasks/tasks.service';
 import { Observable } from 'rxjs';
 
 @Component({
