@@ -11,7 +11,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TaskService } from '~/shared/tasks/tasks.service';
 import { TaskDetailComponent } from '~/pages/tasks/task-detail/task-detail.component';
 import { LoginMainComponent } from '~/pages/account/login-main/login-main.component';
-
+import { LoginFormComponent } from '~/pages/account/login-form/login-form.component';
 // Uncomment and add to NgModule imports if you need to use two-way binding
 // import { NativeScriptFormsModule } from "nativescript-angular/forms";
 
@@ -32,7 +32,8 @@ import { LoginMainComponent } from '~/pages/account/login-main/login-main.compon
     TaskListComponent,
     TaskFormComponent,
     TaskDetailComponent,
-    LoginMainComponent
+    LoginMainComponent,
+    LoginFormComponent,
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [TaskService]
