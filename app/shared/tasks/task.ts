@@ -64,10 +64,14 @@ export class Task {
   public populate(
     nwid: number,
     nwdescription: string,
-    nwcomplete: boolean
+    nwcomplete: boolean,
+    nwNote: string,
+    nwDur: Duration
   ): void {
     this.id = nwid;
     this.description = nwdescription;
     this.completed = nwcomplete;
+    this.note = nwNote;
+    this.duration = nwDur;
   }
 }

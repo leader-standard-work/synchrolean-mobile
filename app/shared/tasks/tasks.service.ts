@@ -2,26 +2,32 @@ import { Injectable, OnInit } from '@angular/core';
 
 import { Task, Duration } from './task';
 import { Observable, of } from 'rxjs';
+import { dataBase } from '~/shared/database/database.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TaskService implements OnInit {
   private tasks: Array<Task>;
+  private db: dataBase;
 
   constructor() {
-    //sql
+    this.db = new dataBase();
     this.tasks = new Array<Task>();
   }
 
   ngOnInit(): void {}
 
   public getTasks(): Observable<Task[]> {
+    this.tasks = this.db.fetch();
     return of(this.tasks);
   }
 
   public addTask(description: string, duration: Duration, note: string): void {
-    this.tasks.push(new Task(description, duration, note));
+    var task: Task;
+
+    this.tasks.push(task = new Task(description, duration, note));
+    this.db.insert(task);
     console.log(this.tasks);
   }
 
