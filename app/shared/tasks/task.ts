@@ -53,8 +53,8 @@ export class Task {
     return this.note;
   }
 
-  public complete() {
-    this.completed = this.completed ? false : true;
+  public setComplete(complete: boolean) {
+    this.completed = complete;
   }
 
   public isComplete(): boolean {

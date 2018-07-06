@@ -158,12 +158,7 @@ export class TaskFormComponent implements OnInit {
           break;
         }
         case Mode.Edit: {
-          this.tasksService.updateTask(
-            this.task.getId(),
-            description,
-            this.duration,
-            note
-          );
+          this.tasksService.updateTask(this.task);
           this.routerExtensions.backToPreviousPage();
           break;
         }

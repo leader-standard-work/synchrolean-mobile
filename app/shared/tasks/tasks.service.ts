@@ -45,17 +45,13 @@ export class TaskService implements OnInit {
     return null;
   }
 
-  public updateTask(
-    id: number,
-    description: string,
-    duration: Duration,
-    note: string
-  ) {
-    for (let task of this.tasks) {
-      if (task.getId() === id) {
-        task.setDescription(description);
-        task.setNote(note);
-        task.setDuration(duration);
+  public updateTask(task: Task) {
+    for (let value of this.tasks) {
+      if (value.getId() === task.getId()) {
+        task.setDescription(task.getDescription());
+        task.setNote(task.getNote());
+        task.setDuration(task.getDuration());
+        task.setComplete(task.isComplete());
       }
     }
   }

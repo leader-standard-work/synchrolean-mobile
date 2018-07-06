@@ -21,4 +21,10 @@ export class TaskListComponent implements OnInit {
   ngOnInit(): void {
     this.tasks$ = this.tasksService.getTasks();
   }
+
+  onChecked(item: Task) {
+    item.setComplete(item.isComplete() ? false : true);
+    this.tasksService.updateTask(item);
+    console.log(item);
+  }
 }

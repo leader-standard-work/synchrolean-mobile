@@ -36,7 +36,7 @@ import { LoginFormComponent } from '~/pages/account/login-form/login-form.compon
     TaskFormComponent,
     TaskDetailComponent,
     LoginMainComponent,
-    LoginFormComponent,
+    LoginFormComponent
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [TaskService, DBService]

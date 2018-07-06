@@ -7,10 +7,11 @@
 <GridLayout class="page">
     <ListView [items]="tasks$ | async">
         <ng-template let-item="item" let-i="index">
-            <GridLayout>
-                <Label [text]="item.description" class="list-group-item" [nsRouterLink]="['/task-detail', item.getId()]"></Label>
-                <CheckBox [checked]="item.completed" horizontalAlignment="right" boxtype="circle" style="font-size: 40px;"></CheckBox>
-            </GridLayout>
+            <StackLayout orientation="horizontal">
+                <Label width="85%" [text]="item.description" class="list-group-item" [nsRouterLink]="['/task-detail', item.getId()]"></Label>
+                <!-- <CheckBox [checked]="item.completed" (tap)="onChecked(item)" horizontalAlignment="right" style="font-size: 40px;"></CheckBox> -->
+                <Button text="T" width="15%" height="50" backgroundColor="black" horzontalAlignment="right" (tap)="onChecked(item)"></Button>
+            </StackLayout>
         </ng-template>
     </ListView>
 </GridLayout>
