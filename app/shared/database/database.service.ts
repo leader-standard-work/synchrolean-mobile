@@ -2,10 +2,11 @@ import { Injectable, OnInit } from '@angular/core';
 import { Task } from '~/shared/tasks/task';
 
 var Sqlite = require('nativescript-sqlite');
+
 @Injectable({
   providedIn: 'root'
 })
-export class dataBase implements OnInit {
+export class DBService implements OnInit {
   private db: any;
 
   constructor() {
@@ -16,7 +17,6 @@ export class dataBase implements OnInit {
         )
         .then(id => {
           this.db = database;
-          console.log('DID THIS WORK?');
         }),
         error => {
           console.log(error);
@@ -66,7 +66,7 @@ export class dataBase implements OnInit {
         )
         .then(
           id => {
-            console.log('Insert result', id);
+            // console.log('Insert result', id);
             resolve(id);
           },
           error => {

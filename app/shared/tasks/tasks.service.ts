@@ -2,17 +2,17 @@ import { Injectable, OnInit } from '@angular/core';
 
 import { Task, Duration } from './task';
 import { Observable, of } from 'rxjs';
-import { dataBase } from '~/shared/database/database.service';
+import { DBService } from '~/shared/database/database.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TaskService implements OnInit {
   private tasks: Array<Task>;
-  private db: dataBase;
+  private db: DBService;
 
-  constructor() {
-    this.db = new dataBase();
+  constructor(db: DBService) {
+    this.db = db;
     this.tasks = new Array<Task>();
   }
 
