@@ -23,12 +23,17 @@ export class TaskService implements OnInit {
     return of(this.tasks);
   }
 
-  public addTask(description: string, duration: Duration, note: string): void {
-    var task: Task;
-
-    this.tasks.push(task = new Task(description, duration, note));
-    this.db.insert(task);
-    console.log(this.tasks);
+  public addTask(task: Task): void {
+    this.db.insert(task).then(
+      id => {
+        task.setId(id);
+        this.tasks.push(task);
+        console.log(this.tasks);
+      },
+      error => {
+        console.log(error);
+      }
+    );
   }
 
   public getTaskById(id: number): Task {

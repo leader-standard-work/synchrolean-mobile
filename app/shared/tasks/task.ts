@@ -6,9 +6,7 @@ export enum Duration {
 }
 
 export class Task {
-  private static count: number = 0;
-
-  private id: number;
+  private id: number = -1;
   private description: string;
   private completed: boolean;
   private note: string;
@@ -19,12 +17,14 @@ export class Task {
     duration: Duration = Duration.Once,
     note: string = ''
   ) {
-    this.id = Task.count;
-    Task.count++;
     this.description = description;
     this.completed = false;
     this.note = note;
     this.duration = duration;
+  }
+
+  public setId(id: number) {
+    this.id = id;
   }
 
   public getId(): number {
