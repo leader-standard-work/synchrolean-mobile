@@ -14,6 +14,7 @@ import { LoginMainComponent } from '~/pages/account/login-main/login-main.compon
 import { TaskService } from '~/shared/tasks/tasks.service';
 import { DBService } from '~/shared/database/database.service';
 
+import { LoginFormComponent } from '~/pages/account/login-form/login-form.component';
 // Uncomment and add to NgModule imports if you need to use two-way binding
 // import { NativeScriptFormsModule } from "nativescript-angular/forms";
 
@@ -34,7 +35,8 @@ import { DBService } from '~/shared/database/database.service';
     TaskListComponent,
     TaskFormComponent,
     TaskDetailComponent,
-    LoginMainComponent
+    LoginMainComponent,
+    LoginFormComponent,
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [TaskService, DBService]
