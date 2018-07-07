@@ -5,12 +5,14 @@ export enum Duration {
   Monthly = 'Monthly'
 }
 
+
 export class Task {
   private id: number = -1;
   private description: string;
   private completed: boolean;
   private note: string;
   private duration: Duration;
+  private date: Date;
 
   constructor(
     description: string,
@@ -21,6 +23,7 @@ export class Task {
     this.completed = false;
     this.note = note;
     this.duration = duration;
+    this.date = new Date();
   }
 
   public setId(id: number) {
@@ -61,17 +64,34 @@ export class Task {
     return this.completed;
   }
 
+  public setDate(nwDate: Date){
+
+  }
+
+  public setDateStr(nwDate: string){
+     this.date = new Date(nwDate);
+  }
+
+  public getDateStr(): string{
+    return this.date.toString();
+  }
+
+  public getDate(): Date{
+    return this.date;
+  }
+
   public populate(
     nwid: number,
     nwdescription: string,
     nwcomplete: boolean,
     nwNote: string,
-    nwDur: Duration
-  ): void {
+    nwDur: Duration,
+    nwDate: Date): void {
     this.id = nwid;
     this.description = nwdescription;
     this.completed = nwcomplete;
     this.note = nwNote;
     this.duration = nwDur;
+    this.date = new Date(nwDate);
   }
 }

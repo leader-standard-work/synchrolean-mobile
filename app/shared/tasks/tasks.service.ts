@@ -48,10 +48,18 @@ export class TaskService implements OnInit {
   public updateTask(task: Task) {
     for (let value of this.tasks) {
       if (value.getId() === task.getId()) {
-        task.setDescription(task.getDescription());
-        task.setNote(task.getNote());
-        task.setDuration(task.getDuration());
-        task.setComplete(task.isComplete());
+        value.setDescription(task.getDescription());
+        value.setNote(task.getNote());
+        value.setDuration(task.getDuration());
+        value.setComplete(task.isComplete());
+        value.setDate(task.getDate());
+        this.db.update(value).then(
+        id =>{
+          console.log(value); 
+        },
+        error =>{
+          console.log(error);
+        });
       }
     }
   }
@@ -59,6 +67,17 @@ export class TaskService implements OnInit {
   public deleteTask(id: number) {
     this.tasks.forEach((item, index) => {
       if (item.getId() === id) {
+        //change to delete db
+        this.db.update(item);
+        this.tasks.splice(index, 1);
+      }
+    });
+  }
+
+  public checkTask(task: Task) {
+    this.tasks.forEach((item, index) => {
+      if (item.getId() === task.getId()) {
+        this.db.update(item);
         this.tasks.splice(index, 1);
       }
     });

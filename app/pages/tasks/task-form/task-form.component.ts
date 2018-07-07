@@ -158,7 +158,9 @@ export class TaskFormComponent implements OnInit {
           break;
         }
         case Mode.Edit: {
-          this.tasksService.updateTask(this.task);
+          let task: Task = new Task(description, this.duration, note);
+          task.setId(this.task.getId());
+          this.tasksService.updateTask(task);
           this.routerExtensions.backToPreviousPage();
           break;
         }
@@ -176,6 +178,7 @@ export class TaskFormComponent implements OnInit {
 
     action(options).then(result => {
       if (result === 'Delete') {
+        this.task.setComplete(true);
         this.tasksService.deleteTask(this.task.getId());
         this.routerExtensions.navigate(['/task-list'], {
           clearHistory: true,

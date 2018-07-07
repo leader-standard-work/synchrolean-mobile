@@ -1,6 +1,5 @@
 import { Injectable, OnInit } from '@angular/core';
 import { Task } from '~/shared/tasks/task';
-
 var Sqlite = require('nativescript-sqlite');
 
 @Injectable({
@@ -13,10 +12,11 @@ export class DBService implements OnInit {
     new Sqlite('tasks.db').then(database => {
       database
         .execSQL(
-          'CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, description TEXT, completed INTEGER, note TEXT, duration TEXT)'
+          'CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, description TEXT, completed INTEGER, note TEXT, duration TEXT, date TEXT)'
         )
         .then(id => {
           this.db = database;
+          //make user table
         }),
         error => {
           console.log(error);
@@ -32,16 +32,22 @@ export class DBService implements OnInit {
     this.db.all('SELECT * from tasks').then(
       rows => {
         for (var row in rows) {
+          if(rows[row][2] === 'false'){
           var task: Task;
           task = new Task('');
+          console.log("Populating");
           task.populate(
             rows[row][0],
             rows[row][1],
             rows[row][2],
             rows[row][3],
-            rows[row][4]
+            rows[row][4],
+            rows[row][5]
           );
-          tasks.push(task);
+          
+          console.log("Pushing task");
+          tasks.push(task);}
+           
         }
       },
       error => {
@@ -56,12 +62,13 @@ export class DBService implements OnInit {
     return new Promise((resolve, reject) => {
       this.db
         .execSQL(
-          'INSERT into tasks (description, completed, note, duration) VALUES (?,?,?,?)',
+          'INSERT into tasks (description, completed, note, duration, date) VALUES (?,?,?,?,?)',
           [
             task.getDescription(),
             task.isComplete(),
             task.getNote(),
-            task.getDuration()
+            task.getDuration(),
+            task.getDateStr()
           ]
         )
         .then(
@@ -75,5 +82,29 @@ export class DBService implements OnInit {
           }
         );
     });
+  }
+
+  update(task:Task): Promise<number>{
+    return new Promise((resolve, reject)=>{
+      this.db
+      .execSQL('UPDATE tasks SET description = ?, completed = ?, note = ?, duration = ?, date = ? WHERE id = ?', 
+      [
+        task.getDescription(),
+        task.isComplete(),
+        task.getNote(),
+        task.getDuration(),
+        task.getDate(),
+        task.getId()
+      ]
+    ).then(
+      id =>{
+        resolve(id);
+      },
+      error =>{
+        console.log('Update error');
+        reject(error);
+      }
+    )
+    })
   }
 }
