@@ -23,8 +23,6 @@ export class TaskListComponent implements OnInit {
   }
 
   onChecked(item: Task) {
-    item.setComplete(true);
     this.tasksService.checkTask(item);
-    console.log(item);
   }
 }

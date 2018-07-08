@@ -5,6 +5,58 @@ export enum Duration {
   Monthly = 'Monthly'
 }
 
+// Compare tasks by duration
+export function taskCompareDuration(item1: Task, item2: Task): number {
+  let duration1: Duration = item1.getDuration();
+  let duration2: Duration = item2.getDuration();
+  let value1: number;
+  let value2: number;
+
+  switch (duration1) {
+    case Duration.Once: {
+      value1 = 0;
+      break;
+    }
+    case Duration.Daily: {
+      value1 = 1;
+      break;
+    }
+    case Duration.Weekly: {
+      value1 = 2;
+      break;
+    }
+    case Duration.Monthly: {
+      value1 = 3;
+      break;
+    }
+    default:
+      value1 = 0;
+      break;
+  }
+  switch (duration2) {
+    case Duration.Once: {
+      value2 = 0;
+      break;
+    }
+    case Duration.Daily: {
+      value2 = 1;
+      break;
+    }
+    case Duration.Weekly: {
+      value2 = 2;
+      break;
+    }
+    case Duration.Monthly: {
+      value2 = 3;
+      break;
+    }
+    default: {
+      value2 = 0;
+      break;
+    }
+  }
+  return value1 - value2;
+}
 
 export class Task {
   private id: number = -1;
@@ -64,19 +116,17 @@ export class Task {
     return this.completed;
   }
 
-  public setDate(nwDate: Date){
+  public setDate(nwDate: Date) {}
 
+  public setDateStr(nwDate: string) {
+    this.date = new Date(nwDate);
   }
 
-  public setDateStr(nwDate: string){
-     this.date = new Date(nwDate);
-  }
-
-  public getDateStr(): string{
+  public getDateStr(): string {
     return this.date.toString();
   }
 
-  public getDate(): Date{
+  public getDate(): Date {
     return this.date;
   }
 
@@ -86,7 +136,8 @@ export class Task {
     nwcomplete: boolean,
     nwNote: string,
     nwDur: Duration,
-    nwDate: Date): void {
+    nwDate: Date
+  ): void {
     this.id = nwid;
     this.description = nwdescription;
     this.completed = nwcomplete;

@@ -1,6 +1,6 @@
 import { Injectable, OnInit } from '@angular/core';
 
-import { Task, Duration } from './task';
+import { Task } from './task';
 import { Observable, of } from 'rxjs';
 import { DBService } from '~/shared/database/database.service';
 
@@ -54,12 +54,13 @@ export class TaskService implements OnInit {
         value.setComplete(task.isComplete());
         value.setDate(task.getDate());
         this.db.update(value).then(
-        id =>{
-          console.log(value); 
-        },
-        error =>{
-          console.log(error);
-        });
+          id => {
+            console.log(value);
+          },
+          error => {
+            console.log(error);
+          }
+        );
       }
     }
   }
@@ -77,8 +78,10 @@ export class TaskService implements OnInit {
   public checkTask(task: Task) {
     this.tasks.forEach((item, index) => {
       if (item.getId() === task.getId()) {
+        item.setComplete(item.isComplete() ? false : true);
         this.db.update(item);
-        this.tasks.splice(index, 1);
+        // this.tasks.splice(index, 1);
+        console.log(item);
       }
     });
   }
