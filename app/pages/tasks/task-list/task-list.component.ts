@@ -22,7 +22,4 @@ export class TaskListComponent implements OnInit {
     this.tasks$ = this.tasksService.getTasks();
   }
 
-  onChecked(item: Task) {
-    this.tasksService.checkTask(item);
-  }
 }

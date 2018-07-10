@@ -3,6 +3,7 @@ import { Injectable, OnInit } from '@angular/core';
 import { Task } from './task';
 import { Observable, of } from 'rxjs';
 import { DBService } from '~/shared/database/database.service';
+import { ServerService } from '~/shared/server/server.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,8 +11,10 @@ import { DBService } from '~/shared/database/database.service';
 export class TaskService implements OnInit {
   private tasks: Array<Task>;
   private db: DBService;
+  private serverService: ServerService;
 
-  constructor(db: DBService) {
+  constructor(db: DBService, serverService: ServerService) {
+    this.serverService = serverService;
     this.db = db;
     this.tasks = new Array<Task>();
   }

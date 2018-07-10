@@ -34,7 +34,7 @@ export class DBService implements OnInit {
         for (var row in rows) {
           var task: Task;
           task = new Task('');
-          console.log('Populating');
+          // console.log('Populating');
           task.populate(
             rows[row][0],
             rows[row][1],
@@ -44,7 +44,7 @@ export class DBService implements OnInit {
             rows[row][5]
           );
 
-          console.log('Pushing task');
+          // console.log('Pushing task');
           tasks.push(task);
         }
       },
