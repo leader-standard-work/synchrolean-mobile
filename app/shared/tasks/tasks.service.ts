@@ -81,7 +81,7 @@ export class TaskService implements OnInit {
   public checkTask(task: Task) {
     this.tasks.forEach((item, index) => {
       if (item.getId() === task.getId()) {
-        item.setComplete(item.isComplete() ? false : true);
+        item.setComplete(task.isComplete());
         this.db.update(item);
         // this.tasks.splice(index, 1);
         console.log(item);

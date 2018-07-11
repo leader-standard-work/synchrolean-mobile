@@ -11,6 +11,7 @@ import { TaskService } from '~/shared/tasks/tasks.service';
 })
 export class TaskItemComponent implements OnInit {
   private tasksService: TaskService;
+  private initialized: boolean = false;
 
   @Input() task: Task;
   @ViewChild('CB') checkBox: ElementRef;
@@ -19,10 +20,15 @@ export class TaskItemComponent implements OnInit {
     this.tasksService = taskService;
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.checkBox.nativeElement.checked = this.task.isComplete();
+    this.initialized = true;
+  }
 
-  onChecked(item: Task) {
-    console.log('Checkbox checked');
-    this.tasksService.checkTask(this.task);
+  onChecked() {
+    if (this.initialized) {
+      this.task.setComplete(this.checkBox.nativeElement.checked);
+      this.tasksService.checkTask(this.task);
+    }
   }
 }
