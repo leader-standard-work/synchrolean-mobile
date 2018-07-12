@@ -65,6 +65,7 @@ export class Task {
   private note: string;
   private duration: Duration;
   private date: Date;
+  private resetDate: Date;
 
   constructor(
     description: string,
@@ -76,6 +77,8 @@ export class Task {
     this.note = note;
     this.duration = duration;
     this.date = new Date();
+    this.resetDate = new Date();
+    this.setResetDate();
   }
 
   public setId(id: number) {
@@ -144,5 +147,32 @@ export class Task {
     this.note = nwNote;
     this.duration = nwDur;
     this.date = new Date(nwDate);
+  }
+
+  public setResetDate() {
+    let today = new Date();
+
+    if (this.resetDate && this.resetDate > today) {
+      return;
+    }
+    // don't set the reset date if its a one time task.
+    if (this.duration === Duration.Once) {
+      this.resetDate = null;
+    }
+    if (this.duration === Duration.Daily) {
+      this.resetDate.setDate(today.getDate() + 1);
+    }
+    if (this.duration === Duration.Weekly) {
+      this.resetDate.setDate(today.getDate() + (7 - today.getDay()));
+    }
+    // if the reset date is past but the same month as today then reset to next month.
+    // otherwise if the reset date is a month/s behind then update to todays month.
+    if (this.duration === Duration.Monthly) {
+      this.resetDate.setDate(1);
+      if (this.resetDate.getMonth() === today.getMonth()) {
+        this.resetDate.setMonth(today.getMonth() + 1);
+      }
+      this.resetDate.setMonth(today.getMonth());
+    }
   }
 }

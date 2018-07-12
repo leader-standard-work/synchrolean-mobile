@@ -4,11 +4,12 @@ import { Task } from './task';
 import { Observable, of } from 'rxjs';
 import { DBService } from '~/shared/database/database.service';
 import { ServerService } from '~/shared/server/server.service';
+import { ObservableArray } from 'data/observable-array/observable-array';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TaskService implements OnInit {
+export class TaskService {
   private tasks: Array<Task>;
   private db: DBService;
   private serverService: ServerService;
@@ -17,9 +18,10 @@ export class TaskService implements OnInit {
     this.serverService = serverService;
     this.db = db;
     this.tasks = new Array<Task>();
+    // setInterval(() => {
+    //   this.taskResetTimer();
+    // }, 10000);
   }
-
-  ngOnInit(): void {}
 
   public getTasks(): Observable<Task[]> {
     this.tasks = this.db.fetch();
@@ -86,6 +88,13 @@ export class TaskService implements OnInit {
         // this.tasks.splice(index, 1);
         console.log(item);
       }
+    });
+  }
+
+  private taskResetTimer() {
+    console.log('RESET REACHED');
+    this.tasks.forEach(task => {
+      task.setComplete(false);
     });
   }
 }
