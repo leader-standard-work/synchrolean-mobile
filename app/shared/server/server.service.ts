@@ -1,25 +1,26 @@
 import { Injectable, OnInit } from '@angular/core';
-import { Http } from '@angular/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import {
+  HttpClient,
+  HttpHeaders,
+  HttpErrorResponse
+} from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import { Task } from '~/shared/tasks/task';
 import { ServerTask } from '~/shared/tasks/serverTask';
 
-const serverURL = 'http://localhost:55542';
+const serverURL: string = 'http://localhost:55542';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ServerService implements OnInit {
-  private http: Http;
+export class ServerService {
+  private http: HttpClient;
   private url: string;
   private userId: number;
 
-  constructor(http: Http) {
+  constructor(http: HttpClient) {
     this.http = http;
-  }
-
-  ngOnInit() {
     this.url = serverURL;
     this.userId = 0;
   }
@@ -27,21 +28,18 @@ export class ServerService implements OnInit {
   postTask(task: Task) {
     let postUrl: string = this.url + '/api/tasks';
     let postTask = new ServerTask(task, this.userId);
-
-    this.http.post(postUrl, postTask).pipe(
-      map(response => {
-        if (!response.ok) {
-          console.log('POST FAILED');
-          return;
-        }
-        let res = response.json.toString();
-        if (task.getServerId() === -1) {
-          let obj = JSON.parse(res);
-          task.setServerId(obj.id);
-        }
-        console.log(res);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
       })
-    );
+    };
+    console.log(postUrl);
+    console.log(postTask.toJson());
+    this.http
+      .post<ServerTask>(postUrl, postTask.toJson(), httpOptions)
+      .subscribe(response => {
+        console.log('Server Response:', response);
+      });
   }
 
   postTasks(tasks: Task[]) {
@@ -49,15 +47,26 @@ export class ServerService implements OnInit {
       this.postTask(task);
     });
   }
-
   getTasks(): Observable<Task[]> {
-    let getUrl: string = this.url + '/api/tasks/' + this.userId;
-    this.http.get(getUrl).pipe(
-      map(response => {
-        let res = response.json;
-        console.log(res);
-      })
-    );
+    // let getUrl: string = this.url + '/api/tasks/' + this.userId;
+    // this.http.get(getUrl).pipe(
+    //   map(response => {
+    //     let res = response.json;
+    //     console.log(res);
+    //   })
+    // );
     return null;
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    if (error.error instanceof ErrorEvent) {
+      console.error('An error occured on the client side', error.error.message);
+    } else {
+      console.error(
+        'Backend returned: ${error.status}',
+        +'body was ${error.error}'
+      );
+    }
+    return throwError('Something bad happened');
   }
 }

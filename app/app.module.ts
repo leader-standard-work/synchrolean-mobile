@@ -5,7 +5,8 @@ import { NativeScriptFormsModule } from 'nativescript-angular/forms';
 import { AppRoutingModule } from './app.routing';
 import { AppComponent } from './app.component';
 import { TNSCheckBoxModule } from 'nativescript-checkbox/angular';
-import { NativeScriptHttpModule } from 'nativescript-angular/http';
+import { NativeScriptHttpClientModule } from 'nativescript-angular/http-client';
+import { HttpClientModule } from '@angular/common/http';
 
 import { TaskListComponent } from '~/pages/tasks/task-list/task-list.component';
 import { TaskFormComponent } from './pages/tasks/task-form/task-form.component';
@@ -32,7 +33,7 @@ import { ServerService } from '~/shared/server/server.service';
     ReactiveFormsModule,
     AppRoutingModule,
     TNSCheckBoxModule,
-    NativeScriptHttpModule
+    NativeScriptHttpClientModule
   ],
   declarations: [
     AppComponent,

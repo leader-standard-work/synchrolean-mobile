@@ -121,7 +121,7 @@ export class Task {
     }
     // don't set the reset date if its a one time task.
     if (this.duration === Duration.Once) {
-      this.resetDate = null;
+      this.resetDate = new Date('December 1, 9999 00:00:00');
     }
     if (this.duration === Duration.Daily) {
       this.resetDate.setDate(today.getDate() + 1);

@@ -38,7 +38,6 @@ export class TaskService {
         this.tasks.push(task);
 
         this.serverService.postTask(task);
-        console.log(this.tasks);
       },
       error => {
         console.log(error);
