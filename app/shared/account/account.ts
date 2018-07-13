@@ -1,57 +1,57 @@
 //  account.ts contains the account class
 
-export class Account{
-  private email: string;
-  private firstname: string;
-  private lastname: string;
-  private password: string; //TESTING ONLY
+export class Account {
+  private _email: string;
+  private _firstname: string;
+  private _lastname: string;
+  private _password: string; //TESTING ONLY
 
   constructor(
     email: string,
     firstname: string,
     lastname: string,
-    password: string,  //TESTING ONLY
-  ){
-      this.email = email;
-      this.firstname = firstname;
-      this.lastname = lastname;
-      this.password = password; //TESTING ONLY
-    
+    password: string //TESTING ONLY
+  ) {
+    this._email = email;
+    this._firstname = firstname;
+    this._lastname = lastname;
+    this._password = password; //TESTING ONLY
   }
 
   //  Set/get for email
-  public setEmail(email:string){
-      this.email= email;
+  set email(newEmail: string) {
+    this._email = newEmail;
   }
 
-  public getEmail(): string {
-      return this.email;
+  get email(): string {
+    return this._email;
   }
 
   //  Set/get for firstname
-  public setFirstname(firstname:string){
-      this.firstname = firstname;
+  set firstname(newFirstname: string) {
+    this._firstname = newFirstname;
   }
 
-  public getFirstname(): string {
-      return this.firstname;
+  get firstname(): string {
+    return this._firstname;
   }
 
   //  Set/get for lastname
-  public setLastname(lastname:string){
-       this.lastname = lastname;
+  set lastname(newLastname: string) {
+    this._lastname = newLastname;
   }
 
-  public getLastname(): string{
-      return this.lastname;
+  get lastname(): string {
+    return this._lastname;
   }
-  
+
   //  Set/get for password FOR TESTING ONLY
-  public setPassword(password:string){  //TESTING ONLY, DELETE SOON
-      this.password = password;
+  set password(newPassword: string) {
+    //TESTING ONLY, DELETE SOON
+    this._password = newPassword;
   }
-  public getPassword(): string{  //TESTING ONLY, DELETE SOON
-      return this.password;
+  get password(): string {
+    //TESTING ONLY, DELETE SOON
+    return this._password;
   }
-  
 }
