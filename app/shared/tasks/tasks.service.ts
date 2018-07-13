@@ -25,6 +25,9 @@ export class TaskService {
 
   public getTasks(): Observable<Task[]> {
     this.tasks = this.db.fetch();
+    // this.tasks.forEach(task => {
+    //   this.serverService.postTask(task);
+    // });
     return of(this.tasks);
   }
 
@@ -33,6 +36,8 @@ export class TaskService {
       id => {
         task.setId(id);
         this.tasks.push(task);
+
+        this.serverService.postTask(task);
         console.log(this.tasks);
       },
       error => {
