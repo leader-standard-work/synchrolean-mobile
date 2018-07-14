@@ -1,4 +1,4 @@
-import { Task, Duration } from './task';
+import { Task, Duration } from '~/shared/tasks/task';
 
 export class ServerTask {
   private _id: number;

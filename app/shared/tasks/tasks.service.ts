@@ -1,10 +1,10 @@
 import { Injectable, OnInit } from '@angular/core';
 
-import { Task } from './task';
+import { Task } from '~/shared/tasks/task';
 import { Observable, of } from 'rxjs';
 import { DBService } from '~/shared/database/database.service';
 import { ServerService } from '~/shared/server/server.service';
-import { ObservableArray } from 'data/observable-array/observable-array';
+import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
 
 @Injectable({
   providedIn: 'root'

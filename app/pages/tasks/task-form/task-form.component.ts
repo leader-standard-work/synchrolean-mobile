@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { switchMap } from 'rxjs/operators';
 import { PageRoute, RouterExtensions } from 'nativescript-angular/router';
-import { SegmentedBar, SegmentedBarItem } from 'ui/segmented-bar';
-import { action, alert } from 'ui/dialogs';
+import { SegmentedBar, SegmentedBarItem } from 'tns-core-modules/ui/segmented-bar/segmented-bar';
+import { action, alert } from 'tns-core-modules/ui/dialogs/dialogs';
 
 import { TaskService } from '~/shared/tasks/tasks.service';
 import { Task, Duration } from '~/shared/tasks/task';
