@@ -1,11 +1,11 @@
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { NativeScriptCommonModule } from 'nativescript-angular/common';
+import { MembersComponent } from '~/pages/teams/members/members.component';
 
-import { TeamListComponent } from '~/pages/teams/team-list/team-list.component';
 
 @NgModule({
   imports: [NativeScriptCommonModule],
-  declarations: [TeamListComponent],
+  declarations: [MembersComponent],
   schemas: [NO_ERRORS_SCHEMA]
 })
-export class Team{}
+export class Teams{}

@@ -19,7 +19,8 @@ import { DBService } from '~/shared/database/database.service';
 
 import { LoginFormComponent } from '~/pages/account/login-form/login-form.component';
 import { ServerService } from '~/shared/server/server.service';
-import { TeamListComponent } from '~/pages/teams/team-list/team-list.component';
+import { MembersComponent } from '~/pages/teams/members/members.component';
+;
 // Uncomment and add to NgModule imports if you need to use two-way binding
 // import { NativeScriptFormsModule } from "nativescript-angular/forms";
 
@@ -44,7 +45,7 @@ import { TeamListComponent } from '~/pages/teams/team-list/team-list.component';
     TaskDetailComponent,
     LoginMainComponent,
     LoginFormComponent,
-    TeamListComponent
+    MembersComponent
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [TaskService, DBService, ServerService]
