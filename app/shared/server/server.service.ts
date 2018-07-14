@@ -35,11 +35,12 @@ export class ServerService {
     };
     console.log(postUrl);
     console.log(postTask.toJson());
-    this.http
+    let observer = this.http
       .post<ServerTask>(postUrl, postTask.toJson(), httpOptions)
       .subscribe(response => {
         console.log('Server Response:', response);
       });
+    observer.unsubscribe();
   }
 
   postTasks(tasks: Task[]) {
@@ -48,14 +49,8 @@ export class ServerService {
     });
   }
   getTasks(): Observable<Task[]> {
-    // let getUrl: string = this.url + '/api/tasks/' + this.userId;
-    // this.http.get(getUrl).pipe(
-    //   map(response => {
-    //     let res = response.json;
-    //     console.log(res);
-    //   })
-    // );
-    return null;
+    let getUrl: string = this.url + '/api/tasks/' + this.userId;
+    return this.http.get<Task[]>(getUrl);
   }
 
   private handleError(error: HttpErrorResponse) {
