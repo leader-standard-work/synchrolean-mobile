@@ -24,7 +24,7 @@ export class TaskListComponent implements OnInit {
   }
 
   teamTap(){
-    this.routerE.navigate(['/Members'],{
+    this.routerE.navigate(['/teams'],{
       transition:{
         name: "slideBottom"
       }

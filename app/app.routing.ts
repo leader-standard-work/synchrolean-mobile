@@ -8,6 +8,7 @@ import { TaskDetailComponent } from '~/pages/tasks/task-detail/task-detail.compo
 import { LoginMainComponent } from '~/pages/account/login-main/login-main.component';
 import { LoginFormComponent } from '~/pages/account/login-form/login-form.component';
 import { MembersComponent } from '~/pages/teams/members/members.component';
+import { TeamsComponent } from '~/pages/teams/teams.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/task-list', pathMatch: 'full' },
@@ -18,7 +19,8 @@ const routes: Routes = [
   { path: 'login-main', component: LoginMainComponent },
   { path: 'login-form', component: LoginFormComponent },
   { path: 'Members', component: MembersComponent},
-  { path: 'Members/:id', component: MembersComponent}
+  { path: 'Members/:id', component: MembersComponent},
+  { path: 'teams', component: TeamsComponent}
 ];
 
 @NgModule({
