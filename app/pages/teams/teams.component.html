@@ -3,9 +3,9 @@
 </ActionBar>
 
 <GridLayout class="page">
-    <ListView [items]="teams$ | async">
-        <ng-template let-item="teams" let-i="index">
-            <task-item class="t-25" [task]="item"></task-item>
+    <ListView [items]="teams$">
+        <ng-template let-item="item" let-i="index">
+            <Label [text]="item.getName()"></Label>
         </ng-template>
     </ListView>
 </GridLayout>

@@ -6,15 +6,14 @@ import { Observable } from 'rxjs';
   selector: 'teams',
   moduleId: module.id,
   templateUrl: './teams.component.html',
-  styleUrls: ['./teams.component.css'],
-    
+  styleUrls: ['./teams.component.css']
 })
-
 export class TeamsComponent implements OnInit {
-  public teams$: Observable<Array<team>>;
+  public teams$: Array<team>;
 
   ngOnInit(): void {
-  //disclaimer, this is testing with dummy data
-  this.teams$[0] = new team(0, 'team1', 'the first team');
+    //disclaimer, this is testing with dummy data
+    this.teams$ = new Array();
+    this.teams$.push(new team(0, 'team1', 'the first team'));
   }
 }
