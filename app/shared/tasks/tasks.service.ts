@@ -4,7 +4,6 @@ import { Task } from '~/shared/tasks/task';
 import { Observable, of } from 'rxjs';
 import { DBService } from '~/shared/database/database.service';
 import { ServerService } from '~/shared/server/server.service';
-import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
 
 @Injectable({
   providedIn: 'root'

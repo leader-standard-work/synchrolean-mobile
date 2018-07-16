@@ -17,8 +17,8 @@ const routes: Routes = [
   { path: 'task-edit/:id', component: TaskFormComponent },
   { path: 'login-main', component: LoginMainComponent },
   { path: 'login-form', component: LoginFormComponent },
-  { path: 'Members', component: MembersComponent},
-  { path: 'Members/:id', component: MembersComponent}
+  { path: 'Members', component: MembersComponent },
+  { path: 'Members/:id', component: MembersComponent }
 ];
 
 @NgModule({
