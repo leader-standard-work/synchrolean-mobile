@@ -1,1 +1,11 @@
-<ActionBar class="action-bar"></ActionBar>
+<ActionBar class="action-bar">
+    <Label class="action-bar-title" text="Team List"></Label>
+</ActionBar>
+
+<GridLayout class="page">
+    <ListView [items]="teams$ | async">
+        <ng-template let-item="teams" let-i="index">
+            <task-item class="t-25" [task]="item"></task-item>
+        </ng-template>
+    </ListView>
+</GridLayout>
