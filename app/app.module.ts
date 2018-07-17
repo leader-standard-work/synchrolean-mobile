@@ -20,7 +20,8 @@ import { DBService } from '~/shared/database/database.service';
 import { LoginFormComponent } from '~/pages/account/login-form/login-form.component';
 import { ServerService } from '~/shared/server/server.service';
 import { MembersComponent } from '~/pages/teams/members/members.component';
-import { TeamsComponent } from '~/pages/teams/teams.component';
+import { TeamListComponent } from '~/pages/teams/team-list/team-list.component';
+import { TeamFormComponent } from '~/pages/teams/team-form/team-form.component';
 ;
 // Uncomment and add to NgModule imports if you need to use two-way binding
 // import { NativeScriptFormsModule } from "nativescript-angular/forms";
@@ -47,7 +48,8 @@ import { TeamsComponent } from '~/pages/teams/teams.component';
     LoginMainComponent,
     LoginFormComponent,
     MembersComponent,
-    TeamsComponent,
+    TeamListComponent,
+    TeamFormComponent,
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [TaskService, DBService, ServerService]
