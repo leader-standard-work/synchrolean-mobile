@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { team } from '~/shared/teams/team';
+import { Team } from '~/shared/teams/team';
 import { Observable } from 'rxjs';
 import { ServerService } from '~/shared/server/server.service';
 
@@ -10,11 +10,12 @@ import { ServerService } from '~/shared/server/server.service';
   styleUrls: ['./team-list.component.css']
 })
 export class TeamListComponent implements OnInit {
-  public teams$: Object;
+  public teams$: Array<Team>;
 
   constructor(private server:ServerService){
 
   }
+
   ngOnInit(): void {
     //disclaimer, this is testing with dummy data
     this.server.getTeams().subscribe(

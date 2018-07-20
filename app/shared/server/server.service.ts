@@ -8,8 +8,7 @@ import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { Task } from '~/shared/tasks/task';
 import { ServerTask } from '~/shared/tasks/serverTask';
-import { team } from '~/shared/teams/team';
-import { valueProperty } from '../../../node_modules/tns-core-modules/ui/slider/slider';
+import { Team } from '~/shared/teams/team';
 
 const serverURL: string = 'http://localhost:55542';
 
@@ -27,6 +26,8 @@ export class ServerService {
     this.userId = 0;
   }
 
+
+  /************** Begin Task Calls ******************/
   postTask(task: Task) {
     let postUrl: string = this.url + '/api/tasks';
     let postTask = new ServerTask(task, this.userId);
@@ -55,11 +56,6 @@ export class ServerService {
     return this.http.get<Task[]>(getUrl);
   }
 
-
-  getTeams(){
-      return this.http.get('http://localhost:5000/api/team');
-  }
-
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
       console.error('An error occured on the client side', error.error.message);
@@ -71,4 +67,14 @@ export class ServerService {
     }
     return throwError('Something bad happened');
   }
+
+  /***************** End Task Calls *************************/
+
+  /***************** Begin Team Calls ***********************/
+  getTeams() {
+    let teams = new Array<Team>()
+    return this.http.get('http://localhost:5000/api/team');
+  }
+  /***************** End Team Calls *************************/
+
 }

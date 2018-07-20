@@ -1,10 +1,10 @@
 //This file contains the team class which contains array of team IDs, team names, and team descriptions
 
-export class team{
+export class Team {
   private _Id: number = 0; //the unique ID for a team
-  private _TeamName: string; //the name for a team
-  private _TeamDescription: string; //the description for a team
-  private _OwnerId: number; //Owner of the teams server ID
+  private _Name: string; //the name for a team
+  private _Description: string; //the description for a team
+  private _OwnerId: number;
 
   constructor( //creating a team from passed in data
       Id: number,
