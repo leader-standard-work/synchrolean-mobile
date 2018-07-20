@@ -25,6 +25,7 @@
 		"animations": "0.0.0",
 		"nativescript-angular": "~6.0.0",
 		"nativescript-checkbox": "^3.0.3",
+		"nativescript-fontawesome": "^1.0.0",
 		"nativescript-sqlite": "^2.2.1",
 		"nativescript-theme-core": "~1.0.4",
 		"reflect-metadata": "~0.1.8",

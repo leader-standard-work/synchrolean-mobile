@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Team } from '~/shared/teams/team';
 import { Observable } from 'rxjs';
 import { ServerService } from '~/shared/server/server.service';
-import { teams } from '~/shared/dummyData';
 import { RouterExtensions } from 'nativescript-angular/router';
+import { teams } from '~/shared/dummyData';
 
 @Component({
   selector: 'team-list',
@@ -22,7 +22,7 @@ export class TeamListComponent implements OnInit {
 
   ngOnInit(): void {
     //disclaimer, this is testing with dummy data
-     //this.teams$ = this.server.getTeams()
+      //this.teams$ = this.server.getTeams()
 
     // if(this.teams$ === undefined){
         this.teams$ = JSON.parse(teams);
@@ -31,18 +31,28 @@ export class TeamListComponent implements OnInit {
     // }
     }
 
-    getNames(){
-        this.teams$.forEach((value)=>{
-          this.names.push(value.TeamName);
-        });
-    }
-
-    onTap(){
-      this.routerE.navigate(['/Members'],{
-        transition:{
-          name: "slideLeft"
-        }
+  getNames(){
+      this.teams$.forEach((value)=>{
+        this.names.push(value.TeamName);
       });
-    }
+  }
+
+  onTap(){
+    this.routerE.navigate(['/Members'],{
+      transition:{
+        name: "slideLeft"
+      }
+    });
+  }
+
+  tasksTapped() {
+    this.routerE.navigate(['/task-list'], {
+      clearHistory: true,
+      transition: {
+        name: 'fade'
+      }
+    });
+  }
+
 
 }
