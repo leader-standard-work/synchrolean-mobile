@@ -3,7 +3,7 @@
 </ActionBar>
 
 <FlexboxLayout class = 'page' backgroundColor="white" >
-    <ListView height="10%" width="100%"[items]="names" backgroundColor='lightgray'>
+    <ListView class='list-group-item' height="10%" width="100%"[items]="names" backgroundColor='lightgray'>
         <ng-template let-name="item" let-i="index">
             <label  class="t-30 m-b-2 m-l-12 list-group-item" height="10%"  [text]="name"></label>                     
         </ng-template>

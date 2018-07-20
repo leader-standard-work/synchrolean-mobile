@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Team } from '~/shared/teams/team';
 import { Observable } from 'rxjs';
 import { ServerService } from '~/shared/server/server.service';
+import { teams } from '~/shared/dummyData';
+import { RouterExtensions } from 'nativescript-angular/router';
 
 @Component({
   selector: 'team-list',
@@ -11,16 +13,36 @@ import { ServerService } from '~/shared/server/server.service';
 })
 export class TeamListComponent implements OnInit {
   public teams$: Array<Team>;
+  public names: Array<string>;
 
-  constructor(private server:ServerService){
-
+  constructor(private server:ServerService, private routerE:RouterExtensions){
+    this.teams$ = new Array<Team>();
+    this.names = new Array<string>();
   }
 
   ngOnInit(): void {
     //disclaimer, this is testing with dummy data
-    this.server.getTeams().subscribe(
-      teams => {this.teams$ = JSON.parse(JSON.stringify(teams))}, 
-      err => {console.log(err);} );
+     //this.teams$ = this.server.getTeams()
+
+    // if(this.teams$ === undefined){
+        this.teams$ = JSON.parse(teams);
+        
+        this.getNames();
+    // }
+    }
+
+    getNames(){
+        this.teams$.forEach((value)=>{
+          this.names.push(value.TeamName);
+        });
+    }
+
+    onTap(){
+      this.routerE.navigate(['/Members'],{
+        transition:{
+          name: "slideLeft"
+        }
+      });
     }
 
 }
