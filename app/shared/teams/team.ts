@@ -1,6 +1,6 @@
 //This file contains the team class which contains array of team IDs, team names, and team descriptions
 
-export class team{
+export class Team {
   private id: number = 0; //the unique ID for a team
   private name: string; //the name for a team
   private description: string; //the description for a team
