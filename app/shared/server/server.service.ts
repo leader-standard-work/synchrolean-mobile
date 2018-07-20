@@ -8,6 +8,8 @@ import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { Task } from '~/shared/tasks/task';
 import { ServerTask } from '~/shared/tasks/serverTask';
+import { team } from '~/shared/teams/team';
+import { valueProperty } from '../../../node_modules/tns-core-modules/ui/slider/slider';
 
 const serverURL: string = 'http://localhost:55542';
 
@@ -51,6 +53,11 @@ export class ServerService {
   getTasks(): Observable<Task[]> {
     let getUrl: string = this.url + '/api/tasks/' + this.userId;
     return this.http.get<Task[]>(getUrl);
+  }
+
+
+  getTeams(){
+      return this.http.get('http://localhost:5000/api/team');
   }
 
   private handleError(error: HttpErrorResponse) {

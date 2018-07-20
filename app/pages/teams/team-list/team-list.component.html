@@ -5,9 +5,9 @@
 </ActionBar>
 
 <GridLayout class="page">
-    <ListView [items]="teams$" class="list-group-items">
-        <ng-template let-item="item" let-i="index">
-            <Label [text]="item.getName()"></Label>
+    <ListView [item]="teams$" class="list-group-items">
+        <ng-template let-team="item" let-i="index">
+            <Label [text]="team.name"></Label>
         </ng-template>
     </ListView>
 </GridLayout>
