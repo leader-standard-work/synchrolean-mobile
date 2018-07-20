@@ -4,10 +4,30 @@
     </ActionItem>
 </ActionBar>
 
-<GridLayout class="page">
-    <ListView [item]="teams$" class="list-group-items">
+<GridLayout rows="*, 60" class="page">
+    <ListView row="0" [item]="teams$" class="list-group-items">
         <ng-template let-team="item" let-i="index">
             <Label [text]="team.name"></Label>
         </ng-template>
     </ListView>
+    <StackLayout row="1" orientation="horizontal">
+        <Button textWrap="true" width="33%" textAlignment="center" color="gray" (onTap)="tasksTapped()">
+            <FormattedString>
+                <Span text="&#xf03a;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>
+                <Span text="Tasks"></Span>
+            </FormattedString>
+        </Button>
+        <Button textWrap="true" width="33%" textAlignment="center">
+            <FormattedString>
+                <Span text="&#xf0c0;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>
+                <Span text="Teams"></Span>
+            </FormattedString>
+        </Button>
+        <Button textWrap="true" width="33%" textAlignment="center" color="gray">
+            <FormattedString>
+                <Span text="&#xf080;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>
+                <Span text="Metrics"></Span>
+            </FormattedString>
+        </Button>
+    </StackLayout>
 </GridLayout>
