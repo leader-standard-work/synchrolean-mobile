@@ -13,7 +13,7 @@ export class Task {
   private _duration: Duration; //number
   private _complete: boolean;
   private _completedOn: Date; // Can be null
-  private _resetOn: Date;
+  private _expires: Date;
   private _created: Date;
   private _updated: Date; //This date will change whenever a task is updated
   private _deleted: Date; // Can be null
@@ -30,37 +30,58 @@ export class Task {
     this._duration = duration;
     this._complete = false;
     this._completedOn = null;
-    this._resetOn = new Date();
+    this._expires = new Date();
     this.setResetDate();
     this._created = new Date();
     this._updated = new Date();
     this._deleted = null;
   }
 
-  public populate(
+  public populateFromDB(
     databaseId: number,
     serverId: number,
     name: string,
     description: string,
-    duration: Duration,
-    complete: boolean,
-    completedOn: Date,
-    resetOn: Date,
-    created: Date,
-    updated: Date,
-    deleted: Date
+    duration: string,
+    complete: number,
+    completedOn: string,
+    expires: string,
+    created: string,
+    updated: string,
+    deleted: string
   ) {
     this._databaseId = databaseId;
     this._serverId = serverId;
     this._name = name;
     this._description = description;
-    this._duration = duration;
-    this._complete = complete;
-    this._completedOn = completedOn;
-    this._resetOn = resetOn;
-    this._created = created;
-    this._updated = updated;
-    this._deleted = deleted;
+    switch (duration) {
+      case 'Once': {
+        this._duration = Duration.Once;
+        break;
+      }
+      case 'Daily': {
+        this._duration = Duration.Daily;
+        break;
+      }
+      case 'Weekly': {
+        this._duration = Duration.Weekly;
+        break;
+      }
+      case 'Monthly': {
+        this._duration = Duration.Monthly;
+        break;
+      }
+      default: {
+        this._duration = Duration.Once;
+        break;
+      }
+    }
+    this._complete = complete === 0 ? false : true;
+    this._completedOn = completedOn === 'null' ? null : new Date(completedOn);
+    this._expires = expires === 'null' ? null : new Date(expires);
+    this._created = created === 'null' ? null : new Date(created);
+    this._updated = updated === 'null' ? null : new Date(updated);
+    this._deleted = deleted === 'null' ? null : new Date(deleted);
   }
 
   set serverId(id: number) {
@@ -97,8 +118,8 @@ export class Task {
     return this._description;
   }
 
-  get resetOn(): Date {
-    return this._resetOn;
+  get expires(): Date {
+    return this._expires;
   }
 
   get created(): Date {
@@ -116,7 +137,7 @@ export class Task {
   set duration(value: Duration) {
     this._duration = value;
     this._updated = new Date();
-    this._resetOn = new Date();
+    this._expires = new Date();
     this.setResetDate();
   }
 
@@ -132,6 +153,10 @@ export class Task {
 
   get complete(): boolean {
     return this._complete;
+  }
+  
+  get completedOn(): Date {
+    return this._completedOn
   }
 
   public delete() {
@@ -168,30 +193,30 @@ export class Task {
   public setResetDate() {
     let today = new Date();
 
-    if (this._resetOn > today) {
+    if (this._expires > today) {
       return;
     }
 
     switch (this._duration) {
       case Duration.Once: {
-        this._resetOn = new Date('December 1, 9999 00:00:00');
+        this._expires = new Date('December 1, 9999 00:00:00');
         break;
       }
       case Duration.Daily: {
-        this._resetOn.setDate(today.getDate() + 1);
+        this._expires.setDate(today.getDate() + 1);
         break;
       }
       case Duration.Weekly: {
-        this._resetOn.setDate(today.getDate() + (7 - today.getDay()));
+        this._expires.setDate(today.getDate() + (7 - today.getDay()));
         break;
       }
       case Duration.Monthly: {
-        this._resetOn.setDate(1);
-        this._resetOn.setMonth(today.getMonth() + 1);
+        this._expires.setDate(1);
+        this._expires.setMonth(today.getMonth() + 1);
         break;
       }
       default: {
-        this._resetOn = new Date('December 1, 9999 00:00:00');
+        this._expires = new Date('December 1, 9999 00:00:00');
         break;
       }
     }

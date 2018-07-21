@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-
-import { Task } from '~/shared/tasks/task';
-import { TaskService } from '~/shared/tasks/tasks.service';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { RouterExtensions } from 'nativescript-angular/router';
+
+import { Task } from '~/shared/models/task';
+import { TaskService } from '~/shared/services/tasks.service';
 
 @Component({
   selector: 'tasks-list',
@@ -15,7 +16,10 @@ export class TaskListComponent implements OnInit {
   public tasks$: Observable<Array<Task>>;
   private tasksService: TaskService;
 
-  constructor(tasksService: TaskService, private routerE: RouterExtensions) {
+  constructor(
+    tasksService: TaskService,
+    private routerExtensions: RouterExtensions
+  ) {
     this.tasksService = tasksService;
   }
 
@@ -24,7 +28,7 @@ export class TaskListComponent implements OnInit {
   }
 
   teamTapped() {
-    this.routerE.navigate(['/teams'], {
+    this.routerExtensions.navigate(['/teams'], {
       clearHistory: true,
       transition: {
         name: 'fade'

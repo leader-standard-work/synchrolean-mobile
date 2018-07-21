@@ -1,9 +1,8 @@
 import { Injectable, OnInit } from '@angular/core';
-
-import { Task } from '~/shared/models/task';
 import { Observable, of } from 'rxjs';
-import { DBService } from '~/shared/database/database.service';
-import { ServerService } from '~/shared/server/server.service';
+
+import { DatabaseService } from '~/shared/services/database.service';
+import { Task } from '~/shared/models/task';
 
 @Injectable({
   providedIn: 'root'
@@ -11,36 +10,30 @@ import { ServerService } from '~/shared/server/server.service';
 export class TaskService {
   private tasks: Array<Task>;
 
-  constructor(
-    private databaseService: DBService,
-    private serverService: ServerService
-  ) {
+  constructor(private databaseService: DatabaseService) {
     this.tasks = new Array<Task>();
   }
 
   public getTasks(): Observable<Task[]> {
-    this.tasks = this.databaseService.fetch();
-
+    this.tasks = this.databaseService.getTasks();
     return of(this.tasks);
   }
 
   public addTask(task: Task): void {
-    this.db.insert(task).then(
+    this.databaseService.insertTask(task).then(
       id => {
-        task.setId(id);
+        task.databaseId = id;
         this.tasks.push(task);
-
-        this.serverService.postTask(task);
       },
       error => {
-        console.log(error);
+        console.error('could not add task in task service', error);
       }
     );
   }
 
   public getTaskById(id: number): Task {
     for (let task of this.tasks) {
-      if (task.getId() === id) {
+      if (task.databaseId === id) {
         return task;
       }
     }
@@ -49,18 +42,19 @@ export class TaskService {
 
   public updateTask(task: Task) {
     for (let value of this.tasks) {
-      if (value.getId() === task.getId()) {
-        value.setDescription(task.getDescription());
-        value.setNote(task.getNote());
-        value.setDuration(task.getDuration());
-        value.setComplete(task.isComplete());
-        value.setDate(task.getDate());
-        this.db.update(value).then(
+      if (value.databaseId === task.databaseId) {
+        value = task;
+        // value.description(task.getDescription());
+        // value.setNote(task.getNote());
+        // value.setDuration(task.getDuration());
+        // value.setComplete(task.isComplete());
+        // value.setDate(task.getDate());
+        this.databaseService.updateTask(value).then(
           id => {
             console.log(value);
           },
           error => {
-            console.log(error);
+            console.error('could not update task is task service', error);
           }
         );
       }
@@ -69,9 +63,9 @@ export class TaskService {
 
   public deleteTask(id: number) {
     this.tasks.forEach((item, index) => {
-      if (item.getId() === id) {
-        //change to delete db
-        this.db.update(item);
+      if (item.databaseId === id) {
+        item.delete();
+        this.databaseService.updateTask(item);
         this.tasks.splice(index, 1);
       }
     });
@@ -79,10 +73,9 @@ export class TaskService {
 
   public checkTask(task: Task) {
     this.tasks.forEach((item, index) => {
-      if (item.getId() === task.getId()) {
-        item.setComplete(task.isComplete());
-        this.db.update(item);
-        // this.tasks.splice(index, 1);
+      if (item.databaseId === task.databaseId) {
+        item.complete = task.complete;
+        this.databaseService.updateTask(item);
         console.log(item);
       }
     });
@@ -91,7 +84,7 @@ export class TaskService {
   private taskResetTimer() {
     console.log('RESET REACHED');
     this.tasks.forEach(task => {
-      task.setComplete(false);
+      task.complete = false;
     });
   }
 }

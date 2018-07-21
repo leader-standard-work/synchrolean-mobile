@@ -2,41 +2,68 @@ import { Injectable } from '@angular/core';
 import { Task } from '~/shared/models/task';
 var Sqlite = require('nativescript-sqlite');
 
-let CreateTasksTable: string = `CREATE TABLE IF NOT EXISTS tasks (
-            databaseId INTEGER PRIMARY KEY AUTOINCREMENT, 
-            serverId INTEGER, 
-            name TEXT NOT NULL, 
-            description TEXT, 
-            duration TEXT, 
-            complete INTEGER, 
-            completedOn TEXT, 
-            resetOn TEXT, 
-            created TEXT, 
-            updated TEXT, 
-            deleted TEXT
-          )`;
+const CreateTasksTable: string = `CREATE TABLE IF NOT EXISTS tasks (
+          databaseId INTEGER PRIMARY KEY AUTOINCREMENT, 
+          serverId INTEGER, 
+          name TEXT NOT NULL, 
+          description TEXT, 
+          duration TEXT, 
+          complete INTEGER, 
+          completedOn TEXT, 
+          expires TEXT, 
+          created TEXT, 
+          updated TEXT, 
+          deleted TEXT
+        )`;
 
-let CreateCompletionTable: string = `CREATE TABLE IF NOT EXISTS completion (
+const CreateCompletionTable: string = `CREATE TABLE IF NOT EXISTS completion (
           id INTEGER PRIMARY KEY AUTOINCREMENT, 
           taskId INTEGER NOT NULL, 
           completedOn TEXT, 
           FOREIGN KEY(taskId) REFERENCES tasks(databaseId)
         )`;
 
-let CreateAccountTable: string = `CREATE TABLE IF NOT EXISTS account (
+const CreateAccountTable: string = `CREATE TABLE IF NOT EXISTS account (
           id INTEGER PRIMARY KEY AUTOINCREMENT, 
           serverUrl Text,
           email TEXT, 
           firstname TEXT,
           lastname TEXT,
           token TEXT 
-      )`;
+        )`;
+
+const InsertTask: string = `INSERT into tasks (
+          serverId, 
+          name, 
+          description, 
+          duration, 
+          complete, 
+          completedOn, 
+          expires, 
+          created, 
+          updated, 
+          deleted
+) VALUES (?,?,?,?,?,?,?,?,?,?)`;
+
+const UpdateTask: string = `UPDATE tasks SET 
+          serverId = ?, 
+          name = ?, 
+          description = ?, 
+          duration = ?, 
+          complete = ?, 
+          completedOn = ?, 
+          expires = ?, 
+          created = ?, 
+          updated = ?, 
+          deleted = ?
+          WHERE databaseId = ?`;
 
 @Injectable({
   providedIn: 'root'
 })
 export class DatabaseService {
   private database: any;
+
   constructor() {
     new Sqlite('synchrolean.db').then(
       result => {
@@ -46,7 +73,7 @@ export class DatabaseService {
         this.database.execSQL(CreateTasksTable).then(
           () => {},
           error => {
-            console.log("failed to create tasks table", error);
+            console.log('failed to create tasks table', error);
           }
         );
 
@@ -54,7 +81,7 @@ export class DatabaseService {
         this.database.execSQL(CreateCompletionTable).then(
           () => {},
           error => {
-            console.log("failed to create completion table", error);
+            console.log('failed to create completion table', error);
           }
         );
 
@@ -62,7 +89,7 @@ export class DatabaseService {
         this.database.execSQL(CreateAccountTable).then(
           () => {},
           error => {
-            console.error("failed to create account table", error);
+            console.error('failed to create account table', error);
           }
         );
       },
@@ -72,87 +99,98 @@ export class DatabaseService {
     );
   }
 
-  /****************** Tasks  */
+  /****************** Begin Tasks Methods ********************/
 
   getTasks(): Array<Task> {
     let tasks = new Array<Task>();
 
     this.database.all('SELECT * from tasks').then(
-      rows => {
-        for (var row in rows) {
-          var task: Task;
-          task = new Task('');
-          // console.log('Populating');
-          task.populate(
-            rows[row][0],
-            rows[row][1],
-            rows[row][2],
-            rows[row][3],
-            rows[row][4],
-            rows[row][5]
+      results => {
+        for (var result of results) {
+          let task: Task = new Task('');
+          task.populateFromDB(
+            result.databaseId,
+            result.serverId,
+            result.name,
+            result.description,
+            result.duration,
+            result.complete,
+            result.completedOn,
+            result.expires,
+            result.created,
+            result.updated,
+            result.deleted
           );
-
-          // console.log('Pushing task');
           tasks.push(task);
         }
       },
       error => {
-        console.log('Fetch tasks error\n');
+        console.error('database getTasks failed', error);
         return null;
       }
     );
     return tasks;
   }
 
-  insert(task: Task): Promise<number> {
+  insertTask(task: Task): Promise<number> {
     return new Promise((resolve, reject) => {
-      this.db
-        .execSQL(
-          'INSERT into tasks (description, completed, note, duration, date) VALUES (?,?,?,?,?)',
-          [
-            task.getDescription(),
-            task.isComplete(),
-            task.getNote(),
-            task.getDuration(),
-            task.getDateStr()
-          ]
-        )
+      this.database
+        .execSQL(InsertTask, [
+          task.serverId,
+          task.name,
+          task.description,
+          task.duration,
+          task.complete === true ? 1 : 0,
+          task.completedOn === null ? 'null' : task.completedOn.toISOString(),
+          task.expires === null ? 'null' : task.expires.toISOString(),
+          task.created === null ? 'null' : task.created.toISOString(),
+          task.updated === null ? 'null' : task.updated.toISOString(),
+          task.deleted === null ? 'null' : task.deleted.toISOString()
+        ])
         .then(
           id => {
-            // console.log('Insert result', id);
             resolve(id);
           },
           error => {
-            console.log('Insert error');
+            console.error('insert task into database failed', error);
             reject(error);
           }
         );
     });
   }
 
-  update(task: Task): Promise<number> {
+  updateTask(task: Task): Promise<number> {
     return new Promise((resolve, reject) => {
-      this.db
-        .execSQL(
-          'UPDATE tasks SET description = ?, completed = ?, note = ?, duration = ?, date = ? WHERE id = ?',
-          [
-            task.getDescription(),
-            task.isComplete(),
-            task.getNote(),
-            task.getDuration(),
-            task.getDate(),
-            task.getId()
-          ]
-        )
+      this.database
+        .execSQL(UpdateTask, [
+          task.serverId,
+          task.name,
+          task.description,
+          task.duration,
+          task.complete === true ? 1 : 0,
+          task.completedOn === null ? 'null' : task.completedOn.toISOString(),
+          task.expires === null ? 'null' : task.expires.toISOString(),
+          task.created === null ? 'null' : task.created.toISOString(),
+          task.updated === null ? 'null' : task.updated.toISOString(),
+          task.deleted === null ? 'null' : task.deleted.toISOString(),
+          task.databaseId
+        ])
         .then(
           id => {
             resolve(id);
           },
           error => {
-            console.log('Update error');
+            console.error('update task in database failed', error);
             reject(error);
           }
         );
     });
   }
+  /****************** End Tasks Methods **********************/
+
+  /****************** Begin Complete Methods *****************/
+  /****************** End Complete Methods *******************/
+
+  /****************** Begin Account Methods ******************/
+  /****************** End Account Methods ********************/
 }

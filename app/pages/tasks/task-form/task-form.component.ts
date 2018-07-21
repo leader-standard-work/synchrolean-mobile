@@ -2,11 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { switchMap } from 'rxjs/operators';
 import { PageRoute, RouterExtensions } from 'nativescript-angular/router';
-import { SegmentedBar, SegmentedBarItem } from 'tns-core-modules/ui/segmented-bar/segmented-bar';
+import {
+  SegmentedBar,
+  SegmentedBarItem
+} from 'tns-core-modules/ui/segmented-bar/segmented-bar';
 import { action, alert } from 'tns-core-modules/ui/dialogs/dialogs';
 
-import { TaskService } from '~/shared/tasks/tasks.service';
-import { Task, Duration } from '~/shared/tasks/task';
+import { TaskService } from '~/shared/services/tasks.service';
+import { Task, Duration } from '~/shared/models/task';
 
 enum Mode {
   New,
@@ -20,10 +23,6 @@ enum Mode {
   styleUrls: ['./task-form.component.css']
 })
 export class TaskFormComponent implements OnInit {
-  private tasksService: TaskService;
-  private pageRoute: PageRoute;
-  private routerExtensions: RouterExtensions;
-  private formBuilder: FormBuilder;
   private mode: Mode = Mode.New;
   private duration: Duration;
 
@@ -35,16 +34,11 @@ export class TaskFormComponent implements OnInit {
   public durationBarIndex: number;
 
   constructor(
-    tasksService: TaskService,
-    formBuilder: FormBuilder,
-    pageRoute: PageRoute,
-    routerExtensions: RouterExtensions
+    private tasksService: TaskService,
+    private formBuilder: FormBuilder,
+    private pageRoute: PageRoute,
+    private routerExtensions: RouterExtensions
   ) {
-    this.tasksService = tasksService;
-    this.formBuilder = formBuilder;
-    this.pageRoute = pageRoute;
-    this.routerExtensions = routerExtensions;
-
     this.pageRoute.activatedRoute
       .pipe(switchMap(activatedRoute => activatedRoute.params))
       .forEach(params => {
@@ -55,8 +49,8 @@ export class TaskFormComponent implements OnInit {
   ngOnInit(): void {
     this.title = 'New Task';
     this.deleteButtonVisible = 'collapse';
-    let desc = '';
-    let note = '';
+    let name = '';
+    let description = '';
     let onceItem = new SegmentedBarItem();
     let dailyItem = new SegmentedBarItem();
     let weeklyItem = new SegmentedBarItem();
@@ -70,9 +64,9 @@ export class TaskFormComponent implements OnInit {
     this.durationBarItems = [onceItem, dailyItem, weeklyItem, monthlyItem];
 
     if (this.task != null) {
-      desc = this.task.getDescription();
-      note = this.task.getNote();
-      this.duration = this.task.getDuration();
+      name = this.task.name;
+      description = this.task.description;
+      this.duration = this.task.duration;
       this.title = 'Edit Task';
       this.mode = Mode.Edit;
       this.deleteButtonVisible = 'visible';
@@ -81,8 +75,8 @@ export class TaskFormComponent implements OnInit {
     this.setDurationBar();
 
     this.taskFormGroup = this.formBuilder.group({
-      description: [desc, Validators.required],
-      note: note
+      description: [name, Validators.required],
+      note: description
     });
   }
 
@@ -140,26 +134,26 @@ export class TaskFormComponent implements OnInit {
   }
 
   onSave() {
-    let description = this.taskFormGroup.value.description;
-    let note = this.taskFormGroup.value.note;
+    let name = this.taskFormGroup.value.description;
+    let description = this.taskFormGroup.value.note;
     let options = {
       title: 'Descripton Required',
       okButtonText: 'Ok'
     };
 
-    if (description !== '') {
+    if (name !== '') {
       switch (this.mode) {
         case Mode.New: {
           options.title = 'New task added';
-          let task: Task = new Task(description, this.duration, note);
+          let task: Task = new Task(name, this.duration, description);
           this.tasksService.addTask(task);
           this.taskFormGroup.reset();
           alert(options);
           break;
         }
         case Mode.Edit: {
-          let task: Task = new Task(description, this.duration, note);
-          task.setId(this.task.getId());
+          let task: Task = new Task(name, this.duration, description);
+          task.databaseId = this.task.databaseId;
           this.tasksService.updateTask(task);
           this.routerExtensions.backToPreviousPage();
           break;
@@ -178,8 +172,7 @@ export class TaskFormComponent implements OnInit {
 
     action(options).then(result => {
       if (result === 'Delete') {
-        this.task.setComplete(true);
-        this.tasksService.deleteTask(this.task.getId());
+        this.tasksService.deleteTask(this.task.databaseId);
         this.routerExtensions.navigate(['/task-list'], {
           clearHistory: true,
           transition: { name: 'slideRight' }

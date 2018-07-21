@@ -1,11 +1,11 @@
 <ActionBar title="Task Details" class="action-bar">
-    <ActionItem [nsRouterLink]="['/task-edit', task.getId()]" ios.position="right" text="Edit">
+    <ActionItem [nsRouterLink]="['/task-edit', task.databaseId]" ios.position="right" text="Edit">
     </ActionItem>
 </ActionBar>
 <StackLayout class="container">
-    <Label class="duration-heading" text="{{ task.getDuration() }}" textAlignment="center"></Label>
+    <!-- <Label class="duration-heading" text="{{ task.duration }}" textAlignment="center"></Label> -->
     <StackLayout class="hr-light m-10"></StackLayout>
-    <Label class="description-body" text="{{ task.getDescription() }}" textWrap="true"></Label>
+    <Label class="description-body" text="{{ task.name }}" textWrap="true"></Label>
     <Label class="note-heading" text="Note:" textAlignment="center"></Label>
-    <Label class="note-body" text="{{ task.getNote() }}" textWrap="true"></Label>
+    <Label class="note-body" text="{{ task.description }}" textWrap="true"></Label>
 </StackLayout>
