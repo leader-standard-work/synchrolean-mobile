@@ -145,14 +145,14 @@ export class TaskFormComponent implements OnInit {
       switch (this.mode) {
         case Mode.New: {
           options.title = 'New task added';
-          let task: Task = new Task(name, this.duration, description);
+          let task: Task = new Task(name, description, this.duration);
           this.tasksService.addTask(task);
           this.taskFormGroup.reset();
           alert(options);
           break;
         }
         case Mode.Edit: {
-          let task: Task = new Task(name, this.duration, description);
+          let task: Task = new Task(name, description, this.duration);
           task.databaseId = this.task.databaseId;
           this.tasksService.updateTask(task);
           this.routerExtensions.backToPreviousPage();
