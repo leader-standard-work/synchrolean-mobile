@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Task } from '~/shared/tasks/task';
 import { TaskService } from '~/shared/tasks/tasks.service';
 import { Observable } from 'rxjs';
-import { RouterExtensions, PageRoute } from 'nativescript-angular/router';
+import { RouterExtensions } from 'nativescript-angular/router';
 
 @Component({
   selector: 'tasks-list',
@@ -15,7 +15,7 @@ export class TaskListComponent implements OnInit {
   public tasks$: Observable<Array<Task>>;
   private tasksService: TaskService;
 
-  constructor(tasksService: TaskService, private routerE:RouterExtensions) {
+  constructor(tasksService: TaskService, private routerE: RouterExtensions) {
     this.tasksService = tasksService;
   }
 
@@ -23,12 +23,12 @@ export class TaskListComponent implements OnInit {
     this.tasks$ = this.tasksService.getTasks();
   }
 
-  teamTap(){
-    this.routerE.navigate(['/Members'],{
-      transition:{
-        name: "slideBottom"
+  teamTapped() {
+    this.routerE.navigate(['/teams'], {
+      clearHistory: true,
+      transition: {
+        name: 'fade'
       }
     });
   }
-
 }

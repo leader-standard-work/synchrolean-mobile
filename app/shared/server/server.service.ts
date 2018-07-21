@@ -8,8 +8,9 @@ import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { Task } from '~/shared/tasks/task';
 import { ServerTask } from '~/shared/tasks/serverTask';
+import { Team } from '~/shared/teams/team';
 
-const serverURL: string = 'http://localhost:55542';
+const serverURL: string = 'http://localhost:5000';
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +26,8 @@ export class ServerService {
     this.userId = 0;
   }
 
+
+  /************** Begin Task Calls ******************/
   postTask(task: Task) {
     let postUrl: string = this.url + '/api/tasks';
     let postTask = new ServerTask(task, this.userId);
@@ -64,4 +67,23 @@ export class ServerService {
     }
     return throwError('Something bad happened');
   }
+
+  /***************** End Task Calls *************************/
+
+  /***************** Begin Team Calls ***********************/
+  getTeams(): Team[] {
+    let teams: Team[] =[];
+
+    this.http.get(this.url+'/api/team').subscribe(
+      resp=> {return teams = JSON.parse(JSON.stringify(resp));},
+      err => {
+        console.log(err);
+        return teams;
+      }
+    );
+
+    return teams;
+  }
+  /***************** End Team Calls *************************/
+
 }
