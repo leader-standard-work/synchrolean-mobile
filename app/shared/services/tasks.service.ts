@@ -1,26 +1,29 @@
-import { Injectable } from '@angular/core';
-import { ServerService } from '~/shared/server/server.service';
+import { Injectable, OnInit } from '@angular/core';
+
+import { Task } from '~/shared/models/task';
+import { Observable, of } from 'rxjs';
 import { DBService } from '~/shared/database/database.service';
-import { Account} from '../account/account';
-import { Task} from '../models/tasks';
+import { ServerService } from '~/shared/server/server.service';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
-export class UserService {
-    private serverService: ServerService;
-    private db: DBService;
-    private _account: Account;
-    private _tasks: Task[];
+export class TaskService {
+  private tasks: Array<Task>;
 
-    constructor(serverService: ServerService, dbService: DBService) {
-        this.serverService = serverService;
-        this.db = dbService;
-        this._account = null;
-        this._tasks = new Array<Task>();
-    }
+  constructor(
+    private databaseService: DBService,
+    private serverService: ServerService
+  ) {
+    this.tasks = new Array<Task>();
+  }
 
-    
+  public getTasks(): Observable<Task[]> {
+    this.tasks = this.databaseService.fetch();
+
+    return of(this.tasks);
+  }
+
   public addTask(task: Task): void {
     this.db.insert(task).then(
       id => {
@@ -45,13 +48,13 @@ export class UserService {
   }
 
   public updateTask(task: Task) {
-    for (let value of this._tasks) {
-      if (value.databaseId === task.databaseId) {
-        value.name = task.name;
-        value.description = task.description;
-        value.duration = task.duration;
-        value.complete = task.complete;
-        value
+    for (let value of this.tasks) {
+      if (value.getId() === task.getId()) {
+        value.setDescription(task.getDescription());
+        value.setNote(task.getNote());
+        value.setDuration(task.getDuration());
+        value.setComplete(task.isComplete());
+        value.setDate(task.getDate());
         this.db.update(value).then(
           id => {
             console.log(value);
@@ -82,6 +85,13 @@ export class UserService {
         // this.tasks.splice(index, 1);
         console.log(item);
       }
+    });
+  }
+
+  private taskResetTimer() {
+    console.log('RESET REACHED');
+    this.tasks.forEach(task => {
+      task.setComplete(false);
     });
   }
 }
