@@ -34,4 +34,8 @@ export class TaskListComponent implements OnInit {
       }
     });
   }
+
+  onChecked() {
+    this.tasks$ = this.tasksService.getUpdatedTasks();
+  }
 }

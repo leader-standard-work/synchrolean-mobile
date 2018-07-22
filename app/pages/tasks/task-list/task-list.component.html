@@ -8,7 +8,7 @@
 <GridLayout rows="*, 60" class="page">
     <ListView [items]="tasks$ | async" row="0">
         <ng-template let-item="item" let-i="index">
-            <task-item class="t-25" [task]="item"></task-item>
+            <task-item class="t-25" [task]="item" (checked)="onChecked()"></task-item>
         </ng-template>
     </ListView>
 

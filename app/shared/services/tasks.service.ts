@@ -19,6 +19,11 @@ export class TaskService {
     return of(this.tasks);
   }
 
+  public getUpdatedTasks(): Observable<Task[]> {
+    this.tasks.sort(compareTask);
+    return of(this.tasks);
+  }
+
   public addTask(task: Task): void {
     this.databaseService.insertTask(task).then(
       id => {
