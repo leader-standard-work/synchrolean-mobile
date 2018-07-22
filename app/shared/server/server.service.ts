@@ -6,8 +6,7 @@ import {
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { Task } from '~/shared/tasks/task';
-import { ServerTask } from '~/shared/tasks/serverTask';
+import { Task } from '~/shared/models/task';
 import { Team } from '~/shared/teams/team';
 
 const serverURL: string = 'http://localhost:5000';
@@ -28,45 +27,45 @@ export class ServerService {
 
 
   /************** Begin Task Calls ******************/
-  postTask(task: Task) {
-    let postUrl: string = this.url + '/api/tasks';
-    let postTask = new ServerTask(task, this.userId);
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json'
-      })
-    };
-    console.log(postUrl);
-    console.log(postTask.toJson());
-    let observer = this.http
-      .post<ServerTask>(postUrl, postTask.toJson(), httpOptions)
-      .subscribe(response => {
-        console.log('Server Response:', response);
-      });
-    observer.unsubscribe();
-  }
+  // postTask(task: Task) {
+  //   let postUrl: string = this.url + '/api/tasks';
+  //   let postTask = new ServerTask(task, this.userId);
+  //   const httpOptions = {
+  //     headers: new HttpHeaders({
+  //       'Content-Type': 'application/json'
+  //     })
+  //   };
+  //   console.log(postUrl);
+  //   console.log(postTask.toJson());
+  //   let observer = this.http
+  //     .post<ServerTask>(postUrl, postTask.toJson(), httpOptions)
+  //     .subscribe(response => {
+  //       console.log('Server Response:', response);
+  //     });
+  //   observer.unsubscribe();
+  // }
 
-  postTasks(tasks: Task[]) {
-    tasks.forEach(task => {
-      this.postTask(task);
-    });
-  }
-  getTasks(): Observable<Task[]> {
-    let getUrl: string = this.url + '/api/tasks/' + this.userId;
-    return this.http.get<Task[]>(getUrl);
-  }
+  // postTasks(tasks: Task[]) {
+  //   tasks.forEach(task => {
+  //     this.postTask(task);
+  //   });
+  // }
+  // getTasks(): Observable<Task[]> {
+  //   let getUrl: string = this.url + '/api/tasks/' + this.userId;
+  //   return this.http.get<Task[]>(getUrl);
+  // }
 
-  private handleError(error: HttpErrorResponse) {
-    if (error.error instanceof ErrorEvent) {
-      console.error('An error occured on the client side', error.error.message);
-    } else {
-      console.error(
-        'Backend returned: ${error.status}',
-        +'body was ${error.error}'
-      );
-    }
-    return throwError('Something bad happened');
-  }
+  // private handleError(error: HttpErrorResponse) {
+  //   if (error.error instanceof ErrorEvent) {
+  //     console.error('An error occured on the client side', error.error.message);
+  //   } else {
+  //     console.error(
+  //       'Backend returned: ${error.status}',
+  //       +'body was ${error.error}'
+  //     );
+  //   }
+  //   return throwError('Something bad happened');
+  // }
 
   /***************** End Task Calls *************************/
 
