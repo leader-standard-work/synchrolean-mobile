@@ -1,6 +1,6 @@
 //This file contains the team-form component, used in the creation of a new team
 import { Component, OnInit } from '@angular/core';
-
+import { TeamService } from '~/shared/teams/teams.service';
 
 @Component({
     selector: 'team-form',

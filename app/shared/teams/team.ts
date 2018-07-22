@@ -19,7 +19,7 @@ export class Team {
       this.OwnerId = OwnerId;
   } //end of constructor
 
-  //set and get functiosn for id, name, and description
+  //set and get functions for id, name, and description
   public set Id(id: number){
     this._Id = id;
   }
