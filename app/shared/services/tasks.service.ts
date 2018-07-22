@@ -43,12 +43,11 @@ export class TaskService {
   public updateTask(task: Task) {
     for (let value of this.tasks) {
       if (value.databaseId === task.databaseId) {
-        value = task;
-        // value.description(task.getDescription());
-        // value.setNote(task.getNote());
-        // value.setDuration(task.getDuration());
-        // value.setComplete(task.isComplete());
-        // value.setDate(task.getDate());
+        // value = task;
+        value.name = task.name;
+        value.description = task.description;
+        value.duration = task.duration;
+        value.complete = task.complete;
         this.databaseService.updateTask(value).then(
           id => {
             console.log(value);
