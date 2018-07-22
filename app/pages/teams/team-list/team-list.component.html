@@ -1,13 +1,11 @@
 <ActionBar class="action-bar">
-    <Label class="action-bar-title" text="Team List"></Label>
-    <ActionItem nsRouterLink="/team-form" pageTransition="slideTop" ios.systemIcon="4" ios.position="right" text="Add Team" android.position="actionBar">
-    </ActionItem>
+    <Label class="action-bar-title" text="Teams"></Label>
 </ActionBar>
 
 <GridLayout rows="*, 60" class="page">
-    <ListView row="0" [item]="teams$" class="list-group-items">
-        <ng-template let-team="item" let-i="index">
-            <Label [text]="team.name"></Label>
+    <ListView row='0' [items]="names">
+        <ng-template let-name="item" let-i="index">
+            <label  class="t-30 m-b-2 m-l-12 " (tap)='onTap()' [text]="name"></label>                     
         </ng-template>
     </ListView>
     <StackLayout row="1" orientation="horizontal">

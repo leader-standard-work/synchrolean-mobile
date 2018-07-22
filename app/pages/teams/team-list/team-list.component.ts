@@ -3,6 +3,7 @@ import { Team } from '~/shared/teams/team';
 import { Observable } from 'rxjs';
 import { ServerService } from '~/shared/server/server.service';
 import { RouterExtensions } from 'nativescript-angular/router';
+import { teams } from '~/shared/dummyData';
 
 @Component({
   selector: 'team-list',
@@ -12,30 +13,46 @@ import { RouterExtensions } from 'nativescript-angular/router';
 })
 export class TeamListComponent implements OnInit {
   public teams$: Array<Team>;
+  public names: Array<string>;
 
-  constructor(
-    private server: ServerService,
-    private routerExtension: RouterExtensions
-  ) {}
+  constructor(private server:ServerService, private routerE:RouterExtensions){
+    this.teams$ = new Array<Team>();
+    this.names = new Array<string>();
+  }
 
   ngOnInit(): void {
     //disclaimer, this is testing with dummy data
-    this.server.getTeams().subscribe(
-      teams => {
-        this.teams$ = JSON.parse(JSON.stringify(teams));
-      },
-      err => {
-        console.log(err);
+      //this.teams$ = this.server.getTeams()
+
+    // if(this.teams$ === undefined){
+        this.teams$ = JSON.parse(teams);
+        
+        this.getNames();
+    // }
+    }
+
+  getNames(){
+      this.teams$.forEach((value)=>{
+        this.names.push(value.TeamName);
+      });
+  }
+
+  onTap(){
+    this.routerE.navigate(['/Members'],{
+      transition:{
+        name: "slideLeft"
       }
-    );
+    });
   }
 
   tasksTapped() {
-    this.routerExtension.navigate(['/task-list'], {
+    this.routerE.navigate(['/task-list'], {
       clearHistory: true,
       transition: {
         name: 'fade'
       }
     });
   }
+
+
 }

@@ -2,13 +2,13 @@ export var teams = `[
     {
         "id" : 123,
         "ownerId": 0,
-        "name": "Team C",
+        "TeamName": "Team C",
         "description": "Greatest team Ever"
     },
     {
         "id" : 222,
         "ownerId": 1,
-        "name": "Rogers Dodgers",
+        "TeamName": "Rogers Dodgers",
         "description": "Hello World"
     }
 ]`;

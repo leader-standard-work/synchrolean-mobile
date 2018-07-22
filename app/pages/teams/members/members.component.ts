@@ -1,6 +1,6 @@
 import { teamMembers } from "~/shared/dummyData"
 import { Injectable, Input, Component, OnInit } from "@angular/core";
-import { PageRoute } from "nativescript-angular/router";
+import { PageRoute, RouterExtensions } from "nativescript-angular/router";
 import { switchMap } from "rxjs/operators";
 
 
@@ -32,7 +32,7 @@ export class MembersComponent implements OnInit {
     public names: Array<string>;
     private id: number;
 
-    constructor(private pageR:PageRoute){
+    constructor(private pageR:PageRoute, private routerE:RouterExtensions){
         this.team = new Team();
         this.names = new Array<string>();
         this.pageR.activatedRoute.pipe(
@@ -56,6 +56,24 @@ export class MembersComponent implements OnInit {
 
     getTeamName():string{
         return (this.team.name);
+    }
+
+    tasksTapped() {
+        this.routerE.navigate(['/task-list'], {
+          clearHistory: true,
+          transition: {
+            name: 'fade'
+          }
+        });
+      }
+
+    teamTapped() {
+    this.routerE.navigate(['/teams'], {
+        clearHistory: true,
+        transition: {
+        name: 'fade'
+        }
+    });
     }
 
 }

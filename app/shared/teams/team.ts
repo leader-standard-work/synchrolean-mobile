@@ -2,8 +2,8 @@
 
 export class Team {
   private _Id: number = 0; //the unique ID for a team
-  private _Name: string; //the name for a team
-  private _Description: string; //the description for a team
+  private _TeamName: string; //the name for a team
+  private _TeamDescription: string; //the description for a team
   private _OwnerId: number;
 
   constructor( //creating a team from passed in data
@@ -13,43 +13,43 @@ export class Team {
       OwnerId: number
   ){
       //copy data from passed in args
-      this.Id = Id;
-      this.TeamName = TeamName;
-      this.TeamDescription = TeamDescription;
-      this.OwnerId = OwnerId;
+      this._Id = Id;
+      this._TeamName = TeamName;
+      this._TeamDescription = TeamDescription;
+      this._OwnerId = OwnerId;
   } //end of constructor
 
   //set and get functions for id, name, and description
   public set Id(id: number){
-    this._Id = id;
+    this.Id = id;
   }
 
   public get Id(): number{
-    return this._Id;
+    return this.Id;
   }
 
   public set TeamName(name: string){
       this.TeamName = name;
   }
 
-  public get TeamName(): string{
+  public getTeamName(): string{
       return this.TeamName;
   }
 
   public set TeamDescription(description:string){
-      this.TeamDescription = description;
+      this._TeamDescription = description;
   }
 
   public get TeamDescription(): string{
-      return this.TeamDescription;
+      return this._TeamDescription;
   }
 
   public set OwnerId(id:number){
-        this.OwnerId = id;
+        this._OwnerId = id;
   }
 
   public get OwnerId(): number{
-      return this.OwnerId;
+      return this._OwnerId;
   }
   //end of Set/Get functions
 }

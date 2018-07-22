@@ -10,7 +10,7 @@ import { Task } from '~/shared/tasks/task';
 import { ServerTask } from '~/shared/tasks/serverTask';
 import { Team } from '~/shared/teams/team';
 
-const serverURL: string = 'http://localhost:55542';
+const serverURL: string = 'http://localhost:5000';
 
 @Injectable({
   providedIn: 'root'
@@ -71,9 +71,18 @@ export class ServerService {
   /***************** End Task Calls *************************/
 
   /***************** Begin Team Calls ***********************/
-  getTeams() {
-    let teams = new Array<Team>()
-    return this.http.get('http://localhost:5000/api/team');
+  getTeams(): Team[] {
+    let teams: Team[] =[];
+
+    this.http.get(this.url+'/api/team').subscribe(
+      resp=> {return teams = JSON.parse(JSON.stringify(resp));},
+      err => {
+        console.log(err);
+        return teams;
+      }
+    );
+
+    return teams;
   }
   /***************** End Team Calls *************************/
 
