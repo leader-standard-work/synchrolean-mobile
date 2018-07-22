@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { RouterExtensions } from 'nativescript-angular/router';
 
 import { Task } from '~/shared/models/task';

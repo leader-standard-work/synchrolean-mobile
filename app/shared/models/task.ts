@@ -5,6 +5,26 @@ export enum Duration {
   Monthly = 'Monthly'
 }
 
+function durationValue(duration: Duration): number {
+  switch (duration) {
+    case Duration.Once: {
+      return 0;
+    }
+    case Duration.Daily: {
+      return 1;
+    }
+    case Duration.Weekly: {
+      return 2;
+    }
+    case Duration.Monthly: {
+      return 3;
+    }
+    default: {
+      return 0;
+    }
+  }
+}
+
 export class Task {
   private _databaseId: number;
   private _serverId: number;
@@ -154,9 +174,9 @@ export class Task {
   get complete(): boolean {
     return this._complete;
   }
-  
+
   get completedOn(): Date {
-    return this._completedOn
+    return this._completedOn;
   }
 
   public delete() {
@@ -224,86 +244,15 @@ export class Task {
   }
 }
 
-// export class TaskBuilder {
-//   private _databaseId: number;
-//   private _serverId: number;
-//   private _name: string;
-//   private _description: string;
-//   private _duration: Duration;
-//   private _complete: boolean;
-//   private _completedOn: Date; // Can be null
-//   private _resetOn: Date;
-//   private _created: Date;
-//   private _updated: Date; //This date will change whenever a task is updated
-//   private _deleted: Date; // Can be null
-
-//   constructor(
-//     databaseId: number,
-//     serverId: number,
-//     name: string,
-//     description: string,
-//     duration: Duration,
-//     complete: boolean,
-//     completedOn: Date,
-//     resetOn: Date,
-//     created: Date,
-//     updated: Date,
-//     deleted: Date
-//   ) {
-//   this._databaseId = databaseId;
-//   this._serverId = serverId;
-//   this._name = name;
-//   this._description = description;
-//   this._duration = duration;
-//   this._complete = complete;
-//   this._completedOn = completedOn;
-//   this._resetOn = resetOn;
-//   this._created = created;
-//   this._updated = updated;
-//   this._deleted = deleted;
-//   }
-
-//   get databaseId() {
-//     return this._databaseId;
-//   }
-
-//   get serverId() {
-//     return this._serverId;
-//   }
-
-//   get name() {
-//     return this._name;
-//   }
-
-//   get description() {
-//     return this._description;
-//   }
-
-//   get duration() {
-//     return this._duration;
-//   }
-
-//   get complete() {
-//     return this._complete;
-//   }
-
-//   get completedOn() {
-//     return this._completedOn;
-//   }
-
-//   get resetOn() {
-//     return this._resetOn;
-//   }
-
-//   get created() {
-//     return this._created;
-//   }
-
-//   get updated() {
-//     return this._updated;
-//   }
-
-//   get deleted() {
-//     return this._deleted;
-//   }
-// }
+export function compareTask(a: Task, b: Task): number {
+  if (a.complete && b.complete) {
+    return 0;
+  }
+  if (a.complete && !b.complete) {
+    return 1;
+  }
+  if (!a.complete && b.complete) {
+    return -1;
+  }
+  return durationValue(a.duration) - durationValue(b.duration);
+}

@@ -1,8 +1,8 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
 import { DatabaseService } from '~/shared/services/database.service';
-import { Task } from '~/shared/models/task';
+import { Task, compareTask } from '~/shared/models/task';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +24,7 @@ export class TaskService {
       id => {
         task.databaseId = id;
         this.tasks.push(task);
+        this.tasks.sort(compareTask);
       },
       error => {
         console.error('could not add task in task service', error);
@@ -43,7 +44,6 @@ export class TaskService {
   public updateTask(task: Task) {
     for (let value of this.tasks) {
       if (value.databaseId === task.databaseId) {
-        // value = task;
         value.name = task.name;
         value.description = task.description;
         value.duration = task.duration;
@@ -64,8 +64,8 @@ export class TaskService {
     this.tasks.forEach((item, index) => {
       if (item.databaseId === id) {
         item.delete();
-        this.databaseService.updateTask(item);
         this.tasks.splice(index, 1);
+        this.databaseService.updateTask(item);
       }
     });
   }

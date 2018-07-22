@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Task } from '~/shared/models/task';
+import { Task, compareTask } from '~/shared/models/task';
 var Sqlite = require('nativescript-sqlite');
+
+/****************** Begin Table Creation  ********************/
 
 const CreateTasksTable: string = `CREATE TABLE IF NOT EXISTS tasks (
           databaseId INTEGER PRIMARY KEY AUTOINCREMENT, 
@@ -31,6 +33,11 @@ const CreateAccountTable: string = `CREATE TABLE IF NOT EXISTS account (
           lastname TEXT,
           token TEXT 
         )`;
+/****************** End Table Creation  **********************/
+
+/****************** Begin Task SQL  **************************/
+
+const QueryUndeletedTasks: string = `SELECT * FROM tasks WHERE deleted = 'null'`;
 
 const InsertTask: string = `INSERT into tasks (
           serverId, 
@@ -57,6 +64,10 @@ const UpdateTask: string = `UPDATE tasks SET
           updated = ?, 
           deleted = ?
           WHERE databaseId = ?`;
+
+/****************** End Task SQL  ****************************/
+/****************** Begin   SQL  **************************/
+/****************** End SQL  **************************/
 
 @Injectable({
   providedIn: 'root'
@@ -104,7 +115,7 @@ export class DatabaseService {
   getTasks(): Array<Task> {
     let tasks = new Array<Task>();
 
-    this.database.all('SELECT * from tasks').then(
+    this.database.all(QueryUndeletedTasks).then(
       results => {
         for (var result of results) {
           let task: Task = new Task('');
@@ -123,6 +134,7 @@ export class DatabaseService {
           );
           tasks.push(task);
         }
+        tasks.sort(compareTask);
       },
       error => {
         console.error('database getTasks failed', error);
