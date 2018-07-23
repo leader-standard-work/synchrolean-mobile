@@ -3,19 +3,19 @@
 import { Component, OnInit } from '@angular/core';
 import { PageRoute, RouterExtensions } from 'nativescript-angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Account } from '~/shared/account/account';
+import { Account } from '~/shared/models/account';
 
 @Component({
-    selector: 'login-form',
-    moduleId: module.id,
-    templateUrl: './login-form.component.html',
-    styleUrls: ['./login-form.component.css'],
-  })
-  export class LoginFormComponent implements OnInit {
+  selector: 'login-form',
+  moduleId: module.id,
+  templateUrl: './login-form.component.html',
+  styleUrls: ['./login-form.component.css']
+})
+export class LoginFormComponent implements OnInit {
   private pageRoute: PageRoute;
   private routerExtensions: RouterExtensions;
   private formBuilder: FormBuilder;
-  
+
   public accountFormGroup: FormGroup;
   public account: Account;
   public email: string;
@@ -35,8 +35,7 @@ import { Account } from '~/shared/account/account';
     //this.pageRoute.activatedRoute ...
   }
 
-
-  ngOnInit(): void{
+  ngOnInit(): void {
     let email = '';
     let firstname = '';
     let lastname = '';
@@ -52,6 +51,6 @@ import { Account } from '~/shared/account/account';
       firstname: [firstname, Validators.required],
       lastname: [lastname, Validators.required],
       password: [password, Validators.required]
-    })
+    });
   }
 }
