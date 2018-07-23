@@ -15,9 +15,10 @@ import { LoginMainComponent } from '~/pages/account/login-main/login-main.compon
 
 import { TaskService } from '~/shared/services/tasks.service';
 import { DatabaseService } from '~/shared/services/database.service';
+import { TeamService } from '~/shared/teams/teams.service';
+import { ServerService } from '~/shared/server/server.service';
 
 import { LoginFormComponent } from '~/pages/account/login-form/login-form.component';
-import { ServerService } from '~/shared/server/server.service';
 import { MembersComponent } from '~/pages/teams/members/members.component';
 import { TeamListComponent } from '~/pages/teams/team-list/team-list.component';
 import { TeamFormComponent } from '~/pages/teams/team-form/team-form.component';
@@ -53,7 +54,7 @@ import { MetricsComponent } from '~/pages/metrics/metrics.component';
     MetricsComponent
   ],
   schemas: [NO_ERRORS_SCHEMA],
-  providers: [TaskService, DatabaseService, ServerService]
+  providers: [TaskService, DatabaseService, ServerService, TeamService]
 })
 /*
 Pass your application module to the bootstrapModule function located in main.ts to start your app

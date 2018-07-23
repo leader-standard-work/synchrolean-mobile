@@ -10,65 +10,50 @@ import { Team } from '~/shared/teams/team';
   selector: 'team-form',
   moduleId: module.id,
   templateUrl: './team-form.component.html',
-  styleUrls: ['./team-form.component.html']
+  styleUrls: ['./team-form.component.css']
 })
-
 export class TeamFormComponent implements OnInit {
-  private teamService: TeamService;
-  private pageRoute: PageRoute;
-  private routerExtensions: RouterExtensions;
-  private formBuilder: FormBuilder;
   private teamFromGroup: FormGroup;
-  
+
   public teamFormGroup: FormGroup;
   public team: Team;
   public teamTitle: string;
 
   constructor(
-    teamService: TeamService,
-    formBuilder: FormBuilder,
-    pageRoute: PageRoute,
-    routerExtensions: RouterExtensions
-  ){
-    this.teamService = teamService;
-    this.formBuilder = formBuilder;
-    this.pageRoute = pageRoute;
-    this.routerExtensions = routerExtensions;
+    private teamService: TeamService,
+    private formBuilder: FormBuilder,
+    private routerExtensions: RouterExtensions
+  ) {}
 
-    //this.pageroute.activatedRoute
-    //come back to this later
-
-  }
   ngOnInit(): void {
     this.teamTitle = 'New Team';
     let teamDesc = '';
+    let name = '';
 
     this.teamFormGroup = this.formBuilder.group({
-        //teamName: [name, Validators.required],
-        //teamDesc
-    })
-
+      teamName: [name, Validators.required],
+      teamDesc: [teamDesc, Validators.required]
+    });
   }
 
-  onSave(){
-      let teamName = this.teamFormGroup.value.teamName;
-      let teamDesc = this.teamFormGroup.value.teamDesc;
-      let options ={
-          title: 'Description Required',
-          okButtonText: 'Ok'
-      };
+  onSave() {
+    let teamName = this.teamFormGroup.value.teamName;
+    let teamDesc = this.teamFormGroup.value.teamDesc;
+    let options = {
+      title: 'Description Required',
+      okButtonText: 'Ok'
+    };
 
-      if (teamName !== '' && teamDesc !== ''){
-          //switch(this.mode)
-          //case Mode.new
-          options.title = 'New team created';
-          //note, the new Team expect args of Id (team ID), team name, team description, and ownerID
-          //the team ID and owner ID are not correct yet and use the dummy value of 1
-          let team: Team = new Team(1, teamName, teamDesc, 1);
-          //this.teamService.addTeam(team);
-          this.teamFormGroup.reset();
-          alert(options);
-         
-      }
+    if (teamName !== '' && teamDesc !== '') {
+      //switch(this.mode)
+      //case Mode.new
+      options.title = 'New team created';
+      //note, the new Team expect args of Id (team ID), team name, team description, and ownerID
+      //the team ID and owner ID are not correct yet and use the dummy value of 1
+      let team: Team = new Team(1, teamName, teamDesc, 1);
+      //this.teamService.addTeam(team);
+      this.teamFormGroup.reset();
+      alert(options);
+    }
   }
 }
