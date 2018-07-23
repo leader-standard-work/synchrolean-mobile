@@ -66,14 +66,26 @@ const UpdateTask: string = `UPDATE tasks SET
           WHERE databaseId = ?`;
 
 /****************** End Task SQL  ****************************/
-/****************** Begin   SQL  **************************/
-/****************** End SQL  **************************/
+/****************** Begin Completion SQL *********************/
+const InsertCompletionEntry: string = `INSERT INTO completion (
+  taskId,
+  completedOn
+) VALUES (?,?)`;
+
+const DeleteLastCompletionEntry: string = `DELETE FROM completion WHERE taskId = ? ORDER BY date(completedOn) DESC LIMIT 1`;
+
+const QueryLastCompletion: string = `SELECT * FROM completion WHERE taskId = ? ORDER BY date(completedOn) DESC LIMIT 1`;
+
+const QueryAllCompletions: string = `SELECT * FROM completion`;
+/****************** End Completion SQL  **********************/
 
 @Injectable({
   providedIn: 'root'
 })
 export class DatabaseService {
   private database: any;
+
+  /****************** Begin Database Construction ************/
 
   constructor() {
     new Sqlite('synchrolean.db').then(
@@ -109,6 +121,7 @@ export class DatabaseService {
       }
     );
   }
+  /****************** End Database Creation ******************/
 
   /****************** Begin Tasks Methods ********************/
 
@@ -188,8 +201,8 @@ export class DatabaseService {
           task.databaseId
         ])
         .then(
-          id => {
-            resolve(id);
+          count => {
+            resolve(count);
           },
           error => {
             console.error('update task in database failed', error);
@@ -200,8 +213,39 @@ export class DatabaseService {
   }
   /****************** End Tasks Methods **********************/
 
-  /****************** Begin Complete Methods *****************/
-  /****************** End Complete Methods *******************/
+  /****************** Begin Completion Methods *****************/
+  completeTask(task: Task) {
+    this.updateTask(task);
+
+    if (task.complete) {
+      this.database.execSQL(InsertCompletionEntry, [
+        task.databaseId,
+        task.completedOn.toISOString()
+      ]);
+    } else {
+      this.database.execSQL(DeleteLastCompletionEntry, [task.databaseId]);
+    }
+  }
+
+  getCompletedTable() {
+    this.database.all(QueryAllCompletions).then(
+      results => {
+        for (let complete of results) {
+          console.log(
+            'RESULT',
+            complete.id,
+            complete.taskId,
+            complete.completedOn
+          );
+        }
+        console.log('***********************************************');
+      },
+      error => {
+        console.log('could not get all completed tasks in database', error);
+      }
+    );
+  }
+  /****************** End Completion Methods *******************/
 
   /****************** Begin Account Methods ******************/
   /****************** End Account Methods ********************/
