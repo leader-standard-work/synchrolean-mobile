@@ -15,38 +15,41 @@ export class TeamListComponent implements OnInit {
   public teams$: Array<Team>;
   public names: Array<string>;
 
-  constructor(private server:ServerService, private routerE:RouterExtensions){
+  constructor(
+    private server: ServerService,
+    private routerExtensions: RouterExtensions
+  ) {
     this.teams$ = new Array<Team>();
     this.names = new Array<string>();
   }
 
   ngOnInit(): void {
     //disclaimer, this is testing with dummy data
-      //this.teams$ = this.server.getTeams()
+    //this.teams$ = this.server.getTeams()
 
     // if(this.teams$ === undefined){
-        this.teams$ = JSON.parse(teams);
-        
-        this.getNames();
-    // }
-    }
+    this.teams$ = JSON.parse(teams);
 
-  getNames(){
-      this.teams$.forEach((value)=>{
-        this.names.push(value.TeamName);
-      });
+    this.getNames();
+    // }
   }
 
-  onTap(){
-    this.routerE.navigate(['/Members'],{
-      transition:{
-        name: "slideLeft"
+  getNames() {
+    this.teams$.forEach(value => {
+      this.names.push(value.TeamName);
+    });
+  }
+
+  onTap() {
+    this.routerExtensions.navigate(['/Members'], {
+      transition: {
+        name: 'slideLeft'
       }
     });
   }
 
   tasksTapped() {
-    this.routerE.navigate(['/task-list'], {
+    this.routerExtensions.navigate(['/task-list'], {
       clearHistory: true,
       transition: {
         name: 'fade'
@@ -54,5 +57,12 @@ export class TeamListComponent implements OnInit {
     });
   }
 
-
+  metricsTapped() {
+    this.routerExtensions.navigate(['/metrics'], {
+      clearHistory: true,
+      transition: {
+        name: 'fade'
+      }
+    });
+  }
 }

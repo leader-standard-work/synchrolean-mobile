@@ -35,6 +35,15 @@ export class TaskListComponent implements OnInit {
     });
   }
 
+  metricsTapped() {
+    this.routerExtensions.navigate(['/metrics'], {
+      clearHistory: true,
+      transition: {
+        name: 'fade'
+      }
+    });
+  }
+
   onChecked() {
     this.tasks$ = this.tasksService.getUpdatedTasks();
   }

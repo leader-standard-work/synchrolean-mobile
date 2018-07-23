@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
+import { RouterExtensions } from 'nativescript-angular/router';
 
 @Component({
   selector: 'metrics',
@@ -7,15 +7,26 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './metrics.component.html',
   styleUrls: ['./metrics.component.css']
 })
-
 export class MetricsComponent implements OnInit {
-    
+  constructor(private routerExtensions: RouterExtensions) {}
 
-  constructor(){
+  ngOnInit(): void {}
 
+  teamTapped() {
+    this.routerExtensions.navigate(['/teams'], {
+      clearHistory: true,
+      transition: {
+        name: 'fade'
+      }
+    });
   }
 
-  ngOnInit(): void{
-
+  tasksTapped() {
+    this.routerExtensions.navigate(['/task-list'], {
+      clearHistory: true,
+      transition: {
+        name: 'fade'
+      }
+    });
   }
 }
