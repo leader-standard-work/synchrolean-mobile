@@ -10,6 +10,7 @@ import { LoginFormComponent } from '~/pages/account/login-form/login-form.compon
 import { MembersComponent } from '~/pages/teams/members/members.component';
 import { TeamListComponent } from '~/pages/teams/team-list/team-list.component';
 import { TeamFormComponent } from '~/pages/teams/team-form/team-form.component';
+import { MetricsComponent } from '~/pages/metrics/metrics.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/task-list', pathMatch: 'full' },
@@ -22,7 +23,8 @@ const routes: Routes = [
   { path: 'Members', component: MembersComponent},
   { path: 'Members/:id', component: MembersComponent},
   { path: 'teams', component: TeamListComponent},
-  { path: 'team-form', component: TeamFormComponent}
+  { path: 'team-form', component: TeamFormComponent},
+  { path: 'metrics' , component: MetricsComponent}
 ];
 
 @NgModule({
