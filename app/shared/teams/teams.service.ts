@@ -29,7 +29,9 @@ export class TeamService {
       }
     }
   }
-
+  public addTeam(team:Team){
+    //incomplete, will add to global dummy data?
+  }
   //public updateTeam(){}
 
   //public deleteTeam(){}
