@@ -14,6 +14,8 @@ import { TaskService } from '~/shared/services/tasks.service';
 export class TaskListComponent implements OnInit {
   public tasks$: Observable<Array<Task>>;
   private tasksService: TaskService;
+  private timerId: number;
+  private midnight: Date;
 
   constructor(
     tasksService: TaskService,
@@ -24,6 +26,17 @@ export class TaskListComponent implements OnInit {
 
   ngOnInit(): void {
     this.tasks$ = this.tasksService.getTasks();
+
+    this.midnight = new Date();
+    this.midnight.setHours(24, 0, 0, 0);
+    this.timerId = setInterval(() => {
+      let now = new Date();
+      if (now > this.midnight) {
+        this.tasksService.taskReset();
+        this.tasks$ = this.tasksService.getUpdatedTasks();
+        this.midnight.setHours(24, 0, 0, 0);
+      }
+    }, 60 * 1000);
   }
 
   teamTapped() {
