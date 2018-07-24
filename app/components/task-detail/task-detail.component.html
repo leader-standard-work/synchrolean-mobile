@@ -1,8 +1,0 @@
-<ActionBar title="Task Details" class="action-bar">
-    <ActionItem [nsRouterLink]="['/task-edit', task.getId()]" ios.position="right" text="Edit">
-    </ActionItem>
-</ActionBar>
-<StackLayout>
-    <Label text="Description: {{ task.getDescription() }}" textWrap="true"></Label>
-    <Label text="Note: {{ task.getNote() }}" textWrap="true"></Label>
-</StackLayout>

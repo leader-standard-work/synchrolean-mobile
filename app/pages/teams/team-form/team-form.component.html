@@ -1,0 +1,15 @@
+<ActionBar class="action-bar">
+        <Label class="action-bar-title" text="Create a New Team"></Label>
+        <ActionItem (tap)="onSave()" ios.position="right" text="Save">
+        </ActionItem>
+</ActionBar>
+
+<StackLayout class="form">
+        <StackLayout class="input-field" [formGroup]="teamFormGroup">
+                <TextField class="input" formControlName="teamName" hint="Team name" required></TextField>
+                <StackLayout class="hr-light m-10"></StackLayout>
+
+                <TextField class="input" formControlName="teamDesc" hint="Team description" required></TextField>
+                <StackLayout class="hr-light m-10"></StackLayout>
+        </StackLayout>
+</StackLayout>

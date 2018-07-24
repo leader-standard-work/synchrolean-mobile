@@ -1,0 +1,33 @@
+<ActionBar class="action-bar">
+    <Label class="action-bar-title" text="Teams"></Label>
+    <ActionItem nsRouterLink="/team-form" text="Create Team" android.position="actionBar" ios.position="right"></ActionItem>
+    <ActionItem nsRouterLink="/login-main" text="Sign-in" android.position="actionBar"></ActionItem>
+</ActionBar>
+
+<GridLayout rows="*, 60" class="page">
+    <ListView row='0' [items]="names">
+        <ng-template let-name="item" let-i="index">
+            <label class="t-30 m-b-2 m-l-12 " (tap)='onTap()' [text]="name"></label>
+        </ng-template>
+    </ListView>
+    <StackLayout row="1" orientation="horizontal">
+        <Button textWrap="true" width="33%" textAlignment="center" color="gray" (onTap)="tasksTapped()">
+            <FormattedString>
+                <Span text="&#xf03a;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>
+                <Span text="Tasks"></Span>
+            </FormattedString>
+        </Button>
+        <Button textWrap="true" width="33%" textAlignment="center">
+            <FormattedString>
+                <Span text="&#xf0c0;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>
+                <Span text="Teams"></Span>
+            </FormattedString>
+        </Button>
+        <Button textWrap="true" width="33%" textAlignment="center" color="gray" (onTap)="metricsTapped()">
+            <FormattedString>
+                <Span text="&#xf080;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>
+                <Span text="Metrics"></Span>
+            </FormattedString>
+        </Button>
+    </StackLayout>
+</GridLayout>

@@ -1,0 +1,31 @@
+<ActionBar class="action-bar">
+    <Label class="action-bar-title" text="Metrics"></Label>
+</ActionBar>
+
+<GridLayout rows="*, 60" class="page">
+    <StackLayout>
+        <Label text="Coming Soon"></Label>
+    </StackLayout>
+
+    <!-- Begin Bottom Bar -->
+    <StackLayout row="1" orientation="horizontal">
+        <Button textWrap="true" width="33%" textAlignment="center" color="gray" (onTap)="tasksTapped()">
+            <FormattedString>
+                <Span text="&#xf03a;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>
+                <Span text="Tasks"></Span>
+            </FormattedString>
+        </Button>
+        <Button textWrap="true" width="33%" textAlignment="center" color="gray" (onTap)="teamTapped()">
+            <FormattedString>
+                <Span text="&#xf0c0;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>
+                <Span text="Teams"></Span>
+            </FormattedString>
+        </Button>
+        <Button textWrap="true" width="33%" textAlignment="center">
+            <FormattedString>
+                <Span text="&#xf080;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>
+                <Span text="Metrics"></Span>
+            </FormattedString>
+        </Button>
+    </StackLayout>
+</GridLayout>
