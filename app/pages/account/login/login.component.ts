@@ -6,22 +6,17 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Account } from '~/shared/models/account';
 
 @Component({
-  selector: 'login-form',
+  selector: 'login',
   moduleId: module.id,
-  templateUrl: './login-form.component.html',
-  styleUrls: ['./login-form.component.css']
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css']
 })
-export class LoginFormComponent implements OnInit {
+export class LoginComponent implements OnInit {
   private pageRoute: PageRoute;
   private routerExtensions: RouterExtensions;
   private formBuilder: FormBuilder;
 
   public accountFormGroup: FormGroup;
-  public account: Account;
-  public email: string;
-  public firstname: string;
-  public lastname: string;
-  public password: string; //FOR TESTING ONLY! REMOVE SOON
 
   constructor(
     formBuilder: FormBuilder,
@@ -36,10 +31,9 @@ export class LoginFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    let url = '';
     let email = '';
-    let firstname = '';
-    let lastname = '';
-    let password = ''; //TESTING ONLY! REMOVE SOON
+    let password = '';
 
     /*if (this.account != null){
       ........
@@ -47,10 +41,13 @@ export class LoginFormComponent implements OnInit {
     }*/
 
     this.accountFormGroup = this.formBuilder.group({
+      serverUrl: [url, Validators.required],
       email: [email, Validators.required],
-      firstname: [firstname, Validators.required],
-      lastname: [lastname, Validators.required],
       password: [password, Validators.required]
     });
+  }
+
+  login() {
+    
   }
 }

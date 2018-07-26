@@ -1,7 +1,8 @@
 <ActionBar class="action-bar">
     <Label class="action-bar-title" text="Teams"></Label>
     <ActionItem nsRouterLink="/team-form" text="Create Team" android.position="actionBar" ios.position="right"></ActionItem>
-    <ActionItem nsRouterLink="/login-main" text="Sign-in" android.position="actionBar"></ActionItem>
+    <ActionItem *ngIf="!isLoggedIn()" nsRouterLink="/login" text="Sign-in" android.position="actionBar"></ActionItem>
+    <ActionItem *ngIf="isLoggedIn()" (tap)="logoutTapped()" text="Logout" android.position="actionBar"></ActionItem>
 </ActionBar>
 
 <GridLayout rows="*, 60" class="page">

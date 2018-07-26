@@ -1,0 +1,21 @@
+<ActionBar class="action-bar">
+    <Label class="action-bar-title" text="Login"></Label>
+</ActionBar>
+<FlexBox class="page">
+    <StackLayout class="form">
+
+        <StackLayout class="input-field" [formGroup]="accountFormGroup">
+            <TextField class="input" formControlName="serverUrl" hint=" Server URL" required></TextField>
+            <StackLayout class="hr-light m-10"></StackLayout>
+
+            <TextField class="input" formControlName="email" hint=" Email" required></TextField>
+            <StackLayout class="hr-light m-10"></StackLayout>
+
+            <TextField class="input" formControlName="password" hint=" Password" required></TextField>
+            <StackLayout class="hr-light m-10"></StackLayout>
+
+        </StackLayout>
+        <Button text="Log On" (tap)="login()"></Button>
+        <Button text="Register" nsRouterLink="/register"></Button>
+    </StackLayout>
+</FlexBox>
