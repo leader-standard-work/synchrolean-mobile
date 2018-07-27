@@ -12,19 +12,19 @@
 
     <!-- Begin Bottom Bar -->
     <StackLayout row="1" orientation="horizontal">
-        <Button textWrap="true" width="33%" textAlignment="center" class="button">
+        <Button textWrap="true" width="33%" textAlignment="center" class="button" color="#007AFF">
             <FormattedString>
                 <Span text="&#xf03a;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>
                 <Span text="Tasks"></Span>
             </FormattedString>
         </Button>
-        <Button textWrap="true" width="33%" textAlignment="center" class="button" (onTap)="teamTapped()">
+        <Button textWrap="true" width="33%" textAlignment="center" class="button" (onTap)="teamTapped()" color="gray">
             <FormattedString>
                 <Span text="&#xf0c0;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>
                 <Span text="Teams"></Span>
             </FormattedString>
         </Button>
-        <Button textWrap="true" width="33%" textAlignment="center" class="button" (onTap)="metricsTapped()">
+        <Button textWrap="true" width="33%" textAlignment="center" class="button" (onTap)="metricsTapped()" color="gray">
             <FormattedString>
                 <Span text="&#xf080;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>
                 <Span text="Metrics"></Span>
