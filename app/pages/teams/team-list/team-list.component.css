@@ -2,3 +2,8 @@
     font-size: 24px;
     text-align: left;
 }
+.button{
+    border-color: transparent; 
+    border-width: .25;
+    background: white;
+}
