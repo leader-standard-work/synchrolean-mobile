@@ -2,6 +2,7 @@ import { teamMembers } from "~/shared/dummyData"
 import { Injectable, Input, Component, OnInit } from "@angular/core";
 import { PageRoute, RouterExtensions } from "nativescript-angular/router";
 import { switchMap } from "rxjs/operators";
+import { Account } from "~/shared/models/account";
 
 
 @Injectable({
@@ -16,6 +17,7 @@ class members{
 class Team{
     name: string;
     teamId:number;
+    description: string;
     members:Array<members>;
 }
 
@@ -27,13 +29,13 @@ class Team{
   })
 
 export class MembersComponent implements OnInit {
-
     public team: Team;
+    public members: Array<Account>;
     public names: Array<string>;
     private id: number;
 
     constructor(private pageR:PageRoute, private routerE:RouterExtensions){
-        this.team = new Team();
+        this.members = new Array<Account>();
         this.names = new Array<string>();
         this.pageR.activatedRoute.pipe(
             switchMap(activatedRoute => activatedRoute.params)
