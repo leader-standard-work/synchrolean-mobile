@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Team } from '~/shared/teams/team';
+import { Team } from '~/shared/models/team';
 import { Observable } from 'rxjs';
-import { ServerService } from '~/shared/server/server.service';
+import { ServerService } from '~/shared/services/server.service';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { teams } from '~/shared/dummyData';
 
@@ -16,7 +16,7 @@ export class TeamListComponent implements OnInit {
   public names: Array<string>;
 
   constructor(
-    private server: ServerService,
+    private serverService: ServerService,
     private routerExtensions: RouterExtensions
   ) {
     this.teams$ = new Array<Team>();
@@ -64,5 +64,13 @@ export class TeamListComponent implements OnInit {
         name: 'fade'
       }
     });
+  }
+
+  logoutTapped() {
+    this.serverService.logout();
+  }
+
+  isLoggedIn(): boolean {
+    return this.serverService.isLoggedIn();
   }
 }

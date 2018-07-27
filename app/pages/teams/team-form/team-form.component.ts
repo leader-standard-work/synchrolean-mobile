@@ -3,8 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { PageRoute, RouterExtensions } from 'nativescript-angular/router';
 import { action, alert } from 'tns-core-modules/ui/dialogs/dialogs';
-import { TeamService } from '~/shared/teams/teams.service';
-import { Team } from '~/shared/teams/team';
+import { TeamService } from '~/shared/services/teams.service';
+import { Team } from '~/shared/models/team';
 
 @Component({
   selector: 'team-form',

@@ -7,7 +7,7 @@ import {
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { Task } from '~/shared/models/task';
-import { Team } from '~/shared/teams/team';
+import { Team } from '~/shared/models/team';
 
 const serverURL: string = 'http://localhost:5000';
 
@@ -24,7 +24,6 @@ export class ServerService {
     this.url = serverURL;
     this.userId = 0;
   }
-
 
   /************** Begin Task Calls ******************/
   // postTask(task: Task) {
@@ -71,10 +70,12 @@ export class ServerService {
 
   /***************** Begin Team Calls ***********************/
   getTeams(): Team[] {
-    let teams: Team[] =[];
+    let teams: Team[] = [];
 
-    this.http.get(this.url+'/api/team').subscribe(
-      resp=> {return teams = JSON.parse(JSON.stringify(resp));},
+    this.http.get(this.url + '/api/team').subscribe(
+      resp => {
+        return (teams = JSON.parse(JSON.stringify(resp)));
+      },
       err => {
         console.log(err);
         return teams;
@@ -84,5 +85,4 @@ export class ServerService {
     return teams;
   }
   /***************** End Team Calls *************************/
-
 }
