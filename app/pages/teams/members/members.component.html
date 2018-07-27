@@ -5,8 +5,8 @@
 </ActionBar>
 
 <Gridlayout class='page' rows="auto, auto, *">
-    <Label class="t-30 text-center" [text]="team.TeamName" row='0' textWrap="true"></Label>
-    <Label class="t-15 text-center" [text]="team.TeamDescription" row='1' textWrap="true"></Label>
+    <Label class="t-30 text-center" [text]="teamName" row='0' textWrap="true"></Label>
+    <Label class="t-15 text-center" [text]="teamDescription" row='1' textWrap="true"></Label>
     <ListView row='2' [items]="members">
         <ng-template let-member="item"  let-i="index">
             <GridLayout class="list-group-item">     

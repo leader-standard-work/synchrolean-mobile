@@ -2,7 +2,6 @@
     <Label class="action-bar-title" text="Register"></Label>
 </ActionBar>
 
-
 <FlexBoxLayout class="page">
     <StackLayout class="form">
 
@@ -19,11 +18,11 @@
             <TextField class="input" formControlName="lastname" hint=" Last Name" required></TextField>
             <StackLayout class="hr-light m-10"></StackLayout>
 
-            <TextField class="input" formControlName="password" hint=" Password" required></TextField>
+            <TextField class="input" formControlName="password" hint=" Password" secure="true" required></TextField>
             <StackLayout class="hr-light m-10"></StackLayout>
 
         </StackLayout>
-        <Button text="Sign Up"></Button>
+        <Button class="btn btn-primary" text="Sign Up" (tap)="signUpTapped()"></Button>
     </StackLayout>
 
 </FlexBoxLayout>

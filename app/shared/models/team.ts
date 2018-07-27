@@ -1,55 +1,55 @@
 //This file contains the team class which contains array of team IDs, team names, and team descriptions
+export interface TeamServerInterface {
+    id: number;
+    teamName: string;
+    teamDescription: string;
+    ownerId: number;
+}
 
 export class Team {
-  private _Id: number = 0; //the unique ID for a team
-  private _TeamName: string; //the name for a team
-  private _TeamDescription: string; //the description for a team
-  private _OwnerId: number;
+  private _id: number = 0; //the unique ID for a team
+  private _teamName: string; //the name for a team
+  private _teamDescription: string; //the description for a team
+  private _ownerId: number;
 
-  constructor( //creating a team from passed in data
-      Id: number,
-      TeamName: string,
-      TeamDescription: string,
-      OwnerId: number
+  constructor( 
+    team: TeamServerInterface
   ){
-      //copy data from passed in args
-      this._Id = Id;
-      this._TeamName = TeamName;
-      this._TeamDescription = TeamDescription;
-      this._OwnerId = OwnerId;
-  } //end of constructor
+      this._id = team.id;
+      this._teamName = team.teamName;
+      this._teamDescription = team.teamDescription;
+      this._ownerId = team.ownerId;
+  } 
 
-  //set and get functions for id, name, and description
-  public set Id(id: number){
-    this._Id = id;
+  public set id(id: number){
+    this._id = id;
   }
 
-  public get Id(): number{
-    return this._Id;
+  public get id(): number{
+    return this._id;
   }
 
-  public set TeamName(name: string){
-      this._TeamName = name;
+  public set teamName(name: string){
+      this._teamName = name;
   }
 
-  public get TeamName(): string{
-      return this._TeamName;
+  public get teamName(): string{
+      return this._teamName;
   }
 
-  public set TeamDescription(description:string){
-      this._TeamDescription = description;
+  public set teamDescription(description:string){
+      this._teamDescription = description;
   }
 
-  public get TeamDescription(): string{
-      return this._TeamDescription;
+  public get teamDescription(): string{
+      return this._teamDescription;
   }
 
-  public set OwnerId(id:number){
-        this._OwnerId = id;
+  public set ownerId(id:number){
+        this._ownerId = id;
   }
 
-  public get OwnerId(): number{
-      return this._OwnerId;
+  public get ownerId(): number{
+      return this._ownerId;
   }
-  //end of Set/Get functions
 }

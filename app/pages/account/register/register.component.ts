@@ -1,9 +1,9 @@
 //The login form component is used to create a NEW account
 //aka. User data did not previously exist on the server
 import { Component, OnInit } from '@angular/core';
-import { PageRoute, RouterExtensions } from 'nativescript-angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Account } from '~/shared/models/account';
+
+import { ServerService } from '~/shared/services/server.service';
 
 @Component({
   selector: 'register',
@@ -12,23 +12,13 @@ import { Account } from '~/shared/models/account';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
-  private pageRoute: PageRoute;
-  private routerExtensions: RouterExtensions;
-  private formBuilder: FormBuilder;
-
   public accountFormGroup: FormGroup;
+  public tempUrl: string = 'http://localhost:55542';
 
   constructor(
-    formBuilder: FormBuilder,
-    pageRoute: PageRoute,
-    routerExtensions: RouterExtensions
-  ) {
-    this.formBuilder = formBuilder;
-    this.pageRoute = pageRoute;
-    this.routerExtensions = routerExtensions;
-
-    //this.pageRoute.activatedRoute ...
-  }
+    private serverService: ServerService,
+    private formBuilder: FormBuilder
+  ) {}
 
   ngOnInit(): void {
     let url = '';
@@ -37,17 +27,25 @@ export class RegisterComponent implements OnInit {
     let lastname = '';
     let password = '';
 
-    /*if (this.account != null){
-      ........
-      
-    }*/
-
     this.accountFormGroup = this.formBuilder.group({
-      serverUrl: [url, Validators.required],
-      email: [email, Validators.required],
+      serverUrl: [this.tempUrl, Validators.required],
+      email: [
+        email,
+        Validators.compose([Validators.required, Validators.email])
+      ],
       firstname: [firstname, Validators.required],
       lastname: [lastname, Validators.required],
       password: [password, Validators.required]
     });
+  }
+
+  signUpTapped() {
+    let url = this.accountFormGroup.value.serverUrl;
+    let email = this.accountFormGroup.value.email;
+    let firstname = this.accountFormGroup.value.firstname;
+    let lastname = this.accountFormGroup.value.lastname;
+    let password = this.accountFormGroup.value.password;
+
+    this.serverService.register(url, email, password, firstname, lastname);
   }
 }

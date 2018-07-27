@@ -11,11 +11,11 @@
             <TextField class="input" formControlName="email" hint=" Email" required></TextField>
             <StackLayout class="hr-light m-10"></StackLayout>
 
-            <TextField class="input" formControlName="password" hint=" Password" required></TextField>
+            <TextField class="input" formControlName="password" hint=" Password" secure="true" required></TextField>
             <StackLayout class="hr-light m-10"></StackLayout>
 
         </StackLayout>
-        <Button text="Log On" (tap)="login()"></Button>
-        <Button text="Register" nsRouterLink="/register"></Button>
+        <Button class="btn btn-primary btn-rounded-sm" text="Log On" (tap)="loginTapped()"></Button>
     </StackLayout>
+    <Label class="text-center footnote" text="Not a member? Register here." nsRouterLink="/register"></Label>
 </FlexBoxLayout>

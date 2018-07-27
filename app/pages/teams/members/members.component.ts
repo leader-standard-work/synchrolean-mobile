@@ -32,13 +32,14 @@ import { Team } from "~/shared/models/team";
 export class MembersComponent implements OnInit {
     public team: Team;
     public members: Array<Account>;
-    public names: Array<string>;
+    public teamName: string;
+    public teamDescription: string;
     private id: number;
 
     constructor(private pageR:PageRoute, private routerE:RouterExtensions){
         this.members = new Array<Account>();
-        this.names = new Array<string>();
-        this.team = new Team(123,"Team C","Greatest team Ever", 0);
+        this.teamName = "";
+        this.teamDescription = "";
         this.pageR.activatedRoute.pipe(
             switchMap(activatedRoute => activatedRoute.params)
         ).forEach((params)=> {this.id = +params["id"];})
@@ -48,8 +49,9 @@ export class MembersComponent implements OnInit {
         //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
         //Add 'implements OnInit' to the class.
         this.members = JSON.parse(teamMembers);
-       
-        //console.log(this.team.TeamName);
+        this.teamDescription = "Best Team Ever!";
+        this.teamName = "Team C";
+        console.log(this.teamName);
     }
 
 
