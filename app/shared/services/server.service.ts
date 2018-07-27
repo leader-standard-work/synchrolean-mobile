@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { AccountService, State } from '../services/account.service';
-import { Team } from '../models/team';
+import { Team, TeamServerInterface } from '../models/team';
+import { Account, AccountServerInterface } from '~/shared/models/account';
 
 @Injectable({
   providedIn: 'root'
@@ -29,15 +30,24 @@ export class ServerService {
       this._teamApi = '';
     }
 
-    this._httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json'
-      }),
-      responseType: 'json',
-      withCredentials: true
-    };
+    // this._httpOptions =  {
+    //   headers: new HttpHeaders({
+    //     'Content-Type': 'application/json'
+    //   }),
+    //   observe: 'body',
+    //   responseType: 'json',
+    //   withCredentials: true
+    // };
   }
 
+  set serverUrl(url: string) {
+    this._url = url;
+    this._taskApi = this._url + '/api/tasks/';
+    this._teamApi = this._url + '/api/teams/';
+    this._accountApi = this._url + '/api/accounts/';
+  }
+
+  /****************** Begin Accounts Requests ********************/
   isLoggedIn(): boolean {
     if (this.accountService.state === State.LoggedIn) {
       return true;
@@ -45,8 +55,11 @@ export class ServerService {
     return false;
   }
 
-  /****************** Begin Accounts Requests ********************/
-  login(email: String, password: string): boolean {
+  login(serverUrl: string, email: String, password: string): boolean {
+    this.serverUrl = serverUrl;
+    let body = {email: email, password: password};
+    // Authentication here!
+
     return false;
   }
 
@@ -64,12 +77,16 @@ export class ServerService {
     firstname: string,
     lastname: string
   ): boolean {
-    let body = { FirstName: firstname, LastName: lastname, Email: email };
-    this.http.post(serverUrl, body, this._httpOptions).subscribe(
-      data => {
-        console.log('Server Response: ', data);
+    this.serverUrl = serverUrl;
+    let body = { firstName: firstname, lastName: lastname, email: email };
+    this.http.post<AccountServerInterface>(this._accountApi, body).subscribe(
+      response => {
+        this.accountService.account = new Account(response);
+        console.log(this.accountService.account);
       },
-      error => {}
+      error => {
+        console.log('error on registering user', error);
+      }
     );
     return false;
   }
@@ -77,7 +94,15 @@ export class ServerService {
   /****************** End Accounts Requests **********************/
   /****************** Begin Team Requests ************************/
   getTeams(): Array<Team> {
+    let endpoint = this._url + '/api/team'; 
     let teams = new Array<Team>();
+    this.http.get<TeamServerInterface>(endpoint).subscribe(
+      response => {
+        teams.push(new Team(response));
+      }, error => {
+
+      }
+    )
 
     return teams;
   }

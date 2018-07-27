@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { PageRoute, RouterExtensions } from 'nativescript-angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Account } from '~/shared/models/account';
+import { ServerService } from '~/shared/services/server.service';
 
 @Component({
   selector: 'login',
@@ -12,21 +13,14 @@ import { Account } from '~/shared/models/account';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  private pageRoute: PageRoute;
-  private routerExtensions: RouterExtensions;
-  private formBuilder: FormBuilder;
-
   public accountFormGroup: FormGroup;
 
   constructor(
-    formBuilder: FormBuilder,
-    pageRoute: PageRoute,
-    routerExtensions: RouterExtensions
+    private serverService: ServerService,
+    private formBuilder: FormBuilder,
+    private pageRoute: PageRoute,
+    private routerExtensions: RouterExtensions
   ) {
-    this.formBuilder = formBuilder;
-    this.pageRoute = pageRoute;
-    this.routerExtensions = routerExtensions;
-
     //this.pageRoute.activatedRoute ...
   }
 
@@ -42,12 +36,19 @@ export class LoginComponent implements OnInit {
 
     this.accountFormGroup = this.formBuilder.group({
       serverUrl: [url, Validators.required],
-      email: [email, Validators.required],
+      email: [
+        email,
+        Validators.compose([Validators.required, Validators.email])
+      ],
       password: [password, Validators.required]
     });
   }
 
-  login() {
-    
+  loginTapped() {
+    let serverUrl = this.accountFormGroup.value.serverUrl;
+    let email = this.accountFormGroup.value.email;
+    let password = this.accountFormGroup.value.password;
+
+    this.serverService.login(serverUrl, email, password);
   }
 }

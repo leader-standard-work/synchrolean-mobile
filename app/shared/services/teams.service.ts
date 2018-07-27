@@ -20,9 +20,9 @@ export class TeamService {
 
   public getTeams(team: Team) {
     for (let value of this.teams) {
-      if (value.Id === team.Id) {
-        value.TeamName = team.TeamName;
-        value.TeamDescription = team.TeamDescription;
+      if (value.id === team.id) {
+        value.teamName = team.teamName;
+        value.teamDescription = team.teamDescription;
       }
     }
   }

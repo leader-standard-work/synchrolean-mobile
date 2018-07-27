@@ -29,10 +29,15 @@ export class AccountService {
 
   logout() {
     this._account = null;
+    this._state = State.LoggedOut;
   }
 
   set account(account: Account) {
     this._account = account;
     this._state = State.LoggedIn;
+  }
+
+  get account(): Account {
+    return this._account;
   }
 }

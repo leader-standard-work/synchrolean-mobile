@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Team } from '~/shared/models/team';
-import { Observable } from 'rxjs';
 import { ServerService } from '~/shared/services/server.service';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { teams } from '~/shared/dummyData';
@@ -12,14 +11,14 @@ import { teams } from '~/shared/dummyData';
   styleUrls: ['./team-list.component.css']
 })
 export class TeamListComponent implements OnInit {
-  public teams$: Array<Team>;
+  public teams: Array<Team>;
   public names: Array<string>;
 
   constructor(
     private serverService: ServerService,
     private routerExtensions: RouterExtensions
   ) {
-    this.teams$ = new Array<Team>();
+    this.teams = new Array<Team>();
     this.names = new Array<string>();
   }
 
@@ -28,15 +27,15 @@ export class TeamListComponent implements OnInit {
     //this.teams$ = this.server.getTeams()
 
     // if(this.teams$ === undefined){
-    this.teams$ = JSON.parse(teams);
+    this.teams = JSON.parse(teams);
 
     this.getNames();
     // }
   }
 
   getNames() {
-    this.teams$.forEach(value => {
-      this.names.push(value.TeamName);
+    this.teams.forEach(value => {
+      this.names.push(value.teamName);
     });
   }
 
