@@ -13,94 +13,70 @@ export var teams = `[
     }
 ]`;
 
-export var teamMembers = `{
-    "teamId" : 123,
-    "name" : "Team C",
-    "description": "Hello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello WorldHello World",
-    "members": [
+export var teamMembers = `[
         {
             "id": 0,
-            "name" : "Bob"
+            "firstname" : "Bob"
         },
         {
             "id": 1,
-            "name" : "Bob"
+            "firstname" : "Bob"
         },
         {
             "id": 2,
-            "name" : "Bob"
+            "firstname" : "Bob"
         },
         {
             "id": 3,
-            "name" : "Bob"
-        },
-        {
-            "id": 3,
-            "name" : "Bob"
-        },
-        {
-            "id": 3,
-            "name" : "Bob"
-        },
-        {
-            "id": 3,
-            "name" : "Bob"
-        },
-        {
-            "id": 3,
-            "name" : "Bob"
-        },
-        {
-            "id": 3,
-            "name" : "Bob"
-        },
-        {
-            "id": 3,
-            "name" : "Bob"
-        },
-        {
-            "id": 3,
-            "name" : "Bob"
-        },
-        {
-            "id": 3,
-            "name" : "Bob"
-        },
-        {
-            "id": 3,
-            "name" : "Bob"
-        },
-        {
-            "id": 3,
-            "name" : "Bob"
-        },
-        {
-            "id": 3,
-            "name" : "Bob"
-        },
-        {
-            "id": 3,
-            "name" : "Bob"
-        },
-        {
-            "id": 3,
-            "name" : "Bob"
-        },
-        {
-            "id": 3,
-            "name" : "Bob"
-        },
-        {
-            "id": 3,
-            "name" : "Bob"
-        },
-        {
-            "id": 3,
-            "name" : "Bob"
-        },
-        {
-            "id": 3,
-            "name" : "Bob"
+            "firstname" : "Bob"
         }
     ]
-}`;
+    `;
+
+export var tasks = `[
+    {
+       "databaseId" : 1
+       "serverId": 1
+       "name": "Work"
+    },    
+    {
+        "databaseId" : 2
+        "serverId": 2
+        "name": "Work"
+     },    
+     {
+        "databaseId" : 3
+        "serverId": 3
+        "name": "Work"
+     },    
+     {
+        "databaseId" : 4
+        "serverId": 4
+        "name": "Work"
+     },    
+     {
+        "databaseId" : 5
+        "serverId": 5
+        "name": "Work"
+     },    
+     {
+        "databaseId" : 6
+        "serverId": 6
+        "name": "Work"
+     },    
+     {
+        "databaseId" : 7
+        "serverId": 7
+        "name": "Work"
+     },    
+     {
+        "databaseId" : 8
+        "serverId": 8
+        "name": "Work"
+     },    
+     {
+        "databaseId" : 9
+        "serverId": 9
+        "name": "Work"
+     }
+]`;

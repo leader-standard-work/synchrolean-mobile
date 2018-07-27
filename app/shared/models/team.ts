@@ -21,19 +21,19 @@ export class Team {
 
   //set and get functions for id, name, and description
   public set Id(id: number){
-    this.Id = id;
+    this._Id = id;
   }
 
   public get Id(): number{
-    return this.Id;
+    return this._Id;
   }
 
   public set TeamName(name: string){
-      this.TeamName = name;
+      this._TeamName = name;
   }
 
-  public getTeamName(): string{
-      return this.TeamName;
+  public get TeamName(): string{
+      return this._TeamName;
   }
 
   public set TeamDescription(description:string){

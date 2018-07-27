@@ -3,23 +3,24 @@ import { Injectable, Input, Component, OnInit } from "@angular/core";
 import { PageRoute, RouterExtensions } from "nativescript-angular/router";
 import { switchMap } from "rxjs/operators";
 import { Account } from "~/shared/models/account";
+import { Team } from "~/shared/models/team";
 
 
 @Injectable({
     providedIn: 'root'
 })
 
-class members{
-    name: string;
-    id: number;
-}
+// class members{
+//     name: string;
+//     id: number;
+// }
 
-class Team{
-    name: string;
-    teamId:number;
-    description: string;
-    members:Array<members>;
-}
+// class Team{
+//     name: string;
+//     teamId:number;
+//     description: string;
+//     members:Array<members>;
+// }
 
 @Component({
     selector: 'Members',
@@ -37,6 +38,7 @@ export class MembersComponent implements OnInit {
     constructor(private pageR:PageRoute, private routerE:RouterExtensions){
         this.members = new Array<Account>();
         this.names = new Array<string>();
+        this.team = new Team(123,"Team C","Greatest team Ever", 0);
         this.pageR.activatedRoute.pipe(
             switchMap(activatedRoute => activatedRoute.params)
         ).forEach((params)=> {this.id = +params["id"];})
@@ -45,37 +47,10 @@ export class MembersComponent implements OnInit {
     ngOnInit(): void {
         //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
         //Add 'implements OnInit' to the class.
-        this.team = JSON.parse(teamMembers); 
-        this.getNames();
+        this.members = JSON.parse(teamMembers);
+       
+        //console.log(this.team.TeamName);
     }
 
-    getNames(){
-        let length = this.team.members.length;
-        for(let i=0;i<length;++i){
-            this.names.push(this.team.members[i].name.toString());
-        }
-    }
-
-    getTeamName():string{
-        return (this.team.name);
-    }
-
-    tasksTapped() {
-        this.routerE.navigate(['/task-list'], {
-          clearHistory: true,
-          transition: {
-            name: 'fade'
-          }
-        });
-      }
-
-    teamTapped() {
-    this.routerE.navigate(['/teams'], {
-        clearHistory: true,
-        transition: {
-        name: 'fade'
-        }
-    });
-    }
 
 }
