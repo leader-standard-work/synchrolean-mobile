@@ -26,8 +26,9 @@ export class TeamService {
       }
     }
   }
-  public addTeam(team: Team) {
+  public addTeam(name: string, description: string) {
     //incomplete, will add to global dummy data?
+    this.serverService.addTeam(name, description);
   }
   //public updateTeam(){}
 

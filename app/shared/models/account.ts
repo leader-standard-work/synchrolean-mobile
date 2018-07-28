@@ -33,6 +33,10 @@ export class Account {
     this._isDeleted = account.isDeleted;
   }
 
+  get ownerId(): number {
+    return this._ownerId;
+  }
+
   //  Set/get for email
   set email(newEmail: string) {
     this._email = newEmail;

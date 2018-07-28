@@ -2,6 +2,7 @@
 //aka. User data did not previously exist on the server
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { RouterExtensions } from 'nativescript-angular/router';
 
 import { ServerService } from '~/shared/services/server.service';
 
@@ -17,7 +18,8 @@ export class RegisterComponent implements OnInit {
 
   constructor(
     private serverService: ServerService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private routerExtensions: RouterExtensions
   ) {}
 
   ngOnInit(): void {
@@ -46,6 +48,7 @@ export class RegisterComponent implements OnInit {
     let lastname = this.accountFormGroup.value.lastname;
     let password = this.accountFormGroup.value.password;
 
-    this.serverService.register(url, email, password, firstname, lastname);
+    let valid = this.serverService.register(url, email, password, firstname, lastname);
+    
   }
 }

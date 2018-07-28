@@ -50,8 +50,8 @@ export class TeamFormComponent implements OnInit {
       options.title = 'New team created';
       //note, the new Team expect args of Id (team ID), team name, team description, and ownerID
       //the team ID and owner ID are not correct yet and use the dummy value of 1
-      let team: Team = new Team(1, teamName, teamDesc, 1);
-      //this.teamService.addTeam(team);
+      
+      this.teamService.addTeam(teamName, teamDesc);
       this.teamFormGroup.reset();
       alert(options);
     }
