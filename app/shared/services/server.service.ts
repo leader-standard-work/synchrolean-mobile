@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { AccountService, State } from '../services/account.service';
-import { Team, TeamServerInterface } from '../models/team';
+import { AccountService, State } from '~/shared/services/account.service';
+import { Team, TeamServerInterface } from '~/shared/models/team';
 import { Account, AccountServerInterface } from '~/shared/models/account';
 
 @Injectable({

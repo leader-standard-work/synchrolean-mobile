@@ -11,6 +11,7 @@ import { TeamListComponent } from '~/pages/teams/team-list/team-list.component';
 import { TeamFormComponent } from '~/pages/teams/team-form/team-form.component';
 import { MetricsComponent } from '~/pages/metrics/metrics.component';
 import { RegisterComponent } from '~/pages/account/register/register.component';
+import { MembersTasksComponent } from '~/pages/teams/members-tasks-list/members-tasks.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/task-list', pathMatch: 'full' },
@@ -24,7 +25,9 @@ const routes: Routes = [
   { path: 'Members/:id', component: MembersComponent },
   { path: 'teams', component: TeamListComponent },
   { path: 'team-form', component: TeamFormComponent },
-  { path: 'metrics', component: MetricsComponent }
+  { path: 'metrics', component: MetricsComponent },
+  { path: 'members-tasks', component: MembersTasksComponent },
+  { path: 'members-tasks/:id', component: MembersTasksComponent }
 ];
 
 @NgModule({

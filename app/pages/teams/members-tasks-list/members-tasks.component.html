@@ -1,0 +1,15 @@
+<ActionBar class="action-bar">
+    <Label class="action-bar-title" text=""></Label>
+</ActionBar>
+
+<Gridlayout class='page' rows="auto, auto, *">
+    <Label class="t-30 text-center" text="Name" row='0' textWrap="true"></Label>
+    <Label class="t-15 text-center" text="Metrics" row='1' textWrap="true"></Label>
+    <ListView row='2' [items]="tasks">
+        <ng-template let-task="item"  let-i="index">
+            <GridLayout>     
+            <label class="t-30 m-b-2 m-l-12" height="10%" [text]="task.name"></label>   
+            </GridLayout>    
+        </ng-template>
+    </ListView>
+</Gridlayout>

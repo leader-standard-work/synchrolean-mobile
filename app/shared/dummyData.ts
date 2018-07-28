@@ -35,48 +35,48 @@ export var teamMembers = `[
 
 export var tasks = `[
     {
-       "databaseId" : 1
-       "serverId": 1
+       "databaseId" : 1,
+       "serverId": 1,
        "name": "Work"
     },    
     {
-        "databaseId" : 2
-        "serverId": 2
+        "databaseId" : 2,
+        "serverId": 2,
         "name": "Work"
      },    
      {
-        "databaseId" : 3
-        "serverId": 3
+        "databaseId" : 3,
+        "serverId": 3,
         "name": "Work"
      },    
      {
-        "databaseId" : 4
-        "serverId": 4
+        "databaseId" : 4,
+        "serverId": 4,
         "name": "Work"
      },    
      {
-        "databaseId" : 5
-        "serverId": 5
+        "databaseId" : 5,
+        "serverId": 5,
         "name": "Work"
      },    
      {
-        "databaseId" : 6
-        "serverId": 6
+        "databaseId" : 6,
+        "serverId": 6,
         "name": "Work"
      },    
      {
-        "databaseId" : 7
-        "serverId": 7
+        "databaseId" : 7,
+        "serverId": 7,
         "name": "Work"
      },    
      {
-        "databaseId" : 8
-        "serverId": 8
+        "databaseId" : 8,
+        "serverId": 8,
         "name": "Work"
      },    
      {
-        "databaseId" : 9
-        "serverId": 9
+        "databaseId" : 9,
+        "serverId": 9,
         "name": "Work"
      }
 ]`;

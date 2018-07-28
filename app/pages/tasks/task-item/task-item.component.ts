@@ -8,7 +8,7 @@ import {
   OnChanges,
   SimpleChanges
 } from '@angular/core';
-import { Color } from 'color';
+import { Color } from 'tns-core-modules/color/color';
 
 import { Task } from '~/shared/models/task';
 import { TaskService } from '~/shared/services/tasks.service';

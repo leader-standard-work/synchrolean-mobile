@@ -56,5 +56,12 @@ export class MembersComponent implements OnInit {
         console.log(this.teamName);
     }
 
-
+    onTap(id:number) {
+        console.log('Tapped');
+        this.routerE.navigate(['/members-tasks', id], {
+          transition: {
+            name: 'slideLeft'
+          }
+        });
+      }
 }

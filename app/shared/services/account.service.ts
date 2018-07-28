@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Account } from '../models/account';
+import { Account } from '~/shared/models/account';
 
 export enum State {
   LoggedIn,

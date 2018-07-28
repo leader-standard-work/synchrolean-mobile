@@ -23,6 +23,7 @@ import { TeamListComponent } from '~/pages/teams/team-list/team-list.component';
 import { TeamFormComponent } from '~/pages/teams/team-form/team-form.component';
 import { MetricsComponent } from '~/pages/metrics/metrics.component';
 import { RegisterComponent } from '~/pages/account/register/register.component';
+import { MembersTasksComponent } from '~/pages/teams/members-tasks-list/members-tasks.component';
 
 // Uncomment and add to NgModule imports if you need to use two-way binding
 // import { NativeScriptFormsModule } from "nativescript-angular/forms";
@@ -51,7 +52,8 @@ import { RegisterComponent } from '~/pages/account/register/register.component';
     MembersComponent,
     TeamListComponent,
     TeamFormComponent,
-    MetricsComponent
+    MetricsComponent,
+    MembersTasksComponent,
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [

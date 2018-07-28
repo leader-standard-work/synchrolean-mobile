@@ -4,7 +4,7 @@ import { Task } from "~/shared/models/task";
 import { PageRoute, RouterExtensions } from "nativescript-angular/router";
 import { switchMap } from "rxjs/operators";
 @Component({
-    selector: 'MembersTasks',
+    selector: 'members-tasks',
     moduleId: module.id,
     templateUrl: './members-tasks.component.html',
     styleUrls: ['./members-tasks.component.css']
@@ -13,6 +13,7 @@ import { switchMap } from "rxjs/operators";
 export class MembersTasksComponent implements OnInit{
     public tasks: Array<Task>;
     private id:number;
+    
     
     constructor(private pageR:PageRoute, private routerE:RouterExtensions){
         this.tasks = new Array<Task>();
