@@ -57,7 +57,7 @@ export class ServerService {
 
   login(serverUrl: string, email: String, password: string): boolean {
     this.serverUrl = serverUrl;
-    let body = {email: email, password: password};
+    let body = { email: email, password: password };
     // Authentication here!
 
     return false;
@@ -94,22 +94,29 @@ export class ServerService {
   /****************** End Accounts Requests **********************/
   /****************** Begin Team Requests ************************/
   getTeams(): Array<Team> {
-    let endpoint = this._url + '/api/team'; 
+    let endpoint = this._url + '/api/team';
     let teams = new Array<Team>();
     this.http.get<TeamServerInterface>(endpoint).subscribe(
       response => {
         teams.push(new Team(response));
-      }, error => {
-
-      }
-    )
+      },
+      error => {}
+    );
 
     return teams;
   }
   getTeam(id: number): Team {
     return null;
   }
-  addTeam(id: number, team: Team) {}
+  addTeam(name: string, description: string) {
+    let endpoint = this._url + '/api/team';
+    let body = {
+      ownerId: this.accountService.account.ownerId,
+      teamName: name,
+      teamDescription: description
+    };
+    this.http.post(endpoint, body).subscribe(response => {}, error => {});
+  }
   editTeam(team: Team) {}
 
   /****************** End Team Requests **************************/
