@@ -12,14 +12,12 @@ import { teams } from '~/shared/dummyData';
 })
 export class TeamListComponent implements OnInit {
   public teams: Array<Team>;
-  public names: Array<string>;
 
   constructor(
     private serverService: ServerService,
     private routerExtensions: RouterExtensions
   ) {
     this.teams = new Array<Team>();
-    this.names = new Array<string>();
   }
 
   ngOnInit(): void {
@@ -28,19 +26,13 @@ export class TeamListComponent implements OnInit {
 
     // if(this.teams$ === undefined){
     this.teams = JSON.parse(teams);
-
-    this.getNames();
     // }
   }
 
-  getNames() {
-    this.teams.forEach(value => {
-      this.names.push(value.teamName);
-    });
-  }
 
-  onTap() {
-    this.routerExtensions.navigate(['/Members'], {
+
+  onTap(id:number) {
+    this.routerExtensions.navigate(['/Members', id], {
       transition: {
         name: 'slideLeft'
       }

@@ -53,11 +53,11 @@ export class MembersComponent implements OnInit {
         this.members = JSON.parse(teamMembers);
         this.teamDescription = "Best Team Ever!";
         this.teamName = "Team C";
-        console.log(this.teamName);
+        //check ownership
+
     }
 
     onTap(id:number) {
-        console.log('Tapped');
         this.routerE.navigate(['/members-tasks', id], {
           transition: {
             name: 'slideLeft'

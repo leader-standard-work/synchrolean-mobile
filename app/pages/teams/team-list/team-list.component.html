@@ -6,9 +6,9 @@
 </ActionBar>
 
 <GridLayout rows="*, 62.5" class="page">
-    <ListView row='0' [items]="names">
-        <ng-template let-name="item" let-i="index">
-            <label class="t-30 m-b-2 m-l-12 " (tap)='onTap()' [text]="name"></label>
+    <ListView row='0' [items]="teams">
+        <ng-template let-team="item" let-i="index">
+            <label class="t-30 m-b-2 m-l-12 " (tap)='onTap(team.id)' [text]="team.teamName"></label>
         </ng-template>
     </ListView>
     <StackLayout row="1" orientation="horizontal">
