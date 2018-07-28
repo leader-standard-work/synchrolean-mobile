@@ -35,11 +35,13 @@ export class MembersComponent implements OnInit {
     public teamName: string;
     public teamDescription: string;
     private id: number;
+    private isOwner: Boolean;
 
     constructor(private pageR:PageRoute, private routerE:RouterExtensions){
         this.members = new Array<Account>();
         this.teamName = "";
         this.teamDescription = "";
+        this.isOwner = false;
         this.pageR.activatedRoute.pipe(
             switchMap(activatedRoute => activatedRoute.params)
         ).forEach((params)=> {this.id = +params["id"];})

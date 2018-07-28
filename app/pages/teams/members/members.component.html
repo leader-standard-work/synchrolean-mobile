@@ -1,7 +1,7 @@
 <ActionBar class="action-bar">
     <Label class="action-bar-title" text=""></Label>
-    <ActionItem ios.position="right" text="Edit" android.position="actionBar"></ActionItem>
-    <ActionItem ios.position="left" text="Add" android.position="actionBar"></ActionItem>
+    <ActionItem visibility="{{ isOwner ?  'visible':'collapse' }}" ios.position="right" text="Edit" android.position="actionBar"></ActionItem>
+    <ActionItem visibility="{{ isOwner ?  'visible':'collapse' }}" ios.position="left" text="Add" android.position="actionBar"></ActionItem>
 </ActionBar>
 
 <Gridlayout class='page' rows="auto, auto, *">
