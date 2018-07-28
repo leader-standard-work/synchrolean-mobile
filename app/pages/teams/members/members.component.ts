@@ -4,7 +4,7 @@ import { PageRoute, RouterExtensions } from "nativescript-angular/router";
 import { switchMap } from "rxjs/operators";
 import { Account } from "~/shared/models/account";
 import { Team } from "~/shared/models/team";
-
+import * as dialogs from "ui/dialogs";
 
 @Injectable({
     providedIn: 'root'
@@ -30,7 +30,7 @@ export class MembersComponent implements OnInit {
         this.members = new Array<Account>();    //make new empty array of accounts 
         this.teamName = "";     //just temps till server
         this.teamDescription = "";      //just temps till server
-        this.isOwner = false;       //set ownership to false
+        this.isOwner = true;       //set ownership to false
         //get param from navigation
         this.pageR.activatedRoute.pipe(
             switchMap(activatedRoute => activatedRoute.params)
@@ -55,4 +55,19 @@ export class MembersComponent implements OnInit {
           }
         });
       }
+
+    addTapped(){
+          console.log('Edit tapped');
+        dialogs.prompt({
+            title: "Please enter the user's email",
+            okButtonText: "Send invite",
+            cancelButtonText: "Cancel",
+            inputType: dialogs.inputType.email
+        }).then(r => {
+            //make server call to add by email
+            console.log("Dialog result: " + r.result + ", text: " + r.text);
+            //check result
+            //promot if it was ok or not
+        });
+    }
 }

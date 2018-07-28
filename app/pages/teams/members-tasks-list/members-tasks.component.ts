@@ -3,7 +3,6 @@ import { Component, OnInit } from "@angular/core";
 import { Task } from "~/shared/models/task";
 import { PageRoute, RouterExtensions } from "nativescript-angular/router";
 import { switchMap } from "rxjs/operators";
-import { TeamServerInterface } from "~/shared/models/team";
 import { Account, AccountServerInterface } from "~/shared/models/account";
 
 //name component and the markup and stayle sheet

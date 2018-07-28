@@ -2,7 +2,7 @@
 <ActionBar class="action-bar">
     <Label class="action-bar-title" text=""></Label>
     <ActionItem visibility="{{ isOwner ?  'visible':'collapse' }}" ios.position="right" text="Edit" android.position="actionBar"></ActionItem>
-    <ActionItem visibility="{{ isOwner ?  'visible':'collapse' }}" ios.position="left" text="Add" android.position="actionBar"></ActionItem>
+    <ActionItem visibility="{{ isOwner ?  'visible':'collapse' }}" (tap)="addTapped()" ios.position="left" text="Add" android.position="actionBar"></ActionItem>
 </ActionBar>
 
 <!-- Make grid layout for the page naming row sizes-->
