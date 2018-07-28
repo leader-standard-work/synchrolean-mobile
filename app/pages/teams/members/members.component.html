@@ -1,15 +1,21 @@
+<!-- Make action bar if the user is the owner of the team show owner buttons-->
 <ActionBar class="action-bar">
     <Label class="action-bar-title" text=""></Label>
     <ActionItem visibility="{{ isOwner ?  'visible':'collapse' }}" ios.position="right" text="Edit" android.position="actionBar"></ActionItem>
     <ActionItem visibility="{{ isOwner ?  'visible':'collapse' }}" ios.position="left" text="Add" android.position="actionBar"></ActionItem>
 </ActionBar>
 
+<!-- Make grid layout for the page naming row sizes-->
 <Gridlayout class='page' rows="auto, auto, *">
+    <!-- Make labels to display name and description of team-->
     <Label class="t-30 text-center" [text]="teamName" row='0' textWrap="true"></Label>
     <Label class="t-15 text-center" [text]="teamDescription" row='1' textWrap="true"></Label>
+
+    <!-- Print array in list form-->
     <ListView row='2' [items]="members">
         <ng-template let-member="item"  let-i="index">
-            <GridLayout class="list-group-item">     
+            <GridLayout class="list-group-item">
+                <!-- Make individual label for members send the id of the tapped item to onTap-->     
             <label class="t-30 m-b-2 m-l-12" height="10%" (tap)="onTap(member.id)" [text]="member.firstname"></label>   
             </GridLayout>    
         </ng-template>

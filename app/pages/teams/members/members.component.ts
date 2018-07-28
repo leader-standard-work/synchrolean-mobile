@@ -10,18 +10,7 @@ import { Team } from "~/shared/models/team";
     providedIn: 'root'
 })
 
-// class members{
-//     name: string;
-//     id: number;
-// }
-
-// class Team{
-//     name: string;
-//     teamId:number;
-//     description: string;
-//     members:Array<members>;
-// }
-
+//name component and the markup and stayle sheet
 @Component({
     selector: 'Members',
     moduleId: module.id,
@@ -32,16 +21,17 @@ import { Team } from "~/shared/models/team";
 export class MembersComponent implements OnInit {
     public team: Team;
     public members: Array<Account>;
-    public teamName: string;
-    public teamDescription: string;
+    public teamName: string;            //holds fake team name
+    public teamDescription: string;     //hold fake team description
     private id: number;
     private isOwner: Boolean;
 
     constructor(private pageR:PageRoute, private routerE:RouterExtensions){
-        this.members = new Array<Account>();
-        this.teamName = "";
-        this.teamDescription = "";
-        this.isOwner = false;
+        this.members = new Array<Account>();    //make new empty array of accounts 
+        this.teamName = "";     //just temps till server
+        this.teamDescription = "";      //just temps till server
+        this.isOwner = false;       //set ownership to false
+        //get param from navigation
         this.pageR.activatedRoute.pipe(
             switchMap(activatedRoute => activatedRoute.params)
         ).forEach((params)=> {this.id = +params["id"];})
@@ -57,6 +47,7 @@ export class MembersComponent implements OnInit {
 
     }
 
+    //navigate to members task list taking id with it
     onTap(id:number) {
         this.routerE.navigate(['/members-tasks', id], {
           transition: {

@@ -29,8 +29,6 @@ export class TeamListComponent implements OnInit {
     // }
   }
 
-
-
   onTap(id:number) {
     this.routerExtensions.navigate(['/Members', id], {
       transition: {
