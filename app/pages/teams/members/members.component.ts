@@ -2,9 +2,13 @@ import { teamMembers } from '~/shared/dummyData';
 import { Injectable, Input, Component, OnInit } from '@angular/core';
 import { PageRoute, RouterExtensions } from 'nativescript-angular/router';
 import { switchMap } from 'rxjs/operators';
+
+import { TeamService } from '~/shared/services/teams.service';
+
 import { Account } from '~/shared/models/account';
 import { Team } from '~/shared/models/team';
 import * as dialogs from 'ui/dialogs';
+import { AccountService } from '~/shared/services/account.service';
 
 @Injectable({
   providedIn: 'root'
@@ -21,14 +25,15 @@ export class MembersComponent implements OnInit {
   public members: Array<Account>;
   public teamName: string; //holds fake team name
   public teamDescription: string; //hold fake team description
+  public isOwner: Boolean;
   private id: number;
-  private isOwner: Boolean;
 
-  constructor(private pageR: PageRoute, private routerE: RouterExtensions) {
-    this.members = new Array<Account>();
-    this.teamName = '';
-    this.teamDescription = '';
-    this.isOwner = true;
+  constructor(
+    private teamService: TeamService,
+    private accountService: AccountService,
+    private pageR: PageRoute,
+    private routerE: RouterExtensions
+  ) {
     this.pageR.activatedRoute
       .pipe(switchMap(activatedRoute => activatedRoute.params))
       .forEach(params => {
@@ -39,10 +44,33 @@ export class MembersComponent implements OnInit {
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
-    this.members = JSON.parse(teamMembers);
-    this.teamDescription = 'Best Team Ever!';
-    this.teamName = 'Team C';
-    //check ownership
+    this.members = new Array<Account>();
+    // Get team by id
+    this.teamService.getTeam(this.id).subscribe(
+      response => {
+        this.team = response;
+        this.teamDescription = this.team.teamDescription;
+        this.teamName = this.team.teamName;
+        this.isOwner =
+          this.team.ownerId === this.accountService.account.ownerId
+            ? true
+            : false;
+      },
+      error => {
+        console.error('could not load team in members', error);
+        this.isOwner = false;
+      }
+    );
+
+    // Get team members call
+    this.teamService.getTeamMembers(this.id).subscribe(
+      accounts => {
+        accounts.forEach(account => this.members.push(account));
+      },
+      error => {
+        console.error('could not get team members', error);
+      }
+    );
   }
 
   //navigate to members task list taking id with it

@@ -21,7 +21,6 @@ export class TeamListComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log('OnINIT Called in teamList');
     this.teams$ = new ObservableArray<Team>();
     if (this.serverService.isLoggedIn()) {
       this.loginButtonText = 'Logout';

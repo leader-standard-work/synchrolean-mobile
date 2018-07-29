@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { AccountService, State } from '~/shared/services/account.service';
+
 import { Team, TeamServerInterface } from '~/shared/models/team';
 import { Account, AccountServerInterface } from '~/shared/models/account';
 
@@ -99,7 +100,7 @@ export class ServerService {
   }
 
   getTeam(id: number): Observable<Team> {
-    let endpoint = this.serverUrl + 'api/team/' + id;
+    let endpoint = this.serverUrl + '/api/team/' + id;
     return this.http
       .get<TeamServerInterface>(endpoint)
       .pipe(map(response => new Team(response)));
@@ -118,6 +119,13 @@ export class ServerService {
   }
 
   editTeam(team: Team) {}
+
+  getTeamMembers(id: number): Observable<Account[]> {
+    let endpoint = this.serverUrl + '/api/team/members/' + id;
+    return this.http
+      .get<AccountServerInterface[]>(endpoint)
+      .pipe(map(accounts => accounts.map(account => new Account(account))));
+  }
 
   /****************** End Team Requests **************************/
   /****************** Begin Task Requests ************************/

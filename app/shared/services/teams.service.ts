@@ -1,9 +1,10 @@
 import { Injectable, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { ObservableArray } from 'data/observable-array';
 
 import { Team } from '~/shared/models/team';
-import { Observable, of } from 'rxjs';
+import { Account } from '~/shared/models/account';
 import { ServerService } from '~/shared/services/server.service';
-import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +27,10 @@ export class TeamService {
   public addTeam(name: string, description: string): Observable<Team> {
     //incomplete, will add to global dummy data?
     return this.serverService.addTeam(name, description);
+  }
+
+  public getTeamMembers(id: number): Observable<Account[]> {
+    return this.serverService.getTeamMembers(id);
   }
 
   //public updateTeam(){}
