@@ -13,11 +13,11 @@
 
     <!-- Print array in list form-->
     <ListView row='2' [items]="members">
-        <ng-template let-member="item"  let-i="index">
+        <ng-template let-member="item" let-i="index">
             <GridLayout class="list-group-item">
-                <!-- Make individual label for members send the id of the tapped item to onTap-->     
-            <label class="t-30 m-b-2 m-l-12" height="10%" (tap)="onTap(member.id)" [text]="member.firstname"></label>   
-            </GridLayout>    
+                <!-- Make individual label for members send the id of the tapped item to onTap-->
+                <label class="t-30 m-b-2 m-l-12" height="10%" (tap)="onTap(member.id)" [text]="member.firstname"></label>
+            </GridLayout>
         </ng-template>
     </ListView>
 </Gridlayout>

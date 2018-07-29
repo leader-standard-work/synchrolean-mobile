@@ -5,6 +5,7 @@ import { PageRoute, RouterExtensions } from 'nativescript-angular/router';
 import { action, alert } from 'tns-core-modules/ui/dialogs/dialogs';
 import { TeamService } from '~/shared/services/teams.service';
 import { Team } from '~/shared/models/team';
+import { ServerService } from '~/shared/services/server.service';
 
 @Component({
   selector: 'team-form',
@@ -47,13 +48,24 @@ export class TeamFormComponent implements OnInit {
     if (teamName !== '' && teamDesc !== '') {
       //switch(this.mode)
       //case Mode.new
-      options.title = 'New team created';
       //note, the new Team expect args of Id (team ID), team name, team description, and ownerID
       //the team ID and owner ID are not correct yet and use the dummy value of 1
-      
-      this.teamService.addTeam(teamName, teamDesc);
-      this.teamFormGroup.reset();
-      alert(options);
+      this.teamService.addTeam(teamName, teamDesc).subscribe(
+        response => {
+          console.log(response);
+          this.routerExtensions.navigate(['/teams'], {
+            clearHistory: true,
+            transition: {
+              name: 'fade'
+            }
+          });
+        },
+        error => {
+          console.error('could not add team');
+          this.teamFormGroup.reset();
+          alert(options);
+        }
+      );
     }
   }
 }

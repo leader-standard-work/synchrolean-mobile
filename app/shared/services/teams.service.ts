@@ -1,35 +1,38 @@
 import { Injectable, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { ObservableArray } from 'data/observable-array';
 
 import { Team } from '~/shared/models/team';
-import { Observable, of } from 'rxjs';
+import { Account } from '~/shared/models/account';
 import { ServerService } from '~/shared/services/server.service';
-import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TeamService {
   private teams: Array<Team>;
-  private serverService: ServerService;
 
-  constructor(serverService: ServerService) {
-    this.serverService = serverService;
+  constructor(private serverService: ServerService) {
     this.teams = new Array<Team>();
   }
   //end of constructor
+  public getTeams(): Observable<Team[]> {
+    return this.serverService.getTeams();
+  }
 
-  public getTeams(team: Team) {
-    for (let value of this.teams) {
-      if (value.id === team.id) {
-        value.teamName = team.teamName;
-        value.teamDescription = team.teamDescription;
-      }
-    }
+  public getTeam(id: number): Observable<Team> {
+    return this.serverService.getTeam(id);
   }
-  public addTeam(name: string, description: string) {
+
+  public addTeam(name: string, description: string): Observable<Team> {
     //incomplete, will add to global dummy data?
-    this.serverService.addTeam(name, description);
+    return this.serverService.addTeam(name, description);
   }
+
+  public getTeamMembers(id: number): Observable<Account[]> {
+    return this.serverService.getTeamMembers(id);
+  }
+
   //public updateTeam(){}
 
   //public deleteTeam(){}

@@ -5,6 +5,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { RouterExtensions } from 'nativescript-angular/router';
 
 import { ServerService } from '~/shared/services/server.service';
+import { AccountService } from '~/shared/services/account.service';
 
 @Component({
   selector: 'register',
@@ -14,10 +15,12 @@ import { ServerService } from '~/shared/services/server.service';
 })
 export class RegisterComponent implements OnInit {
   public accountFormGroup: FormGroup;
+
   public tempUrl: string = 'http://localhost:55542';
 
   constructor(
     private serverService: ServerService,
+    private accountService: AccountService,
     private formBuilder: FormBuilder,
     private routerExtensions: RouterExtensions
   ) {}
@@ -48,7 +51,27 @@ export class RegisterComponent implements OnInit {
     let lastname = this.accountFormGroup.value.lastname;
     let password = this.accountFormGroup.value.password;
 
-    let valid = this.serverService.register(url, email, password, firstname, lastname);
-    
+    let options = {
+      title: 'Could not connect to server',
+      okButtonText: 'Ok'
+    };
+
+    this.serverService
+      .register(url, email, password, firstname, lastname)
+      .subscribe(
+        account => {
+          console.log(account);
+          this.accountService.account = account;
+          this.routerExtensions.navigate(['/teams'], {
+            clearHistory: true,
+            transition: {
+              name: 'slideRight'
+            }
+          });
+        },
+        error => {
+          alert(options);
+        }
+      );
   }
 }
