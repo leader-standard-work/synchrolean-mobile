@@ -1,5 +1,5 @@
-<ActionBar class="action-bar">
-    <Label class="action-bar-title" text="Teams"></Label>
+<ActionBar class="action-bar" title="Teams">
+    <!-- <Label class="action-bar-title" text="Teams"></Label> -->
     <ActionItem nsRouterLink="/team-form" [visibility]="isLoggedIn() ? 'visible' : 'collapsed'" text="Create Team" android.position="actionBar"
         ios.position="right"></ActionItem>
     <ActionItem [text]="loginButtonText" (tap)="loginTapped()" android.position="actionBar"></ActionItem>

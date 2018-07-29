@@ -1,5 +1,4 @@
-import { teamMembers } from '~/shared/dummyData';
-import { Injectable, Input, Component, OnInit } from '@angular/core';
+import { Injectable, Component, OnInit } from '@angular/core';
 import { PageRoute, RouterExtensions } from 'nativescript-angular/router';
 import { switchMap } from 'rxjs/operators';
 
@@ -82,28 +81,8 @@ export class MembersComponent implements OnInit {
     });
   }
 
-<<<<<<< HEAD
-    addTapped(){
-
-        dialogs.prompt({
-            title: "Please enter the user's email",
-            okButtonText: "Send invite",
-            cancelButtonText: "Cancel",
-            inputType: dialogs.inputType.email
-        }).then(r => {
-            //check prompt result
-            //make server call to add by email
-            console.log("Dialog result: " + r.result + ", text: " + r.text);
-            //check result
-            //promot if it was ok or not
-        });
-    }
-}
-=======
   addTapped() {
-    console.log('Edit tapped');
-    dialogs
-      .prompt({
+    dialogs.prompt({
         title: "Please enter the user's email",
         okButtonText: 'Send invite',
         cancelButtonText: 'Cancel',
@@ -117,4 +96,3 @@ export class MembersComponent implements OnInit {
       });
   }
 }
->>>>>>> ddcca4f6ebcd436215650cff9d3a1119a36c611a

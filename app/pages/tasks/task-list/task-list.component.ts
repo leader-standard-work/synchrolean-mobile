@@ -42,18 +42,14 @@ export class TaskListComponent implements OnInit {
   teamTapped() {
     this.routerExtensions.navigate(['/teams'], {
       clearHistory: true,
-      transition: {
-        name: 'fade'
-      }
+      animated: false
     });
   }
 
   metricsTapped() {
     this.routerExtensions.navigate(['/metrics'], {
       clearHistory: true,
-      transition: {
-        name: 'fade'
-      }
+      animated: false
     });
   }
 

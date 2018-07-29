@@ -3,7 +3,6 @@ import { Team } from '~/shared/models/team';
 import { ServerService } from '~/shared/services/server.service';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { ObservableArray } from 'data/observable-array';
-import { teams } from '~/shared/dummyData';
 
 @Component({
   selector: 'team-list',
@@ -22,6 +21,7 @@ export class TeamListComponent implements OnInit {
 
   ngOnInit() {
     this.teams$ = new ObservableArray<Team>();
+    this.loginButtonText = 'Sign in';
     if (this.serverService.isLoggedIn()) {
       this.loginButtonText = 'Logout';
       this.serverService.getTeams().subscribe(
@@ -33,8 +33,6 @@ export class TeamListComponent implements OnInit {
           console.error('could not get teams', error);
         }
       );
-    } else {
-      this.loginButtonText = 'Sign in';
     }
   }
 
@@ -54,6 +52,7 @@ export class TeamListComponent implements OnInit {
     if (this.serverService.isLoggedIn()) {
       this.serverService.logout();
       this.loginButtonText = 'Sign In';
+      this.teams$ = new ObservableArray<Team>();
       this.routerExtensions.navigate(['/teams'], {
         transition: {
           name: 'slideTop'
@@ -71,18 +70,14 @@ export class TeamListComponent implements OnInit {
   tasksTapped() {
     this.routerExtensions.navigate(['/task-list'], {
       clearHistory: true,
-      transition: {
-        name: 'fade'
-      }
+      animated: false
     });
   }
 
   metricsTapped() {
     this.routerExtensions.navigate(['/metrics'], {
       clearHistory: true,
-      transition: {
-        name: 'fade'
-      }
+      animated: false
     });
   }
 }
