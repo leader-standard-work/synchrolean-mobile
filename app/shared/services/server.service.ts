@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { AccountService, State } from '~/shared/services/account.service';
 import { Team, TeamServerInterface } from '~/shared/models/team';
@@ -10,9 +12,6 @@ import { Account, AccountServerInterface } from '~/shared/models/account';
 })
 export class ServerService {
   private _url: string;
-  private _taskApi: string;
-  private _teamApi: string;
-  private _accountApi: string;
   private _httpOptions;
 
   constructor(
@@ -21,13 +20,8 @@ export class ServerService {
   ) {
     if (accountService.state === State.LoggedIn) {
       this._url = this.accountService.serverUrl;
-      this._taskApi = this._url + '/tasks/';
-      this._teamApi = this._url + '/teams/';
-      this._accountApi = this._url + '/accounts/';
     } else {
       this._url = '';
-      this._taskApi = '';
-      this._teamApi = '';
     }
 
     // this._httpOptions =  {
@@ -42,9 +36,10 @@ export class ServerService {
 
   set serverUrl(url: string) {
     this._url = url;
-    this._taskApi = this._url + '/api/tasks/';
-    this._teamApi = this._url + '/api/teams/';
-    this._accountApi = this._url + '/api/accounts/';
+  }
+
+  get serverUrl(): string {
+    return this._url;
   }
 
   /****************** Begin Accounts Requests ********************/
@@ -55,18 +50,21 @@ export class ServerService {
     return false;
   }
 
-  login(serverUrl: string, email: String, password: string): boolean {
+  login(
+    serverUrl: string,
+    email: String,
+    password: string
+  ): Observable<Account> {
     this.serverUrl = serverUrl;
-    let body = { email: email, password: password };
-    // Authentication here!
-
-    return false;
+    let endpoint = this.serverUrl + '/api/accounts/' + email;
+    // let body = { email: email, password: password };
+    return this.http
+      .get<AccountServerInterface>(endpoint)
+      .pipe(map(response => new Account(response)));
   }
 
   logout() {
     this._url = '';
-    this._taskApi = '';
-    this._teamApi = '';
     this.accountService.logout();
   }
 
@@ -76,47 +74,49 @@ export class ServerService {
     password: string,
     firstname: string,
     lastname: string
-  ): boolean {
+  ): Observable<Account> {
     this.serverUrl = serverUrl;
+    let endpoint = this.serverUrl + '/accounts';
     let body = { firstName: firstname, lastName: lastname, email: email };
-    this.http.post<AccountServerInterface>(this._accountApi, body).subscribe(
-      response => {
-        this.accountService.account = new Account(response);
-        console.log(this.accountService.account);
-      },
-      error => {
-        console.log('error on registering user', error);
-      }
-    );
-    return false;
+    return this.http
+      .post<AccountServerInterface>(endpoint, body)
+      .pipe(map(response => new Account(response)));
   }
 
   /****************** End Accounts Requests **********************/
   /****************** Begin Team Requests ************************/
-  getTeams(): Array<Team> {
+  getTeams(): Observable<Team[]> {
     let endpoint = this._url + '/api/team';
-    let teams = new Array<Team>();
-    this.http.get<TeamServerInterface>(endpoint).subscribe(
-      response => {
-        teams.push(new Team(response));
-      },
-      error => {}
-    );
+    return this.http
+      .get<TeamServerInterface[]>(endpoint)
+      .pipe(
+        map(responseArray =>
+          responseArray.map(
+            teamServerInterface => new Team(teamServerInterface)
+          )
+        )
+      );
+  }
 
-    return teams;
+  getTeam(id: number): Observable<Team> {
+    let endpoint = this.serverUrl + 'api/team/' + id;
+    return this.http
+      .get<TeamServerInterface>(endpoint)
+      .pipe(map(response => new Team(response)));
   }
-  getTeam(id: number): Team {
-    return null;
-  }
+
   addTeam(name: string, description: string) {
-    let endpoint = this._url + '/api/team';
+    let endpoint = this.serverUrl + '/api/team';
     let body = {
       ownerId: this.accountService.account.ownerId,
       teamName: name,
       teamDescription: description
     };
-    this.http.post(endpoint, body).subscribe(response => {}, error => {});
+    return this.http
+      .post<TeamServerInterface>(endpoint, body)
+      .pipe(map(response => new Team(response)));
   }
+
   editTeam(team: Team) {}
 
   /****************** End Team Requests **************************/

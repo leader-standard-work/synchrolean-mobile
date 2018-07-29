@@ -1,12 +1,12 @@
 <ActionBar class="action-bar">
     <Label class="action-bar-title" text="Teams"></Label>
-    <ActionItem nsRouterLink="/team-form" text="Create Team" android.position="actionBar" ios.position="right"></ActionItem>
-    <ActionItem *ngIf="!isLoggedIn()" nsRouterLink="/login" text="Sign-in" android.position="actionBar"></ActionItem>
-    <ActionItem *ngIf="isLoggedIn()" (tap)="logoutTapped()" text="Logout" android.position="actionBar"></ActionItem>
+    <ActionItem nsRouterLink="/team-form" [visibility]="isLoggedIn() ? 'visible' : 'collapsed'" text="Create Team" android.position="actionBar"
+        ios.position="right"></ActionItem>
+    <ActionItem [text]="loginButtonText" (tap)="loginTapped()" android.position="actionBar"></ActionItem>
 </ActionBar>
 
 <GridLayout rows="*, 62.5" class="page">
-    <ListView row='0' [items]="teams">
+    <ListView row='0' [items]="teams$">
         <ng-template let-team="item" let-i="index">
             <label class="t-30 m-b-2 m-l-12 " (tap)='onTap(team.id)' [text]="team.teamName"></label>
         </ng-template>

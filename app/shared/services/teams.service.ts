@@ -10,26 +10,24 @@ import { ObservableArray } from 'tns-core-modules/data/observable-array/observab
 })
 export class TeamService {
   private teams: Array<Team>;
-  private serverService: ServerService;
 
-  constructor(serverService: ServerService) {
-    this.serverService = serverService;
+  constructor(private serverService: ServerService) {
     this.teams = new Array<Team>();
   }
   //end of constructor
+  public getTeams(): Observable<Team[]> {
+    return this.serverService.getTeams();
+  }
 
-  public getTeams(team: Team) {
-    for (let value of this.teams) {
-      if (value.id === team.id) {
-        value.teamName = team.teamName;
-        value.teamDescription = team.teamDescription;
-      }
-    }
+  public getTeam(id: number): Observable<Team> {
+    return this.serverService.getTeam(id);
   }
-  public addTeam(name: string, description: string) {
+
+  public addTeam(name: string, description: string): Observable<Team> {
     //incomplete, will add to global dummy data?
-    this.serverService.addTeam(name, description);
+    return this.serverService.addTeam(name, description);
   }
+
   //public updateTeam(){}
 
   //public deleteTeam(){}
