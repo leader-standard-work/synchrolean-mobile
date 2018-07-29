@@ -57,13 +57,14 @@ export class MembersComponent implements OnInit {
       }
 
     addTapped(){
-          console.log('Edit tapped');
+
         dialogs.prompt({
             title: "Please enter the user's email",
             okButtonText: "Send invite",
             cancelButtonText: "Cancel",
             inputType: dialogs.inputType.email
         }).then(r => {
+            //check prompt result
             //make server call to add by email
             console.log("Dialog result: " + r.result + ", text: " + r.text);
             //check result
