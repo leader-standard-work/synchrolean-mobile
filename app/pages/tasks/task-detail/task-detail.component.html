@@ -1,12 +1,16 @@
 <ActionBar class="action-bar">
-    <Label class="action-bar-title" fontSize="32" text="Details"></Label>
+    <Label class="action-bar-title" fontSize="30" text="Task Details"></Label>
     <ActionItem [nsRouterLink]="['/task-edit', task.databaseId]" ios.position="right" text="Edit">
     </ActionItem>
 </ActionBar>
 <StackLayout class="container">
-    <Label class="duration-heading" text="{{ task.duration }}" textAlignment="center"></Label>
-    <StackLayout class="hr-light m-10"></StackLayout>
-    <Label class="description-body" text="{{ task.name }}" textWrap="true"></Label>
-    <Label class="note-heading" text="Note:" textAlignment="center"></Label>
-    <Label class="note-body" text="{{ task.description }}" textWrap="true"></Label>
+    <Label class="t-25 m-y-10 text-center" text="Task Name:" textAlignment="center"></Label>
+    <Label class="t-20 m-y-10 text-center" [text]="task.name " textWrap="true"></Label>
+    <StackLayout class="hr-light m-5"></StackLayout>
+    <Label class="t-25 m-y-10 text-center" text="Description:" textAlignment="center"></Label>
+    <Label class="t-20 m-y-10 text-center" [text]="task.description " textWrap="true"></Label>
+    <StackLayout class="hr-light m-5"></StackLayout>
+    <Label class="t-25 m-y-10 text-center" text="Occurs:" textAlignment="center"></Label>
+    <Label class="t-20 m-y-10 text-center" [text]="task.duration" textAlignment="center"></Label>
+
 </StackLayout>
