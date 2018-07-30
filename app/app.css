@@ -9,30 +9,31 @@ In many cases you may want to use the NativeScript core theme instead
 of writing your own CSS rules. For a full list of class names in the theme
 refer to http://docs.nativescript.org/ui/theme.
 */
-@import '~nativescript-theme-core/css/core.light.css';
 
+@import '~nativescript-theme-core/css/core.light.css';
 .font-awesome {
     font-family: "FontAwesome";
 }
+
 .action-bar-title {
-    color : #e39e2c;
+    color: #e39e2c;
     text-align: center;
-    background-color:#245779;
+    background-color: transparent;
 }
 
 button {
-    border-color: transparent; 
+    border-color: transparent;
     border-width: .25;
-    color: #245779;     
+    color: #245779;
 }
 
-.active-button{
+.active-button {
     color: #e39e2c;
 }
 
 .action-bar {
     background-color: #245779;
-    color : #e39e2c;
+    color: #e39e2c;
 }
 
 .list-group-item {
@@ -63,4 +64,3 @@ button {
     font-weight: bold;
     font-size: 24;
 }
-

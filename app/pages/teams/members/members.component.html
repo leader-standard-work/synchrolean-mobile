@@ -2,21 +2,26 @@
 <ActionBar class="action-bar">
     <Label class="action-bar-title" fontSize="32" text=""></Label>
     <ActionItem visibility="{{ isOwner ?  'visible':'collapse' }}" ios.position="right" text="Edit" android.position="actionBar"></ActionItem>
-    <ActionItem visibility="{{ isOwner ?  'visible':'collapse' }}" (tap)="addTapped()" ios.position="left" text="Add" android.position="actionBar"></ActionItem>
+    <!-- <ActionItem visibility="{{ isOwner ?  'visible':'collapse' }}" (tap)="addTapped()" ios.position="left" text="Add" android.position="actionBar"></ActionItem> -->
 </ActionBar>
 
 <!-- Make grid layout for the page naming row sizes-->
-<Gridlayout class='page' rows="auto, auto, *">
+<Gridlayout class='page' rows="auto, auto, auto, *">
     <!-- Make labels to display name and description of team-->
-    <Label class="t-30 text-center" [text]="teamName" row='0' textWrap="true"></Label>
-    <Label class="t-15 text-center" [text]="teamDescription" row='1' textWrap="true"></Label>
-
+    <Label class="t-30 m-t-30 text-center" [text]="teamName" row='0' textWrap="true"></Label>
+    <Label class="t-15 m-y-15 text-center" [text]="teamDescription" row='1' textWrap="true"></Label>
+    <Button class="btn btn-primary w-full" row="2" [visibility]="isOwner ? 'visible' : 'collapsed'" (tap)="addTapped()">
+        <FormattedString>
+            <Span text="&#xf067; " fontFamily="FontAwesome" fontSize="12"></Span>
+            <Span text="Add Members"></Span>
+        </FormattedString>
+    </Button>
     <!-- Print array in list form-->
-    <ListView row='2' [items]="members">
+    <ListView row='3' [items]="members">
         <ng-template let-member="item" let-i="index">
             <GridLayout class="list-group-item">
                 <!-- Make individual label for members send the id of the tapped item to onTap-->
-                <label class="t-30 m-b-2 m-l-12" height="10%" (tap)="onTap(member.id)" [text]="member.firstname"></label>
+                <label class="t-30 m-b-2 m-l-15" height="10%" (tap)="onTap(member.id)" [text]="member.firstname + ' ' + member.lastname"></label>
             </GridLayout>
         </ng-template>
     </ListView>
