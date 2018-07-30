@@ -54,7 +54,7 @@ export class LoginComponent implements OnInit {
 
     this.serverService.login(serverUrl, email, password).subscribe(
       account => {
-        account.serverUrl = serverUrl;      //this is ugly but is needed in user settings
+        account.serverUrl = serverUrl; //this is ugly but is needed in user settings
         this.accountService.account = account;
         this.routerExtensions.navigate(['/teams'], {
           clearHistory: true,
@@ -65,5 +65,19 @@ export class LoginComponent implements OnInit {
         console.error('could not login "', email, '" :', error);
       }
     );
+  }
+
+  tasksTapped() {
+    this.routerExtensions.navigate(['/task-list'], {
+      clearHistory: true,
+      animated: false
+    });
+  }
+
+  metricsTapped() {
+    this.routerExtensions.navigate(['/metrics'], {
+      clearHistory: true,
+      animated: false
+    });
   }
 }
