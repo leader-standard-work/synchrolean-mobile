@@ -1,6 +1,6 @@
 <!-- Make action bar if the user is the owner of the team show owner buttons-->
 <ActionBar class="action-bar">
-    <Label class="action-bar-title" text=""></Label>
+    <Label class="action-bar-title" fontSize="32" text=""></Label>
     <ActionItem visibility="{{ isOwner ?  'visible':'collapse' }}" ios.position="right" text="Edit" android.position="actionBar"></ActionItem>
     <ActionItem visibility="{{ isOwner ?  'visible':'collapse' }}" (tap)="addTapped()" ios.position="left" text="Add" android.position="actionBar"></ActionItem>
 </ActionBar>

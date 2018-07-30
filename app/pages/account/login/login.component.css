@@ -1,9 +1,1 @@
-.page {
-    align-items: center;
-    flex-direction: column;
-}
-
-.form {
-    margin-left: 20;
-    margin-right: 20;
-}
+/* putting any css changes in app.css unless you have a very good reason*/

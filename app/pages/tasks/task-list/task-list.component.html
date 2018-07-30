@@ -1,5 +1,5 @@
 <ActionBar class="action-bar">
-    <Label class="action-bar-title" text="Tasks"></Label>
+    <Label class="action-bar-title" fontSize="32" text="Tasks"></Label>
     <ActionItem nsRouterLink="/task-form" pageTransition="slideTop" ios.systemIcon="4" ios.position="right" text="Add" android.position="actionBar"></ActionItem>
 </ActionBar>
 
@@ -12,19 +12,19 @@
 
     <!-- Begin Bottom Bar -->
     <StackLayout row="1" orientation="horizontal">
-        <Button textWrap="true" width="33%" textAlignment="center" class="button" color="#007AFF">
+        <Button class="active-button" textWrap="true" width="33%" textAlignment="center">
             <FormattedString>
                 <Span text="&#xf03a;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>
                 <Span text="Tasks"></Span>
             </FormattedString>
         </Button>
-        <Button textWrap="true" width="33%" textAlignment="center" class="button" (onTap)="teamTapped()" color="gray">
+        <Button textWrap="true" width="33%" textAlignment="center" (onTap)="teamTapped()">
             <FormattedString>
                 <Span text="&#xf0c0;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>
                 <Span text="Teams"></Span>
             </FormattedString>
         </Button>
-        <Button textWrap="true" width="33%" textAlignment="center" class="button" (onTap)="metricsTapped()" color="gray">
+        <Button textWrap="true" width="33%" textAlignment="center" (onTap)="metricsTapped()">
             <FormattedString>
                 <Span text="&#xf080;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>
                 <Span text="Metrics"></Span>

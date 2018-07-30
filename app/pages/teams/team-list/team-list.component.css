@@ -1,9 +1,1 @@
-.list-group-items {
-    font-size: 24px;
-    text-align: left;
-}
-.button{
-    border-color: transparent; 
-    border-width: .25;
-    background: white;
-}
+/* putting any css changes in app.css unless you have a very good reason*/
