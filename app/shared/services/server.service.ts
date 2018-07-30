@@ -48,7 +48,7 @@ export class ServerService {
     if (this.accountService.state === State.LoggedIn) {
       return true;
     }
-    return false;
+    return false;  
   }
 
   login(
@@ -64,6 +64,9 @@ export class ServerService {
       .pipe(map(response => new Account(response)));
   }
 
+  autoLogin(){
+    this.accountService.state = 0;
+  }
   logout() {
     this._url = '';
     this.accountService.logout();

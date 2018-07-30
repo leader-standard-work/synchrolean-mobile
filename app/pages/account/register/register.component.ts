@@ -61,6 +61,7 @@ export class RegisterComponent implements OnInit {
       .subscribe(
         account => {
           console.log(account);
+          account.serverUrl = url;      //this is ugly but is needed in user settings
           this.accountService.account = account;
           this.routerExtensions.navigate(['/teams'], {
             clearHistory: true,

@@ -3,7 +3,8 @@ import { Team } from '~/shared/models/team';
 import { ServerService } from '~/shared/services/server.service';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { ObservableArray } from 'data/observable-array';
-
+import { AccountService } from '~/shared/services/account.service';
+var appSettings = require("application-settings");
 @Component({
   selector: 'team-list',
   moduleId: module.id,
@@ -16,12 +17,17 @@ export class TeamListComponent implements OnInit {
 
   constructor(
     private serverService: ServerService,
-    private routerExtensions: RouterExtensions
+    private routerExtensions: RouterExtensions,
+    private accounteService: AccountService
   ) {}
 
   ngOnInit() {
     this.teams$ = new ObservableArray<Team>();
     this.loginButtonText = 'Sign in';
+    if(!this.serverService.isLoggedIn()){
+      this.login();
+      return;
+    }
     if (this.serverService.isLoggedIn()) {
       this.loginButtonText = 'Logout';
       this.serverService.getTeams().subscribe(
@@ -34,10 +40,36 @@ export class TeamListComponent implements OnInit {
         }
       );
     }
+
   }
 
   isLoggedIn(): boolean {
     return this.serverService.isLoggedIn();
+  }
+
+  login(){
+    let userName = appSettings.getString("email");
+    let password = "Rookso06";
+    let serverUrl = appSettings.getString("serverUrl");
+   
+  this.serverService.login(serverUrl, userName, password).subscribe(
+      res=>{
+        this.serverService.autoLogin();
+        this.loginButtonText = 'Logout';
+        this.serverService.getTeams().subscribe(
+          teams => {
+            teams.forEach(team => this.teams$.push(team));
+            console.log(teams);
+          },
+          error => {
+            console.error('could not get teams', error);
+          }
+        );
+      }
+      ,err=>{
+        console.log(err);
+      });
+
   }
 
   onTap(id: number) {

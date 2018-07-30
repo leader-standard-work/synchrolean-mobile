@@ -54,6 +54,7 @@ export class LoginComponent implements OnInit {
 
     this.serverService.login(serverUrl, email, password).subscribe(
       account => {
+        account.serverUrl = serverUrl;      //this is ugly but is needed in user settings
         this.accountService.account = account;
         this.routerExtensions.navigate(['/teams'], {
           clearHistory: true,

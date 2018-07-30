@@ -4,6 +4,7 @@ import { RouterExtensions } from 'nativescript-angular/router';
 
 import { Task } from '~/shared/models/task';
 import { TaskService } from '~/shared/services/tasks.service';
+import { ServerService } from '~/shared/services/server.service';
 
 @Component({
   selector: 'tasks-list',
@@ -37,6 +38,7 @@ export class TaskListComponent implements OnInit {
         this.midnight.setHours(24, 0, 0, 0);
       }
     }, 60 * 1000);
+
   }
 
   teamTapped() {
@@ -56,4 +58,6 @@ export class TaskListComponent implements OnInit {
   onChecked() {
     this.tasks$ = this.tasksService.getUpdatedTasks();
   }
+
+
 }
