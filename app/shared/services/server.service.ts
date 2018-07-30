@@ -77,7 +77,7 @@ export class ServerService {
     lastname: string
   ): Observable<Account> {
     this.serverUrl = serverUrl;
-    let endpoint = this.serverUrl + '/accounts';
+    let endpoint = this.serverUrl + '/api/accounts';
     let body = { firstName: firstname, lastName: lastname, email: email };
     return this.http
       .post<AccountServerInterface>(endpoint, body)
