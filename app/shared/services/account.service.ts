@@ -36,6 +36,7 @@ export class AccountService {
   logout() {
     this._account = null;
     this._state = State.LoggedOut;
+    appSettings.clear();
   }
 
   set account(account: Account) {

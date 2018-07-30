@@ -24,7 +24,7 @@ export class TeamListComponent implements OnInit {
   ngOnInit() {
     this.teams$ = new ObservableArray<Team>();
     this.loginButtonText = 'Sign in';
-    if(!this.serverService.isLoggedIn()){
+    if(appSettings.getString('email') && !this.serverService.isLoggedIn()){
       this.login();
       return;
     }
@@ -52,7 +52,7 @@ export class TeamListComponent implements OnInit {
     let password = "Rookso06";
     let serverUrl = appSettings.getString("serverUrl");
    
-  this.serverService.login(serverUrl, userName, password).subscribe(
+    this.serverService.login(serverUrl, userName, password).subscribe(
       res=>{
         this.serverService.autoLogin();
         this.loginButtonText = 'Logout';
