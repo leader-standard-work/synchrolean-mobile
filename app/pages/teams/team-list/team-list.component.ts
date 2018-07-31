@@ -40,7 +40,8 @@ export class TeamListComponent implements OnInit {
     } else {
       this.routerExtensions.navigate(['/login'], {
         transition: {
-          name: 'slideTop'
+          name: 'slideTop',
+
         }
       });
     }
@@ -78,7 +79,8 @@ export class TeamListComponent implements OnInit {
   onTap(id: number) {
     this.routerExtensions.navigate(['/Members', id], {
       transition: {
-        name: 'slideLeft'
+        name: 'slideLeft',
+        clearHistory: 'true'
       }
     });
   }
