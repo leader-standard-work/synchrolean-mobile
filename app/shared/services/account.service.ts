@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
+import * as AppSettings from 'application-settings';
 
 import { Account } from '~/shared/models/account';
-import { ServerService } from '~/shared/services/server.service';
-var appSettings = require('application-settings');
 
 export enum State {
   LoggedIn,
@@ -17,19 +16,22 @@ export class AccountService {
   private _state: State = State.LoggedOut;
 
   constructor() {
-    if (
-      appSettings.hasKey('email') &&
-      appSettings.hasKey('firstname') &&
-      appSettings.hasKey('lastname') &&
-      appSettings.hasKey('ownerId') &&
-      appSettings.hasKey('serverUrl')
-    ) {
-      let email = appSettings.getString('email');
-      let firstname = appSettings.getsetString('firstname');
-      let lastname = appSettings.getsetString('lastname');
-      let ownerId = appSettings.getsetNumber('ownerId');
-      let serverUrl = appSettings.getsetString('serverUrl');
+    let email = AppSettings.getString('email', '');
+    let firstname = AppSettings.getString('firstname', '');
+    let lastname = AppSettings.getString('lastname', '');
+    let ownerId = AppSettings.getNumber('ownerId', -1);
+    let serverUrl = AppSettings.getString('serverUrl', '');
 
+    if (
+      email === '' ||
+      firstname === '' ||
+      lastname === '' ||
+      ownerId === -1 ||
+      serverUrl === ''
+    ) {
+      this._account = null;
+      this._state = State.LoggedOut;
+    } else {
       let account = new Account({
         ownerId: ownerId,
         firstName: firstname,
@@ -47,10 +49,6 @@ export class AccountService {
     return this._state;
   }
 
-  // set state(state: State) {
-  //   this._state = state;
-  // }
-
   get serverUrl(): string {
     if (this._account === null) {
       return '';
@@ -61,26 +59,22 @@ export class AccountService {
   logout() {
     this._account = null;
     this._state = State.LoggedOut;
-    appSettings.clear();
+    AppSettings.clear();
   }
 
   set account(account: Account) {
     this._account = account;
     this._state = State.LoggedIn;
 
-    appSettings.setString('email', account.email);
-    appSettings.setString('firstname', account.firstname);
-    appSettings.setString('lastname', account.lastname);
-    appSettings.setNumber('ownerId', account.ownerId);
-    appSettings.setString('serverUrl', account.serverUrl);
+    AppSettings.setString('email', account.email);
+    AppSettings.setString('firstname', account.firstname);
+    AppSettings.setString('lastname', account.lastname);
+    AppSettings.setNumber('ownerId', account.ownerId);
+    AppSettings.setString('serverUrl', account.serverUrl);
     //appSettings.setString("token", account.token);
   }
 
   get account(): Account {
     return this._account;
   }
-
-  // public getAccountByEmail(email:string){
-  //   return this.serverService.getAccountByEmail(email);
-  // }
 }
