@@ -35,14 +35,6 @@ export class ServerService {
     // };
   }
 
-  set serverUrl(url: string) {
-    this._url = url;
-  }
-
-  get serverUrl(): string {
-    return this._url;
-  }
-
   /****************** Begin Accounts Requests ********************/
   isLoggedIn(): boolean {
     if (this.accountService.state === State.LoggedIn) {
@@ -56,17 +48,18 @@ export class ServerService {
     email: String,
     password: string
   ): Observable<Account> {
-    this.serverUrl = serverUrl;
-    let endpoint = this.serverUrl + '/api/accounts/' + email;
+    this._url = serverUrl;
+    let endpoint = this._url + '/api/accounts/' + email;
     // let body = { email: email, password: password };
     return this.http
       .get<AccountServerInterface>(endpoint)
       .pipe(map(response => new Account(response)));
   }
 
-  autoLogin(){
-    this.accountService.state = 0;
-  }
+  // autoLogin(){
+  //   this.accountService.state = 0;
+  // }
+
   logout() {
     this._url = '';
     this.accountService.logout();
@@ -79,8 +72,8 @@ export class ServerService {
     firstname: string,
     lastname: string
   ): Observable<Account> {
-    this.serverUrl = serverUrl;
-    let endpoint = this.serverUrl + '/api/accounts';
+    this._url = serverUrl;
+    let endpoint = this._url + '/api/accounts';
     let body = { firstName: firstname, lastName: lastname, email: email };
     return this.http
       .post<AccountServerInterface>(endpoint, body)
@@ -103,14 +96,14 @@ export class ServerService {
   }
 
   getTeam(id: number): Observable<Team> {
-    let endpoint = this.serverUrl + '/api/team/' + id;
+    let endpoint = this._url + '/api/team/' + id;
     return this.http
       .get<TeamServerInterface>(endpoint)
       .pipe(map(response => new Team(response)));
   }
 
   addTeam(name: string, description: string) {
-    let endpoint = this.serverUrl + '/api/team';
+    let endpoint = this._url + '/api/team';
     let body = {
       ownerId: this.accountService.account.ownerId,
       teamName: name,
@@ -124,7 +117,7 @@ export class ServerService {
   editTeam(team: Team) {}
 
   getTeamMembers(id: number): Observable<Account[]> {
-    let endpoint = this.serverUrl + '/api/team/members/' + id;
+    let endpoint = this._url + '/api/team/members/' + id;
     return this.http
       .get<AccountServerInterface[]>(endpoint)
       .pipe(map(accounts => accounts.map(account => new Account(account))));

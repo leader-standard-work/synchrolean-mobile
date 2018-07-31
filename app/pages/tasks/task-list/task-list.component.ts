@@ -14,16 +14,14 @@ import { ServerService } from '~/shared/services/server.service';
 })
 export class TaskListComponent implements OnInit {
   public tasks$: Observable<Array<Task>>;
-  private tasksService: TaskService;
   private timerId: number;
   private midnight: Date;
 
   constructor(
-    tasksService: TaskService,
+    private serverService: ServerService,
+    private tasksService: TaskService,
     private routerExtensions: RouterExtensions
-  ) {
-    this.tasksService = tasksService;
-  }
+  ) {}
 
   ngOnInit(): void {
     this.tasks$ = this.tasksService.getTasks();
@@ -38,14 +36,20 @@ export class TaskListComponent implements OnInit {
         this.midnight.setHours(24, 0, 0, 0);
       }
     }, 60 * 1000);
-
   }
 
   teamTapped() {
-    this.routerExtensions.navigate(['/teams'], {
-      clearHistory: true,
-      animated: false
-    });
+    if (this.serverService.isLoggedIn()) {
+      this.routerExtensions.navigate(['/teams'], {
+        clearHistory: true,
+        animated: false
+      });
+    } else {
+      this.routerExtensions.navigate(['/login'], {
+        clearHistory: true,
+        animated: false
+      });
+    }
   }
 
   metricsTapped() {
@@ -58,6 +62,4 @@ export class TaskListComponent implements OnInit {
   onChecked() {
     this.tasks$ = this.tasksService.getUpdatedTasks();
   }
-
-
 }

@@ -1,8 +1,7 @@
 <ActionBar class="action-bar">
     <Label class="action-bar-title" fontSize="32" text="Teams"></Label>
-    <ActionItem nsRouterLink="/team-form" [visibility]="isLoggedIn() ? 'visible' : 'collapsed'" text="Create Team" android.position="actionBar"
-        ios.position="right"></ActionItem>
-    <ActionItem [text]="loginButtonText" (tap)="loginTapped()" android.position="actionBar"></ActionItem>
+    <ActionItem nsRouterLink="/team-form" text="Create Team" android.position="actionBar" ios.position="right"></ActionItem>
+    <ActionItem text="Logout" (tap)="logoutTapped()" android.position="actionBar"></ActionItem>
 </ActionBar>
 
 <GridLayout rows="*, 62.5" class="page">
