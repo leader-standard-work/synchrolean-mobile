@@ -1,42 +1,28 @@
+<!-- Make action bar if the user is the owner of the team show owner buttons-->
 <ActionBar class="action-bar">
-    <Label class="action-bar-title" [text]="getTeamName()"></Label>
+    <Label class="action-bar-title" fontSize="32" text=""></Label>
+    <ActionItem visibility="{{ isOwner ?  'visible':'collapse' }}" ios.position="right" text="Edit" android.position="actionBar"></ActionItem>
+    <!-- <ActionItem visibility="{{ isOwner ?  'visible':'collapse' }}" (tap)="addTapped()" ios.position="left" text="Add" android.position="actionBar"></ActionItem> -->
 </ActionBar>
 
-<Gridlayout class = 'page' rows="*, 60" >
-    <ListView row='0' [items]="names">
-        <ng-template let-name="item" let-i="index">
-            <label  class="t-30 m-b-2 m-l-12 list-group-item" height="10%"  [text]="name"></label>                     
+<!-- Make grid layout for the page naming row sizes-->
+<Gridlayout class='page' rows="auto, auto, auto, *">
+    <!-- Make labels to display name and description of team-->
+    <Label class="t-30 m-t-30 text-center" [text]="teamName" row='0' textWrap="true"></Label>
+    <Label class="t-15 m-y-15 text-center" [text]="teamDescription" row='1' textWrap="true"></Label>
+    <Button class="btn btn-primary w-full" row="2" [visibility]="isOwner ? 'visible' : 'collapsed'" (tap)="addTapped()">
+        <FormattedString>
+            <Span text="&#xf067; " fontFamily="FontAwesome" fontSize="12"></Span>
+            <Span text="Add Members"></Span>
+        </FormattedString>
+    </Button>
+    <!-- Print array in list form-->
+    <ListView row='3' [items]="members">
+        <ng-template let-member="item" let-i="index">
+            <GridLayout class="list-group-item">
+                <!-- Make individual label for members send the id of the tapped item to onTap-->
+                <label class="t-30 m-b-2 m-l-15" height="10%" (tap)="onTap(member.id)" [text]="member.firstname + ' ' + member.lastname"></label>
+            </GridLayout>
         </ng-template>
     </ListView>
-    <StackLayout row="1" orientation="horizontal">
-        <Button textWrap="true" width="33%" textAlignment="center" color="gray" (onTap)="tasksTapped()">
-            <FormattedString>
-                <Span text="&#xf03a;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>
-                <Span text="Tasks"></Span>
-            </FormattedString>
-        </Button>
-        <Button textWrap="true" width="33%" textAlignment="center" (onTap)="teamTapped()">
-            <FormattedString>
-                <Span text="&#xf0c0;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>
-                <Span text="Teams"></Span>
-            </FormattedString>
-        </Button>
-        <Button textWrap="true" width="33%" textAlignment="center" color="gray">
-            <FormattedString>
-                <Span text="&#xf080;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>
-                <Span text="Metrics"></Span>
-            </FormattedString>
-        </Button>
-    </StackLayout>
-
-
-            <!--<Label class="t-30 m-b-2 list-group-item" [text]="names" width="100%" height="75%" backgroundColor="red"></Label>-->
 </Gridlayout>
-
-<!--</GridLayout>
-    <ListView class="m-l-10 m-t-5" width="100%"[items]="names">
-        <ng-template let-name="item" let-i="index">
-            <label class="t-30 m-b-2 list-group-item" [text]="name"></label>
-        </ng-template>
-    </ListView>
-</GridLayout>-->

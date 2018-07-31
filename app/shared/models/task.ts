@@ -246,7 +246,7 @@ export class Task {
 
 export function compareTask(a: Task, b: Task): number {
   if (a.complete && b.complete) {
-    return 0;
+    return durationValue(a.duration) - durationValue(b.duration);
   }
   if (a.complete && !b.complete) {
     return 1;

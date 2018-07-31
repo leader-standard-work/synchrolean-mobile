@@ -8,7 +8,7 @@ import {
   OnChanges,
   SimpleChanges
 } from '@angular/core';
-import { Color } from 'color';
+import { Color } from 'tns-core-modules/color/color';
 
 import { Task } from '~/shared/models/task';
 import { TaskService } from '~/shared/services/tasks.service';
@@ -29,16 +29,6 @@ export class TaskItemComponent implements OnChanges {
 
   constructor(private taskService: TaskService) {}
 
-  // ngOnInit() {
-  //   if (this.task.complete) {
-  //     this.backgroundColor = new Color('lightGreen');
-  //   } else {
-  //     this.backgroundColor = new Color('white');
-  //   }
-  //   this.checkBox.nativeElement.checked = this.task.complete;
-  //   this.initialized = true;
-  // }
-
   ngOnChanges(changes: SimpleChanges) {
     this.task = changes['task'].currentValue;
     this.checkBox.nativeElement.checked = this.task.complete;
@@ -53,6 +43,11 @@ export class TaskItemComponent implements OnChanges {
   onChecked() {
     if (this.initialized) {
       this.task.complete = this.checkBox.nativeElement.checked;
+      if (this.task.complete) {
+        this.backgroundColor = new Color('lightGreen');
+      } else {
+        this.backgroundColor = new Color('white');
+      }
       this.taskService.checkTask(this.task);
       this.checked.emit();
     }

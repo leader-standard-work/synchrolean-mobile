@@ -1,9 +1,1 @@
-.container {
-    margin: 16px;
-}
-
-.duration-heading,
-.note-heading {
-    font-weight: bold;
-    font-size: 24;
-}
+/* put any css changes in app.css unless you have a very good reason*/

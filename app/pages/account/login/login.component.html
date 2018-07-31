@@ -1,0 +1,43 @@
+<ActionBar class="action-bar">
+    <Label class="action-bar-title" fontSize="32" text="Login"></Label>
+</ActionBar>
+<GridLayout rows="*, 62.5">
+    <FlexBoxLayout row="0" class="page">
+        <StackLayout class="form">
+
+            <StackLayout class="input-field" [formGroup]="accountFormGroup">
+                <TextField class="input" formControlName="serverUrl" hint=" Server URL" required></TextField>
+                <StackLayout class="hr-light m-10"></StackLayout>
+
+                <TextField class="input" formControlName="email" hint=" Email" required></TextField>
+                <StackLayout class="hr-light m-10"></StackLayout>
+
+                <TextField class="input" formControlName="password" hint=" Password" secure="true" required></TextField>
+                <StackLayout class="hr-light m-10"></StackLayout>
+
+            </StackLayout>
+            <Button class="btn btn-primary btn-rounded-sm" text="Log On" (tap)="loginTapped()"></Button>
+        </StackLayout>
+        <Label class="text-center footnote" text="Not a member? Register here." nsRouterLink="/register"></Label>
+    </FlexBoxLayout>
+    <StackLayout row="1" orientation="horizontal">
+        <Button textWrap="true" width="33%" textAlignment="center" (onTap)="tasksTapped()">
+            <FormattedString>
+                <Span text="&#xf03a;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>
+                <Span text="Tasks"></Span>
+            </FormattedString>
+        </Button>
+        <Button class="active-button" textWrap="true" width="33%" textAlignment="center">
+            <FormattedString>
+                <Span text="&#xf0c0;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>
+                <Span text="Teams"></Span>
+            </FormattedString>
+        </Button>
+        <Button textWrap="true" width="33%" textAlignment="center" (onTap)="metricsTapped()">
+            <FormattedString>
+                <Span text="&#xf080;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>
+                <Span text="Metrics"></Span>
+            </FormattedString>
+        </Button>
+    </StackLayout>
+</GridLayout>

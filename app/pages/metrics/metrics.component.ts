@@ -15,18 +15,14 @@ export class MetricsComponent implements OnInit {
   teamTapped() {
     this.routerExtensions.navigate(['/teams'], {
       clearHistory: true,
-      transition: {
-        name: 'fade'
-      }
+      animated: false
     });
   }
 
   tasksTapped() {
     this.routerExtensions.navigate(['/task-list'], {
       clearHistory: true,
-      transition: {
-        name: 'fade'
-      }
+      animated: false
     });
   }
 }

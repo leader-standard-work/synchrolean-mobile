@@ -9,8 +9,58 @@ In many cases you may want to use the NativeScript core theme instead
 of writing your own CSS rules. For a full list of class names in the theme
 refer to http://docs.nativescript.org/ui/theme.
 */
-@import '~nativescript-theme-core/css/core.light.css';
 
+@import '~nativescript-theme-core/css/core.light.css';
 .font-awesome {
     font-family: "FontAwesome";
+}
+
+.action-bar-title {
+    color: #e39e2c;
+    text-align: center;
+    background-color: transparent;
+}
+
+button {
+    border-color: transparent;
+    border-width: .25;
+    color: #245779;
+}
+
+.active-button {
+    color: #e39e2c;
+}
+
+.action-bar {
+    background-color: #245779;
+    color: #e39e2c;
+}
+
+.list-group-item {
+    font-size: 24px;
+    text-align: left;
+}
+
+.page {
+    align-items: center;
+    flex-direction: column;
+}
+
+.form {
+    margin-left: 20;
+    margin-right: 20;
+}
+
+.duration-segment {
+    margin: 24px 16px;
+}
+
+.container {
+    margin: 16px;
+}
+
+.duration-heading,
+.note-heading {
+    font-weight: bold;
+    font-size: 24;
 }

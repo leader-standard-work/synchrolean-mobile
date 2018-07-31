@@ -1,25 +1,40 @@
 //  account.ts contains the account class
 
+export interface AccountServerInterface {
+  ownerId: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  isDeleted: boolean;
+}
+
 export class Account {
-  private _serverUrl: string;
-  private _email: string;
+  private _ownerId: number;
   private _firstname: string;
   private _lastname: string;
-  private _password: string; //TESTING ONLY
+  private _email: string;
+  private _isDeleted: boolean;
   private _token: string;
+  private _serverUrl: string;
 
-  constructor(
-    serverUrl: string,
-    email: string,
-    firstname: string,
-    lastname: string,
-    password: string //TESTING ONLY
-  ) {
-    this._serverUrl = serverUrl;
-    this._email = email;
-    this._firstname = firstname;
-    this._lastname = lastname;
-    this._password = password; //TESTING ONLY
+  constructor(account: AccountServerInterface) {
+    this._ownerId = account.ownerId;
+    this._email = account.email;
+    this._firstname = account.firstName;
+    this._lastname = account.lastName;
+    this._isDeleted = account.isDeleted;
+  }
+
+  fromServer(account: AccountServerInterface) {
+    this._ownerId = account.ownerId;
+    this._email = account.email;
+    this._firstname = account.firstName;
+    this._lastname = account.lastName;
+    this._isDeleted = account.isDeleted;
+  }
+
+  get ownerId(): number {
+    return this._ownerId;
   }
 
   //  Set/get for email
@@ -47,16 +62,6 @@ export class Account {
 
   get lastname(): string {
     return this._lastname;
-  }
-
-  //  Set/get for password FOR TESTING ONLY
-  set password(newPassword: string) {
-    //TESTING ONLY, DELETE SOON
-    this._password = newPassword;
-  }
-  get password(): string {
-    //TESTING ONLY, DELETE SOON
-    return this._password;
   }
 
   set serverUrl(url: string) {

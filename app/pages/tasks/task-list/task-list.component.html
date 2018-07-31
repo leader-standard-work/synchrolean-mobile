@@ -1,9 +1,9 @@
 <ActionBar class="action-bar">
-    <Label class="action-bar-title" text="Tasks"></Label>
+    <Label class="action-bar-title" fontSize="32" text="Tasks"></Label>
     <ActionItem nsRouterLink="/task-form" pageTransition="slideTop" ios.systemIcon="4" ios.position="right" text="Add" android.position="actionBar"></ActionItem>
 </ActionBar>
 
-<GridLayout rows="*, 60" class="page">
+<GridLayout rows="*, 62.5" class="page">
     <ListView [items]="tasks$ | async" row="0">
         <ng-template let-item="item" let-i="index">
             <task-item class="t-25" [task]="item" (checked)="onChecked()"></task-item>
@@ -12,19 +12,19 @@
 
     <!-- Begin Bottom Bar -->
     <StackLayout row="1" orientation="horizontal">
-        <Button textWrap="true" width="33%" textAlignment="center">
+        <Button class="active-button" textWrap="true" width="33%" textAlignment="center">
             <FormattedString>
                 <Span text="&#xf03a;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>
                 <Span text="Tasks"></Span>
             </FormattedString>
         </Button>
-        <Button textWrap="true" width="33%" textAlignment="center" color="gray" (onTap)="teamTapped()">
+        <Button textWrap="true" width="33%" textAlignment="center" (onTap)="teamTapped()">
             <FormattedString>
                 <Span text="&#xf0c0;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>
                 <Span text="Teams"></Span>
             </FormattedString>
         </Button>
-        <Button textWrap="true" width="33%" textAlignment="center" color="gray" (onTap)="metricsTapped()">
+        <Button textWrap="true" width="33%" textAlignment="center" (onTap)="metricsTapped()">
             <FormattedString>
                 <Span text="&#xf080;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>
                 <Span text="Metrics"></Span>

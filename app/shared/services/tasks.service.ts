@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
 import { DatabaseService } from '~/shared/services/database.service';
-import { Task, compareTask } from '~/shared/models/task';
+import { Task, compareTask, Duration } from '~/shared/models/task';
 
 @Injectable({
   providedIn: 'root'
@@ -85,10 +85,17 @@ export class TaskService {
     });
   }
 
-  private taskResetTimer() {
-    console.log('RESET REACHED');
+  taskReset() {
     this.tasks.forEach(task => {
-      task.complete = false;
+      let today = new Date();
+      if (task.expires < today) {
+        if (task.duration === Duration.Once) {
+          task.delete();
+        }
+        task.setResetDate();
+        task.complete = false;
+      }
     });
+    this.tasks.sort(compareTask);
   }
 }

@@ -4,6 +4,7 @@ import { RouterExtensions } from 'nativescript-angular/router';
 
 import { Task } from '~/shared/models/task';
 import { TaskService } from '~/shared/services/tasks.service';
+import { ServerService } from '~/shared/services/server.service';
 
 @Component({
   selector: 'tasks-list',
@@ -13,34 +14,48 @@ import { TaskService } from '~/shared/services/tasks.service';
 })
 export class TaskListComponent implements OnInit {
   public tasks$: Observable<Array<Task>>;
-  private tasksService: TaskService;
+  private timerId: number;
+  private midnight: Date;
 
   constructor(
-    tasksService: TaskService,
+    private serverService: ServerService,
+    private tasksService: TaskService,
     private routerExtensions: RouterExtensions
-  ) {
-    this.tasksService = tasksService;
-  }
+  ) {}
 
   ngOnInit(): void {
     this.tasks$ = this.tasksService.getTasks();
+
+    this.midnight = new Date();
+    this.midnight.setHours(24, 0, 0, 0);
+    this.timerId = setInterval(() => {
+      let now = new Date();
+      if (now > this.midnight) {
+        this.tasksService.taskReset();
+        this.tasks$ = this.tasksService.getUpdatedTasks();
+        this.midnight.setHours(24, 0, 0, 0);
+      }
+    }, 60 * 1000);
   }
 
   teamTapped() {
-    this.routerExtensions.navigate(['/teams'], {
-      clearHistory: true,
-      transition: {
-        name: 'fade'
-      }
-    });
+    if (this.serverService.isLoggedIn()) {
+      this.routerExtensions.navigate(['/teams'], {
+        clearHistory: true,
+        animated: false
+      });
+    } else {
+      this.routerExtensions.navigate(['/login'], {
+        clearHistory: true,
+        animated: false
+      });
+    }
   }
 
   metricsTapped() {
     this.routerExtensions.navigate(['/metrics'], {
       clearHistory: true,
-      transition: {
-        name: 'fade'
-      }
+      animated: false
     });
   }
 

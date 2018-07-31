@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Team } from '~/shared/teams/team';
-import { Observable } from 'rxjs';
-import { ServerService } from '~/shared/server/server.service';
+import { Team } from '~/shared/models/team';
+import { ServerService } from '~/shared/services/server.service';
 import { RouterExtensions } from 'nativescript-angular/router';
-import { teams } from '~/shared/dummyData';
-
+import { ObservableArray } from 'data/observable-array';
+import { AccountService } from '~/shared/services/account.service';
+var appSettings = require('application-settings');
 @Component({
   selector: 'team-list',
   moduleId: module.id,
@@ -12,57 +12,73 @@ import { teams } from '~/shared/dummyData';
   styleUrls: ['./team-list.component.css']
 })
 export class TeamListComponent implements OnInit {
-  public teams$: Array<Team>;
-  public names: Array<string>;
+  public teams$: ObservableArray<Team>;
 
   constructor(
-    private server: ServerService,
-    private routerExtensions: RouterExtensions
-  ) {
-    this.teams$ = new Array<Team>();
-    this.names = new Array<string>();
+    private serverService: ServerService,
+    private routerExtensions: RouterExtensions,
+    private accounteService: AccountService
+  ) {}
+
+  ngOnInit() {
+    this.teams$ = new ObservableArray<Team>();
+    
+    if (this.serverService.isLoggedIn()) {
+      this.serverService.getTeams().subscribe(
+        teams => {
+          teams.forEach(team => this.teams$.push(team));
+          console.log(teams);
+        },
+        error => {
+          console.error('could not get teams', error);
+        }
+      );
+    } else {
+      this.routerExtensions.navigate(['/login'], {
+        transition: {
+          name: 'slideTop'
+        }
+      });
+    }
   }
 
-  ngOnInit(): void {
-    //disclaimer, this is testing with dummy data
-    //this.teams$ = this.server.getTeams()
-
-    // if(this.teams$ === undefined){
-    this.teams$ = JSON.parse(teams);
-
-    this.getNames();
-    // }
+  isLoggedIn(): boolean {
+    return this.serverService.isLoggedIn();
   }
 
-  getNames() {
-    this.teams$.forEach(value => {
-      this.names.push(value.TeamName);
-    });
-  }
-
-  onTap() {
-    this.routerExtensions.navigate(['/Members'], {
+  onTap(id: number) {
+    this.routerExtensions.navigate(['/Members', id], {
       transition: {
-        name: 'slideLeft'
+        name: 'slideLeft',
+        clearHistory: 'true'
       }
     });
+  }
+
+  logoutTapped() {
+    if (this.serverService.isLoggedIn()) {
+      this.serverService.logout();
+      this.teams$ = new ObservableArray<Team>();
+      this.routerExtensions.navigate(['/login'], {
+        clearHistory: true,
+        transition: {
+          name: 'slideTop'
+        }
+      });
+    }
   }
 
   tasksTapped() {
     this.routerExtensions.navigate(['/task-list'], {
       clearHistory: true,
-      transition: {
-        name: 'fade'
-      }
+      animated: false
     });
   }
 
   metricsTapped() {
     this.routerExtensions.navigate(['/metrics'], {
       clearHistory: true,
-      transition: {
-        name: 'fade'
-      }
+      animated: false
     });
   }
 }
