@@ -8,6 +8,11 @@ import { Account } from '~/shared/models/account';
 import { Team } from '~/shared/models/team';
 import * as dialogs from 'ui/dialogs';
 import { AccountService } from '~/shared/services/account.service';
+import { Task } from '~/shared/models/task';
+import { ObservableInput } from 'rxjs';
+import { Observable } from 'ui/page/page';
+import { ObservableArray } from 'data/observable-array/observable-array';
+import { ServerService } from '~/shared/services/server.service';
 
 @Injectable({
   providedIn: 'root'
@@ -21,14 +26,18 @@ import { AccountService } from '~/shared/services/account.service';
 })
 export class MembersComponent implements OnInit {
   public team: Team;
-  public members: Array<Account>;
-  public teamName: string; //holds fake team name
-  public teamDescription: string; //hold fake team description
+  public teamName: string;
+  public teamDesc: string;
+  public members: ObservableArray<Account>;
+  public tasks$: ObservableArray<Task>;
   public isOwner: Boolean;
+  public teamVisible: boolean;
+  public taskVisible: boolean;
+
   private id: number;
 
   constructor(
-    private teamService: TeamService,
+    private serverService: ServerService,
     private accountService: AccountService,
     private pageR: PageRoute,
     private routerE: RouterExtensions
@@ -43,13 +52,15 @@ export class MembersComponent implements OnInit {
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
-    this.members = new Array<Account>();
+    this.members = new ObservableArray<Account>();
+    this.teamVisible = true;
+    this.taskVisible = false;
     // Get team by id
-    this.teamService.getTeam(this.id).subscribe(
+    this.serverService.getTeam(this.id).subscribe(
       response => {
+        this.teamName = response.teamName;
+        this.teamDesc = response.teamDescription;
         this.team = response;
-        this.teamDescription = this.team.teamDescription;
-        this.teamName = this.team.teamName;
         this.isOwner =
           this.team.ownerId === this.accountService.account.ownerId
             ? true
@@ -61,8 +72,10 @@ export class MembersComponent implements OnInit {
       }
     );
 
+
+
     // Get team members call
-    this.teamService.getTeamMembers(this.id).subscribe(
+    this.serverService.getTeamMembers(this.id).subscribe(
       accounts => {
         accounts.forEach(account => this.members.push(account));
       },
@@ -70,6 +83,13 @@ export class MembersComponent implements OnInit {
         console.error('could not get team members', error);
       }
     );
+
+    
+  }
+
+
+  getTeamName():string{
+    return this.team.teamName;
   }
 
   //navigate to members task list taking id with it
@@ -95,4 +115,23 @@ export class MembersComponent implements OnInit {
         //promot if it was ok or not
       });
   }
+
+  teamTapped(){
+    if(this.teamVisible === true){
+      return;
+    }
+
+    this.taskVisible = false;
+    this.teamVisible = true;
+
+  }
+
+  taskTapped(){
+    if(this.taskVisible === true){
+      return;
+    }
+    this.teamVisible = false;
+    this.taskVisible = true;
+}
+
 }
