@@ -84,7 +84,7 @@ export class MembersComponent implements OnInit {
       }
     );
 
-    
+    //get roll-up tasks for team
   }
 
 
@@ -108,11 +108,37 @@ export class MembersComponent implements OnInit {
         cancelButtonText: 'Cancel',
         inputType: dialogs.inputType.email
       })
-      .then(r => {
-        //make server call to add by email
-        console.log('Dialog result: ' + r.result + ', text: ' + r.text);
+      .then(r => {     
         //check result
-        //promot if it was ok or not
+     
+        if(r.result !== false){
+          //make server call to add by email
+          var user:Account;
+           
+          this.serverService.getAccountByEmail(r.text).subscribe((res)=>{
+            user = res;
+            console.log(user.ownerId);
+            this.serverService.inviteToTeam(user.ownerId, this.team.ownerId, this.team.id)
+              .subscribe((res)=>{
+                console.log(res);
+                dialogs.alert({
+                  title:'Invite User',
+                  message:'User invited',
+                  okButtonText:'Ok'
+                }).then();
+              }, err=>{
+                console.log(res);
+                dialogs.alert({
+                  title:'Invite User',
+                  message:'User invited',
+                  okButtonText:'Ok'
+                }).then();
+              }); 
+          });
+          console.log('Dialog result: ' + r.result + ', text: ' + r.text);
+          //check result
+          //promot if it was ok or not
+        }                
       });
   }
 
