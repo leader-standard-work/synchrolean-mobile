@@ -186,8 +186,8 @@ export class MembersComponent implements OnInit {
       }
     }
 
-    this.teamVisible = false;
-    this.taskVisible = true;
+    this.teamVisible = true;
+    this.taskVisible = false;
     return;
   }
 
