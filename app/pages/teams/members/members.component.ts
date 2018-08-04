@@ -30,9 +30,12 @@ export class MembersComponent implements OnInit {
   public teamDesc: string;
   public members: ObservableArray<Account>;
   public tasks$: ObservableArray<Task>;
+  public teams$:ObservableArray<Team>;
   public isOwner: Boolean;
   public teamVisible: boolean;
   public taskVisible: boolean;
+  public editHit: boolean;
+  public isMember:boolean;
 
   private id: number;
 
@@ -54,17 +57,36 @@ export class MembersComponent implements OnInit {
     //Add 'implements OnInit' to the class.
     this.members = new ObservableArray<Account>();
     this.teamVisible = true;
+    this.isOwner = false;
     this.taskVisible = false;
+    this.isMember =false;
     // Get team by id
     this.serverService.getTeam(this.id).subscribe(
       response => {
         this.teamName = response.teamName;
         this.teamDesc = response.teamDescription;
         this.team = response;
-        this.isOwner =
-          this.team.ownerId === this.accountService.account.ownerId
-            ? true
-            : false;
+        // Get team members call
+        this.serverService.getTeamMembers(this.id).subscribe(
+          accounts => {
+            accounts.forEach(account => this.members.push(account));
+            //check the user is a member of the team
+            this.members.forEach((value)=>{
+            if(value.ownerId === this.accountService.account.ownerId){
+              this.isMember = true;
+
+              //check if they are the owner
+              this.isOwner =
+              this.team.ownerId === this.accountService.account.ownerId
+                ? true
+                : false;
+            }
+          })
+          },
+          error => {
+            console.error('could not get team members', error);
+          }
+        );
       },
       error => {
         console.error('could not load team in members', error);
@@ -72,24 +94,9 @@ export class MembersComponent implements OnInit {
       }
     );
 
-
-
-    // Get team members call
-    this.serverService.getTeamMembers(this.id).subscribe(
-      accounts => {
-        accounts.forEach(account => this.members.push(account));
-      },
-      error => {
-        console.error('could not get team members', error);
-      }
-    );
-
     //get roll-up tasks for team
-  }
 
-
-  getTeamName():string{
-    return this.team.teamName;
+    //get invites
   }
 
   //navigate to members task list taking id with it
@@ -144,20 +151,44 @@ export class MembersComponent implements OnInit {
 
   teamTapped(){
     if(this.teamVisible === true){
+      this.editHit = false;
+      this.taskVisible = false;
+      this.teamVisible = true;
       return;
     }
 
+    this.editHit = false;
     this.taskVisible = false;
     this.teamVisible = true;
 
   }
 
   taskTapped(){
-    if(this.taskVisible === true){
+    if(this.taskVisible === true){ 
+      this.editHit = false;
+      this.teamVisible = false;
+      this.taskVisible = true;
       return;
     }
+
     this.teamVisible = false;
     this.taskVisible = true;
-}
+    this.editHit = false;
+  }
+
+  editTapped(){
+    if(this.teamVisible === true){
+      if(this.editHit === false){
+         this.editHit = true;
+      }
+      else{ 
+        this.editHit = false;
+      }
+    }
+
+    this.teamVisible = false;
+    this.taskVisible = true;
+    return;
+  }
 
 }

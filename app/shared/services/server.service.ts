@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -7,6 +6,7 @@ import { AccountService, State } from '~/shared/services/account.service';
 
 import { Team, TeamServerInterface } from '~/shared/models/team';
 import { Account, AccountServerInterface } from '~/shared/models/account';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'

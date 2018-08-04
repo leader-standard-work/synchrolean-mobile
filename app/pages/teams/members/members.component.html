@@ -1,44 +1,66 @@
 <!-- Make action bar if the user is the owner of the team show owner buttons-->
 <ActionBar class="action-bar">
     <Label class="action-bar-title" fontSize="32" text=""></Label>
-    <ActionItem visibility="{{ isOwner ?  'visible':'collapse' }}" ios.position="right" text="Edit" android.position="actionBar"></ActionItem>
+    <ActionItem visibility="{{ isOwner ?  'visible':'collapse' }}" ios.position="right" text="Edit" android.position="actionBar" (tap)="editTapped()"></ActionItem>
     <!-- <ActionItem visibility="{{ isOwner ?  'visible':'collapse' }}" (tap)="addTapped()" ios.position="left" text="Add" android.position="actionBar"></ActionItem> -->
 </ActionBar>
-
 <!-- Make grid layout for the page naming row sizes-->
 <Gridlayout class='page' rows="auto, auto, auto, auto, *">
     <!-- Make labels to display name and description of team-->
-    <Label class="t-30 m-y-15 text-center" [text]="teamName" row='0' textWrap="true"></Label>
-    <Label class="t-15 m-y-15 text-center" [text]="teamDesc" row='1' textWrap="true"></Label>
-    <Button class="btn btn-primary w-full" row="2" [visibility]="isOwner ? 'visible' : 'collapsed'" (tap)="addTapped()">
-        <FormattedString>
-            <Span text="&#xf067; " fontFamily="FontAwesome" fontSize="12"></Span>
-            <Span text="Add Members"></Span>
-        </FormattedString>
+    <FlexboxLayout class="m-t-4" width="100%" justifyContent ='center' row='0'>
+        <Label width="100%" class="t-30 text-center" [text]="teamName" textWrap="true"></Label>
+        <Button width="25%" style="background-color: gray;" width="25%" alignSelf="flex-end" visibility="{{ editHit ?  'visible':'collapse' }}" col="1" class="btn-rounded-sm"  (tap)="taskTapped()"> 
+                <Span style="color: white;" textAlignment="center" textWrap="true" class='t-16' text="Edit"></Span>        
+        </Button> 
+    </FlexboxLayout>
+
+    <FlexboxLayout class="m-t-4" width="100%" justifyContent ='center' row='1'>
+        <Label width="100%" class="t-20 text-center" [text]="teamDesc" textWrap="true"></Label>
+        <Button width="25%" style="background-color: gray;" width="25%" alignSelf="flex-end" visibility="{{ editHit ?  'visible':'collapse' }}" col="1" class="btn-rounded-sm"  (tap)="taskTapped()"> 
+                <Span style="color: white;" textAlignment="center" textWrap="true" class='t-16' text="Edit"></Span>        
+        </Button> 
+    </FlexboxLayout>
+    <Button class="btn btn-primary w-full" row="2" visibility="{{ isOwner ?  'visible':'collapse' }}" (tap)="addTapped()">
+            <FormattedString>
+                <Span text="&#xf067; " fontFamily="FontAwesome" fontSize="12"></Span>
+                <Span text="Add Members" textWrap="true"></Span>
+            </FormattedString>
     </Button>
 
-    <GridLayout row="3" rows="auto" columns="*, *">
-        <Button row="0" class="btn-rounded-lg" col="0"  (tap)="teamTapped()">
-                <!-- <Span text="&#xf067; " fontFamily="FontAwesome" fontSize="12"></Span> -->
-            <Span text="Team"></Span>                 
-        </Button>
-        <Button row="0" class="btn-rounded-lg m-l-20" col="1" text="Tasks" (tap)="taskTapped()"> 
-                <!-- <Span text="&#xf067; " fontFamily="FontAwesome" fontSize="12"></Span> -->
-            <Span text="Tasks"></Span>        
-        </Button>
-    </GridLayout>
+    <FlexboxLayout class="m-t-4 m-l-2" justifyContent="space-around" visibility="{{ isMember ?  'visible':'collapse' }}" width="100%" row='3' orientation="horizontal">
+        <!--this button shows up to center the two button config-->
+        <Button width="10%" height="1%" visibility="{{ isOwner ? 'collapse' : 'visible' }}"></Button>
+        
 
-    <!-- Print array in list form-->
-    <ListView row='4' *ngIf='teamVisible' [items]="members">
+        <Button style="background-color: gray; border: 1pt;" class=" btn-grey" textWrap="true" (tap)="teamTapped()">
+            <Span alignSelf="center" textAlignment="center" class='t-15 m-l-2' text="Team" style="color: whitesmoke;"></Span>                 
+        </Button>
+        <Button style="background-color: gray; border: 1pt;" textWrap="true" class=" btn-active" text="Tasks" (tap)="taskTapped()"> 
+            <Span alignSelf="center" textAlignment="center" class='t-15' style="color: whitesmoke;" text="Tasks"></Span>        
+        </Button>
+        <Button style="background-color: gray; border: 1pt;"  visibility="{{ isOwner ?  'visible':'collapse' }}" class=" btn-grey" (tap)="taskTapped()"> 
+                <Span alignSelf="center" textAlignment="center" style="color: whitesmoke;" textWrap="true" class='t-15' text="Open invites"></Span>        
+        </Button>
+        <Button style="background-color: gray; border: 1pt;"  visibility="{{ isOwner ?  'visible':'collapse' }}" class=" btn-grey" (tap)="taskTapped()"> 
+                <Span alignSelf="center" textAlignment="center" style="color: whitesmoke;" class='t-15' text="Permissions"></Span>        
+        </Button>
+    </FlexboxLayout>
+
+    <!-- Print members in list form-->
+    <ListView row='4' visibility="{{ isMember ?  'visible':'collapse' }}"  visibility="{{ teamVisible ?  'visible':'collapse' }}" [items]="members">
         <ng-template let-member="item" let-i="index">
-            <GridLayout height="10%"  class="list-group-item">
+            <FlexboxLayout width="100%" orientation="horizontal">
                 <!-- Make individual label for members send the id of the tapped item to onTap-->
-                <label class="t-30 m-b-2 m-l-15" (tap)="onTap(member.id)" [text]="member.firstname + ' ' + member.lastname"></label>
-            </GridLayout>
+                <label width="75%" col="0" class="t-30 m-b-2 m-t-8 m-l-15" (tap)="onTap(member.id)" [text]="member.firstname + ' ' + member.lastname"></label>
+                <Button style="background-color: red;" width="25%" height="100%" alignSelf="flex-end" visibility="{{ editHit ?  'visible':'collapse' }}" col="1" class="btn-rounded-sm"  (tap)="taskTapped()"> 
+                        <Span style="color: whitesmoke;" textAlignment="center" textWrap="true" class='t-16' text="Delete"></Span>        
+                </Button>
+            </FlexboxLayout>
         </ng-template>
     </ListView>
 
-    <ListView *ngIf='teamVisible' [items]="tasks$" row='4' class="list-group">
+    <!-- Print tasks in list form-->
+    <ListView visibility="{{ isMember ?  'visible':'collapse' }}"  visibility="{{ taskVisible ?  'visible':'collapse' }}" [items]="tasks$" row='4' class="list-group">
         <ng-template let-task="item">
           <StackLayout>
             <Label class="t-30 m-b-2 m-l-15" [text]="task.name"></Label>    
