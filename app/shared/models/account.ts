@@ -6,6 +6,7 @@ export interface AccountServerInterface {
   lastName: string;
   email: string;
   isDeleted: boolean;
+  token?: string;
 }
 
 export class Account {
@@ -23,14 +24,9 @@ export class Account {
     this._firstname = account.firstName;
     this._lastname = account.lastName;
     this._isDeleted = account.isDeleted;
-  }
-
-  fromServer(account: AccountServerInterface) {
-    this._ownerId = account.ownerId;
-    this._email = account.email;
-    this._firstname = account.firstName;
-    this._lastname = account.lastName;
-    this._isDeleted = account.isDeleted;
+    if (account.token !== undefined) {
+      this._token = account.token;
+    }
   }
 
   get ownerId(): number {

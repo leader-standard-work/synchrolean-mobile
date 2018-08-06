@@ -21,6 +21,7 @@ export class AccountService {
     let lastname = AppSettings.getString('lastname', '');
     let ownerId = AppSettings.getNumber('ownerId', -1);
     let serverUrl = AppSettings.getString('serverUrl', '');
+    let account
 
     if (
       email === '' ||
