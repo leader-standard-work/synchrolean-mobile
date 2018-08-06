@@ -21,7 +21,8 @@ const CreateTasksTable: string = `CREATE TABLE IF NOT EXISTS tasks (
 const CreateCompletionTable: string = `CREATE TABLE IF NOT EXISTS completion (
           id INTEGER PRIMARY KEY AUTOINCREMENT, 
           taskId INTEGER NOT NULL, 
-          completedOn TEXT, 
+          completedOn TEXT,
+          duration TEXT,
           FOREIGN KEY(taskId) REFERENCES tasks(databaseId)
         )`;
 
@@ -69,7 +70,8 @@ const UpdateTask: string = `UPDATE tasks SET
 /****************** Begin Completion SQL *********************/
 const InsertCompletionEntry: string = `INSERT INTO completion (
   taskId,
-  completedOn
+  completedOn,
+  duration
 ) VALUES (?,?)`;
 
 const DeleteLastCompletionEntry: string = `DELETE FROM completion WHERE taskId = ? ORDER BY date(completedOn) DESC LIMIT 1`;
@@ -235,7 +237,8 @@ export class DatabaseService {
             'RESULT',
             complete.id,
             complete.taskId,
-            complete.completedOn
+            complete.completedOn,
+            complete.duration
           );
         }
         console.log('***********************************************');
