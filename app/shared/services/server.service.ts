@@ -7,6 +7,8 @@ import { AccountService, State } from '~/shared/services/account.service';
 import { Team, TeamServerInterface } from '~/shared/models/team';
 import { Account, AccountServerInterface } from '~/shared/models/account';
 import { HttpClient } from '@angular/common/http';
+import { isUserInteractionEnabledProperty } from '../../../node_modules/tns-core-modules/ui/page/page';
+import { Task } from '~/shared/models/task';
 
 @Injectable({
   providedIn: 'root'
@@ -130,12 +132,15 @@ export class ServerService {
 
   inviteToTeam(userId: number, ownerId:number, teamid:number){
     let endpoint = this._url +'/api/team/invite/'+ userId +'/'+ownerId+'/'+teamid;
-    let body ;
+    let body ='';
     return this.http.put(endpoint, body);
   }
 
   /****************** End Team Requests **************************/
   /****************** Begin Task Requests ************************/
-
+  getuserTodo(userId:number): Observable<Task[]>{
+    let endpoint = this._url +'/api/tasks/todo/' + userId;
+    return this.http.get<Task[]>(endpoint);
+  }
   /****************** End Task Requests **************************/
 }

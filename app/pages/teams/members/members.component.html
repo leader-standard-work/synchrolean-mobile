@@ -1,7 +1,7 @@
 <!-- Make action bar if the user is the owner of the team show owner buttons-->
 <ActionBar class="action-bar">
     <Label class="action-bar-title" fontSize="32" text=""></Label>
-    <ActionItem visibility="{{ isOwner ?  'visible':'collapse' }}" ios.position="right" text="Edit" android.position="actionBar" (tap)="editTapped()"></ActionItem>
+        <ActionItem *ngIf="isOwner" visibility="{{ teamVisible ?  'visible':'collapse' }}" ios.position="right" text="Edit" android.position="actionBar" (tap)="editTapped()"></ActionItem>
     <!-- <ActionItem visibility="{{ isOwner ?  'visible':'collapse' }}" (tap)="addTapped()" ios.position="left" text="Add" android.position="actionBar"></ActionItem> -->
 </ActionBar>
 <!-- Make grid layout for the page naming row sizes-->
@@ -9,62 +9,88 @@
     <!-- Make labels to display name and description of team-->
     <FlexboxLayout class="m-t-4" width="100%" justifyContent ='center' row='0'>
         <Label width="100%" class="t-30 text-center" [text]="teamName" textWrap="true"></Label>
-        <Button width="25%" style="background-color: gray;" width="25%" alignSelf="flex-end" visibility="{{ editHit ?  'visible':'collapse' }}" col="1" class="btn-rounded-sm"  (tap)="taskTapped()"> 
-                <Span style="color: white;" textAlignment="center" textWrap="true" class='t-16' text="Edit"></Span>        
+        <!-- put edit button next to team name that's only visible if team owner and edit button has been hit -->
+        <Button width="25%" style="background-color: gray;" width="25%" alignSelf="flex-end" visibility="{{ editHit ?  'visible':'collapse' }}" col="1" class="btn-rounded-sm"  (tap)="editTeamName()"> 
+            <Span style="color: white;" textAlignment="center" textWrap="true" class='t-16' text="Edit"></Span>        
         </Button> 
     </FlexboxLayout>
 
     <FlexboxLayout class="m-t-4" width="100%" justifyContent ='center' row='1'>
         <Label width="100%" class="t-20 text-center" [text]="teamDesc" textWrap="true"></Label>
-        <Button width="25%" style="background-color: gray;" width="25%" alignSelf="flex-end" visibility="{{ editHit ?  'visible':'collapse' }}" col="1" class="btn-rounded-sm"  (tap)="taskTapped()"> 
-                <Span style="color: white;" textAlignment="center" textWrap="true" class='t-16' text="Edit"></Span>        
+        <!-- put edit button next to team name that's only visible if team owner and edit button has been hit -->
+        <Button width="25%" style="background-color: gray;" width="25%" alignSelf="flex-end" visibility="{{ editHit ?  'visible':'collapse' }}" col="1" class="btn-rounded-sm"  (tap)="editTeamDesc()"> 
+            <Span style="color: white;" textAlignment="center" textWrap="true" class='t-16' text="Edit"></Span>        
         </Button> 
     </FlexboxLayout>
-    <Button class="btn btn-primary w-full" row="2" visibility="{{ isOwner ?  'visible':'collapse' }}" (tap)="addTapped()">
-            <FormattedString>
-                <Span text="&#xf067; " fontFamily="FontAwesome" fontSize="12"></Span>
-                <Span text="Add Members" textWrap="true"></Span>
-            </FormattedString>
+
+    <!-- button to add team member by email only visible if team owner and edit hasn't been hit-->
+    <Button class="btn btn-primary w-full" *ngIf="!editHit" row="2" visibility="{{ isOwner ?  'visible':'collapse' }}" (tap)="addTapped()">
+        <FormattedString>
+            <Span text="&#xf067; " fontFamily="FontAwesome" fontSize="12"></Span>
+            <Span text="Add Members" textWrap="true"></Span>
+        </FormattedString>
     </Button>
 
+    <!-- button to delete team visible only if a team owner and edit button hit -->
+    <Button class="btn w-full" style="background: tomato;color: whitesmoke" *ngIf="editHit" row="2" visibility="{{ isOwner ?  'visible':'collapse' }}" (tap)="deleteTeam()">
+        <FormattedString>
+            <Span text="&#xf067; " fontFamily="FontAwesome" fontSize="12"></Span>
+            <Span text="Delete Team" textWrap="true"></Span>
+        </FormattedString>
+    </Button>
+
+    <!-- flexbox to contain buttons for differnt lists in page two visible to team members and 4 to team owner -->
     <FlexboxLayout class="m-t-4 m-l-2" justifyContent="space-around" visibility="{{ isMember ?  'visible':'collapse' }}" width="100%" row='3' orientation="horizontal">
         <!--this button shows up to center the two button config-->
         <Button width="10%" height="1%" visibility="{{ isOwner ? 'collapse' : 'visible' }}"></Button>
         
-
+        <!-- team members list button visible to owner and members-->
         <Button style="background-color: gray; border: 1pt;" class=" btn-grey" textWrap="true" (tap)="teamTapped()">
             <Span alignSelf="center" textAlignment="center" class='t-15 m-l-2' text="Team" style="color: whitesmoke;"></Span>                 
         </Button>
-        <Button style="background-color: gray; border: 1pt;" textWrap="true" class=" btn-active" text="Tasks" (tap)="taskTapped()"> 
-            <Span alignSelf="center" textAlignment="center" class='t-15' style="color: whitesmoke;" text="Tasks"></Span>        
+        <!-- team metrics members list button visible to owner and members-->
+        <Button style="background-color: gray; border: 1pt;" textWrap="true" class=" btn-active" (tap)="metricsTapped()"> 
+            <Span alignSelf="center" textAlignment="center" class='t-15' style="color: whitesmoke;" text="Metrics"></Span>        
         </Button>
-        <Button style="background-color: gray; border: 1pt;"  visibility="{{ isOwner ?  'visible':'collapse' }}" class=" btn-grey" (tap)="taskTapped()"> 
-                <Span alignSelf="center" textAlignment="center" style="color: whitesmoke;" textWrap="true" class='t-15' text="Open invites"></Span>        
+
+        <!-- open invites visible to team owners -->
+        <Button style="background-color: gray; border: 1pt;"  visibility="{{ isOwner ?  'visible':'collapse' }}" class=" btn-grey" (tap)="invitesTapped()"> 
+            <Span alignSelf="center" textAlignment="center" style="color: whitesmoke;" textWrap="true" class='t-15' text="Open invites"></Span>        
         </Button>
-        <Button style="background-color: gray; border: 1pt;"  visibility="{{ isOwner ?  'visible':'collapse' }}" class=" btn-grey" (tap)="taskTapped()"> 
-                <Span alignSelf="center" textAlignment="center" style="color: whitesmoke;" class='t-15' text="Permissions"></Span>        
+
+         <!-- team permissions visible to team owners -->
+        <Button style="background-color: gray; border: 1pt;"  visibility="{{ isOwner ?  'visible':'collapse' }}" class=" btn-grey" (tap)="permissionsTapped()"> 
+            <Span alignSelf="center" textAlignment="center" style="color: whitesmoke;" class='t-15' text="Permissions"></Span>        
         </Button>
     </FlexboxLayout>
 
-    <!-- Print members in list form-->
-    <ListView row='4' visibility="{{ isMember ?  'visible':'collapse' }}"  visibility="{{ teamVisible ?  'visible':'collapse' }}" [items]="members">
-        <ng-template let-member="item" let-i="index">
-            <FlexboxLayout width="100%" orientation="horizontal">
-                <!-- Make individual label for members send the id of the tapped item to onTap-->
-                <label width="75%" col="0" class="t-30 m-b-2 m-t-8 m-l-15" (tap)="onTap(member.id)" [text]="member.firstname + ' ' + member.lastname"></label>
-                <Button style="background-color: red;" width="25%" height="100%" alignSelf="flex-end" visibility="{{ editHit ?  'visible':'collapse' }}" col="1" class="btn-rounded-sm"  (tap)="taskTapped()"> 
-                        <Span style="color: whitesmoke;" textAlignment="center" textWrap="true" class='t-16' text="Delete"></Span>        
-                </Button>
-            </FlexboxLayout>
-        </ng-template>
-    </ListView>
+    <!-- Print members in list form visible to members-->
+    <FlexboxLayout justfiyContent="strech" row='4'>
+        <ListView  *ngIf="isMember" visibility="{{ teamVisible ?  'visible':'collapse' }}" [items]="members">
+            <ng-template let-member="item" let-i="index">
+                    <FlexboxLayout width="100%" flexWrap='wrap' orientation="horizontal">
+                        <!-- Make individual label for members send the id of the tapped item to onTap-->                       
+                        <label width="75%" class="t-30 m-b-2 m-t-8 m-l-10" (tap)="onTap(i)" [text]="member.firstname + ' ' + member.lastname"></label>
+                        <Button style="background-color: red;" width="25%" height="auto" visibility="{{ editHit ?  'visible':'collapse' }}" col="1" class="btn-rounded-sm"  (tap)="deleteMember()"> 
+                            <Span style="color: whitesmoke;" textAlignment="center" textWrap="true" class='t-16' text="Delete"></Span>        
+                        </Button>
 
+                        <!-- make list of tasks to display underteam member name -->
+                        <ListView *ngIf="taskVisible[i]" width="100%" class="list" [height]="22.75 *(tasks[i].length)" AlignSelf="stretch" [items]="tasks$[i]"> 
+                            <ng-template tkListItemTemplate let-task="item" let-i="index">
+                                <label class="m-l-15 t-16" [text]="task.name"></label>
+                            </ng-template>   
+                        </ListView>
+                    </FlexboxLayout>                       
+            </ng-template>
+        </ListView>
+    </FlexboxLayout>
     <!-- Print tasks in list form-->
-    <ListView visibility="{{ isMember ?  'visible':'collapse' }}"  visibility="{{ taskVisible ?  'visible':'collapse' }}" [items]="tasks$" row='4' class="list-group">
+    <!-- <ListView *ngIf="isMember"  visibility="{{ taskVisible ?  'visible':'collapse' }}" [items]="tasks$" row='4' class="list-group">
         <ng-template let-task="item">
           <StackLayout>
             <Label class="t-30 m-b-2 m-l-15" [text]="task.name"></Label>    
           </StackLayout>
         </ng-template>
-    </ListView>
+    </ListView> -->
 </Gridlayout>
