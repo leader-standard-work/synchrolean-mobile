@@ -29,13 +29,16 @@ export class MembersComponent implements OnInit {
   public teamName: string;
   public teamDesc: string;
   public members: ObservableArray<Account>;
-  public tasks$: ObservableArray<Task>;
+  public tasks$: Array<ObservableArray<Task>>;
   public teams$:ObservableArray<Team>;
   public isOwner: Boolean;
   public teamVisible: boolean;
-  public taskVisible: boolean;
+  public taskVisible: Array<boolean>;
   public editHit: boolean;
   public isMember:boolean;
+  public metericsVisible: boolean;
+  public tasks:Array<Array<string>>;
+  public length: number;
 
   private id: number;
 
@@ -54,12 +57,17 @@ export class MembersComponent implements OnInit {
 
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-    //Add 'implements OnInit' to the class.
+    //Add 'implements OnInit' to the class
+
+    this.tasks = new Array<Array<string>>(["Take out garbagesdafsadfdscsdafdscdsafdscdsacdscsadf" ,"Cut grass", "Read book", "watch youtube", "code", "Cut grass", "Read book", "watch youtube", "code","code", "Cut grass", "Read book", "watch youtube", "code", 'read','walk the dog', 'play prepatch', 'wash car'],['read','walk the dog', 'play prepatch', 'wash car']);
+
     this.members = new ObservableArray<Account>();
+    this.tasks$ = new Array<ObservableArray<Task>>();
     this.teamVisible = true;
     this.isOwner = false;
-    this.taskVisible = false;
+    this.taskVisible = new Array<boolean>(false);
     this.isMember =false;
+    this.metericsVisible=false;
     // Get team by id
     this.serverService.getTeam(this.id).subscribe(
       response => {
@@ -69,19 +77,28 @@ export class MembersComponent implements OnInit {
         // Get team members call
         this.serverService.getTeamMembers(this.id).subscribe(
           accounts => {
-            accounts.forEach(account => this.members.push(account));
+            accounts.forEach((account, index) => {
+              //get each members todo list
+              this.serverService.getuserTodo(account.ownerId)
+                .subscribe(tasks =>{
+                  this.tasks$[index] = new ObservableArray<Task>();
+                  tasks.forEach(task=>{
+                    this.tasks$[index].push(task);
+                  });
+                });
+              this.members.push(account);
+              this.taskVisible.push(false);
+              if(account.ownerId === this.accountService.account.ownerId){
+                this.isMember = true;
+  
+                //check if they are the owner
+                this.isOwner =
+                this.team.ownerId === this.accountService.account.ownerId
+                  ? true
+                  : false;
+              }
+            });
             //check the user is a member of the team
-            this.members.forEach((value)=>{
-            if(value.ownerId === this.accountService.account.ownerId){
-              this.isMember = true;
-
-              //check if they are the owner
-              this.isOwner =
-              this.team.ownerId === this.accountService.account.ownerId
-                ? true
-                : false;
-            }
-          })
           },
           error => {
             console.error('could not get team members', error);
@@ -100,12 +117,19 @@ export class MembersComponent implements OnInit {
   }
 
   //navigate to members task list taking id with it
-  onTap(id: number) {
-    this.routerE.navigate(['/members-tasks', id], {
-      transition: {
-        name: 'slideLeft'
-      }
-    });
+  onTap(index: number) {
+    //
+    // this.routerE.navigate(['/members-tasks', id], {
+    //   transition: {
+    //     name: 'slideLeft'
+    //   }
+    // });
+    if(this.taskVisible[index] === true){
+      this.taskVisible[index] =false;
+      return;
+    }
+
+    this.taskVisible[index] = true;
   }
 
   addTapped() {
@@ -152,27 +176,25 @@ export class MembersComponent implements OnInit {
   teamTapped(){
     if(this.teamVisible === true){
       this.editHit = false;
-      this.taskVisible = false;
       this.teamVisible = true;
       return;
     }
 
     this.editHit = false;
-    this.taskVisible = false;
     this.teamVisible = true;
-
+    this.metericsVisible = true;
   }
 
-  taskTapped(){
-    if(this.taskVisible === true){ 
+  metricsTapped(){
+    if(this.metericsVisible === true){ 
       this.editHit = false;
       this.teamVisible = false;
-      this.taskVisible = true;
+      this.metericsVisible = true;
       return;
     }
 
     this.teamVisible = false;
-    this.taskVisible = true;
+    this.metericsVisible = true;
     this.editHit = false;
   }
 
@@ -187,8 +209,31 @@ export class MembersComponent implements OnInit {
     }
 
     this.teamVisible = true;
-    this.taskVisible = false;
+    this.metericsVisible = false;
     return;
   }
 
+  deleteTeam(){
+
+  }
+
+  deleteMember(){
+    
+  }
+
+  editTeamName(){
+
+  }
+
+  editTeamDesc(){
+
+  }
+
+  invitesTapped(){
+
+  }
+
+  permissionsTapped(){
+
+  }
 }
