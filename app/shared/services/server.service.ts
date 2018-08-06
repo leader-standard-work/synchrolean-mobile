@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -7,6 +6,7 @@ import { AccountService, State } from '~/shared/services/account.service';
 
 import { Team, TeamServerInterface } from '~/shared/models/team';
 import { Account, AccountServerInterface } from '~/shared/models/account';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -80,6 +80,11 @@ export class ServerService {
       .pipe(map(response => new Account(response)));
   }
 
+  getAccountByEmail(email:string):Observable<Account>{
+    let endpoint = this._url + '/api/accounts/' + email;
+    return this.http.get<Account>(endpoint);
+  }
+
   /****************** End Accounts Requests **********************/
   /****************** Begin Team Requests ************************/
   getTeams(): Observable<Team[]> {
@@ -121,6 +126,12 @@ export class ServerService {
     return this.http
       .get<AccountServerInterface[]>(endpoint)
       .pipe(map(accounts => accounts.map(account => new Account(account))));
+  }
+
+  inviteToTeam(userId: number, ownerId:number, teamid:number){
+    let endpoint = this._url +'/api/team/invite/'+ userId +'/'+ownerId+'/'+teamid;
+    let body ;
+    return this.http.put(endpoint, body);
   }
 
   /****************** End Team Requests **************************/
