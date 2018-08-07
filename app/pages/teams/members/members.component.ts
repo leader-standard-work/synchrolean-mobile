@@ -118,43 +118,6 @@ export class MembersComponent implements OnInit {
                   ? true
                   : false;
               }
-
-              //get invites
-              if(this.isOwner === true){
-                //get teams for permissions
-                this.serverService.getTeams()
-                .subscribe(res=>{
-                  res.forEach((value)=>{ 
-                    this.teams$.push(value);
-                  });
-                }, err=>{
-                  console.error("couldnt get teams from server", err);
-                });
-
-                //get owner created invites
-                this.serverService.getInvites(this.team.ownerId)
-                  .subscribe(res=>{
-                      res.forEach((value)=>{
-                        this.invites.push(value);
-                      });
-          
-                      //get accounts for invite
-                      this.invites.forEach((value)=>{
-                        this.serverService.getAccountById(value.inviteeId)
-                          .subscribe(res=>{
-                            //push invitee onto an accounts array
-                            //if they are for this team
-                            if(value.teamId === this.team.id){
-                              this.invitees.push(res);
-                            }
-                          },err=>{
-                            console.log('Error getting user info for invites', err);
-                          });
-                      });
-                  }, err=>{
-                      console.error('Error getting invites', err);
-                  });
-              }
             });  
           },
           error => {
@@ -168,7 +131,6 @@ export class MembersComponent implements OnInit {
       }
     );
 
-    //get roll-up tasks for team
     
   }
 
@@ -235,6 +197,32 @@ export class MembersComponent implements OnInit {
       return;
     }
 
+    this.tasks$ = new Array<ObservableArray<Task>>();
+    this.members = new ObservableArray<Account>();
+    // Get team members call
+    this.serverService.getTeamMembers(this.id).subscribe(
+      accounts => {
+        accounts.forEach((account, index) => {
+          //get each members todo list
+          this.serverService.getuserTodo(account.ownerId)
+            .subscribe(tasks =>{
+              this.tasks$[index] = new ObservableArray<Task>();
+              tasks.forEach(task=>{
+                this.tasks$[index].push(task);
+              });
+            });
+          this.members.push(account);
+          this.taskVisible.push(false); 
+      },         
+        error => {
+          console.error('could not get team members', error);
+        });
+      },
+      error => {
+        console.error('could not load team in members', error);
+    });
+                
+
     this.editHit = false;
     this.permissionVisible = false;
     this.inviteVisible = false;
@@ -277,6 +265,17 @@ export class MembersComponent implements OnInit {
         return;
       }
 
+      this.teams$ = new Array<Team>();
+
+      this.serverService.getTeams()
+      .subscribe(res=>{
+        res.forEach((value)=>{ 
+          this.teams$.push(value);
+        });
+      }, err=>{
+        console.error("couldnt get teams from server", err);
+      });
+
       this.inviteVisible = false;
       this.teamVisible = false;
       this.metericsVisible = false;
@@ -289,6 +288,32 @@ export class MembersComponent implements OnInit {
       return;
     }
 
+    this.invites = new Array<any>();
+    this.invitees = new Array<Account>();
+    
+    this.serverService.getInvites(this.team.ownerId)
+    .subscribe(res=>{
+        res.forEach((value)=>{
+          this.invites.push(value);
+        });
+
+        //get accounts for invite
+        this.invites.forEach((value)=>{
+          this.serverService.getAccountById(value.inviteeId)
+            .subscribe(res=>{
+              //push invitee onto an accounts array
+              //if they are for this team
+              if(value.teamId === this.team.id){
+                this.invitees.push(res);
+              }
+            },err=>{
+              console.log('Error getting user info for invites', err);
+            });
+        });
+    }, err=>{
+        console.error('Error getting invites', err);
+    });
+    
     this.teamVisible = false;
     this.metericsVisible = false;
     this.permissionVisible = false;
