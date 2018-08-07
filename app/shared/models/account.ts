@@ -6,7 +6,6 @@ export interface AccountServerInterface {
   lastName: string;
   email: string;
   isDeleted: boolean;
-  token?: string;
 }
 
 export class Account {
@@ -15,7 +14,6 @@ export class Account {
   private _lastname: string;
   private _email: string;
   private _isDeleted: boolean;
-  private _token: string;
   private _serverUrl: string;
 
   constructor(account: AccountServerInterface) {
@@ -24,9 +22,6 @@ export class Account {
     this._firstname = account.firstName;
     this._lastname = account.lastName;
     this._isDeleted = account.isDeleted;
-    if (account.token !== undefined) {
-      this._token = account.token;
-    }
   }
 
   get ownerId(): number {
@@ -66,13 +61,5 @@ export class Account {
 
   get serverUrl(): string {
     return this._serverUrl;
-  }
-
-  set token(tok: string) {
-    this._token = tok;
-  }
-
-  get token(): string {
-    return this._token;
   }
 }

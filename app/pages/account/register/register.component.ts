@@ -63,7 +63,7 @@ export class RegisterComponent implements OnInit {
           console.log(account);
           account.serverUrl = url;      //this is ugly but is needed in user settings
           this.accountService.account = account;
-          this.routerExtensions.navigate(['/teams'], {
+          this.routerExtensions.navigate(['/login'], {
             clearHistory: true,
             transition: {
               name: 'slideRight'

@@ -4,33 +4,43 @@ import { HttpClient } from '@angular/common/http';
 import { shareReplay, tap } from 'rxjs/operators';
 import * as AppSettings from 'application-settings';
 
-import { AccountServerInterface } from '~/shared/models/account';
-
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
-  constructor(private http: HttpClient) {}
-
-  login(email: string, password: string) {
-    let endpoint = 'api/login';
-    return this.http
-      .post<AccountServerInterface>(endpoint, { email, password })
-      .pipe(
-        tap(response => {
-          this.setSession(response);
-        }),
-        shareReplay()
-      );
+  private _url: string;
+  constructor(private http: HttpClient) {
+    if (AppSettings.hasKey('token')) {
+      AppSettings.getString('token', '');
+      AppSettings.getString('url', '');
+    }
   }
 
-  private setSession(accountServerInterface: AccountServerInterface) {
-    AppSettings.setString('token', accountServerInterface.token)
+  login(url: string, email: string, password: string) {
+    let endpoint = url + '/api/auth/login';
+    return this.http.post<any>(endpoint, { email, password }).pipe(
+      tap(token => {
+        this._url = url;
+        this.setSession(token);
+      }),
+      shareReplay()
+    );
+  }
+
+  private setSession(token: string) {
+    AppSettings.setString('token', token);
+    AppSettings.setString('url', this._url);
+  }
+
+  get url(): string {
+    return this._url;
   }
 
   logout() {
     AppSettings.clear();
   }
 
-  
+  isLoggedIn(): boolean {
+    return AppSettings.hasKey('token');
+  }
 }

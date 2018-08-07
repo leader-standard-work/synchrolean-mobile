@@ -53,13 +53,24 @@ export class LoginComponent implements OnInit {
     let password = this.accountFormGroup.value.password;
 
     this.serverService.login(serverUrl, email, password).subscribe(
-      account => {
-        account.serverUrl = serverUrl; //this is ugly but is needed in user settings
-        this.accountService.account = account;
-        this.routerExtensions.navigate(['/teams'], {
-          clearHistory: true,
-          transition: { name: 'slideRight' }
-        });
+      () => {
+        this.serverService.getAccountByEmail(email).subscribe(
+          account => {
+            this.accountService.account = account;
+            this.routerExtensions.navigate(['/teams'], {
+              clearHistory: true,
+              transition: { name: 'slideRight' }
+            });
+          },
+          error => {
+            console.error(
+              'could not get account after login "',
+              email,
+              '" :',
+              error
+            );
+          }
+        );
       },
       error => {
         console.error('could not login "', email, '" :', error);
