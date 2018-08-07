@@ -65,10 +65,10 @@
     </FlexboxLayout>
 
     <!-- Print members in list form visible to members-->
-    <FlexboxLayout justfiyContent="strech" row='4'>
+    <FlexboxLayout row='4'>
         <ListView  *ngIf="isMember" visibility="{{ teamVisible ?  'visible':'collapse' }}" [items]="members">
             <ng-template let-member="item" let-i="index">
-                    <FlexboxLayout width="100%" flexWrap='wrap' orientation="horizontal">
+                    <FlexboxLayout flexWrap='wrap' orientation="horizontal">
                         <!-- Make individual label for members send the id of the tapped item to onTap-->                       
                         <label width="75%" class="t-30 m-b-2 m-t-8 m-l-10" (tap)="onTap(i)" [text]="member.firstname + ' ' + member.lastname"></label>
                         <Button style="background-color: red;" width="25%" height="auto" visibility="{{ editHit ?  'visible':'collapse' }}" col="1" class="btn-rounded-sm"  (tap)="deleteMember()"> 
@@ -76,7 +76,7 @@
                         </Button>
 
                         <!-- make list of tasks to display underteam member name -->
-                        <ListView *ngIf="taskVisible[i]" width="100%" class="list" [height]="22.75 *(tasks[i].length)" AlignSelf="stretch" [items]="tasks$[i]"> 
+                        <ListView *ngIf="taskVisible[i]" width="100%" class="list" [height]="22.75 *(tasks$[i].length)" AlignSelf="stretch" [items]="tasks$[i]"> 
                             <ng-template tkListItemTemplate let-task="item" let-i="index">
                                 <label class="m-l-15 t-16" [text]="task.name"></label>
                             </ng-template>   

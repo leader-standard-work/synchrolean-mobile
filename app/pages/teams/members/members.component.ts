@@ -37,7 +37,6 @@ export class MembersComponent implements OnInit {
   public editHit: boolean;
   public isMember:boolean;
   public metericsVisible: boolean;
-  public tasks:Array<Array<string>>;
   public length: number;
 
   private id: number;
@@ -58,8 +57,6 @@ export class MembersComponent implements OnInit {
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class
-
-    this.tasks = new Array<Array<string>>(["Take out garbagesdafsadfdscsdafdscdsafdscdsacdscsadf" ,"Cut grass", "Read book", "watch youtube", "code", "Cut grass", "Read book", "watch youtube", "code","code", "Cut grass", "Read book", "watch youtube", "code", 'read','walk the dog', 'play prepatch', 'wash car'],['read','walk the dog', 'play prepatch', 'wash car']);
 
     this.members = new ObservableArray<Account>();
     this.tasks$ = new Array<ObservableArray<Task>>();
