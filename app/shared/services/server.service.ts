@@ -109,10 +109,21 @@ export class ServerService {
     return this.http.get<Account[]>(endpoint);
   }
 
-  inviteToTeam(userId: number, ownerId: number, teamid: number) {
-    let endpoint =
-      this._url + '/api/team/invite/' + userId + '/' + ownerId + '/' + teamid;
-    let body = '';
+  passOwner(team: Team, oldOwner: number) {
+    let endpoint = this._url +'/api/team/'+oldOwner+'/'+team.id;
+    let json = {
+      "id":team.id,
+      "ownerId":team.ownerId,
+      "teamDescription":team.teamDescription,
+      "teamName":team.teamName
+    };
+    return this.http
+           .put(endpoint, json,{responseType:"json"});
+  }
+
+  inviteToTeam(userId: number, ownerId:number, teamid:number){
+    let endpoint = this._url +'/api/team/invite/'+ userId +'/'+ownerId+'/'+teamid;
+    let body ='';
     return this.http.put(endpoint, body);
   }
 
@@ -126,6 +137,11 @@ export class ServerService {
     return this.http.get<any>(endpoint);
   }
 
+  removeMember(callerId: number, targetId:number, teamId:number){
+    let endpoint = this._url + '/api/team/remove/' + callerId +'/' + targetId +'/' + teamId;
+    let body ='';
+    return this.http.put(endpoint, body);
+  }
   /****************** End Team Requests **************************/
   /****************** Begin Task Requests ************************/
   getuserTodo(userId: number): Observable<Task[]> {

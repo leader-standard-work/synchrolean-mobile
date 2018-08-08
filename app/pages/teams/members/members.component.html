@@ -2,7 +2,7 @@
 <ActionBar class="action-bar">
     <Label class="action-bar-title" fontSize="32" text=""></Label>
         <ActionItem *ngIf="isOwner" visibility="{{ teamVisible ?  'visible':'collapse' }}" ios.position="right" text="Edit" android.position="actionBar" (tap)="editTapped()"></ActionItem>
-        <ActionItem *ngIf="isMember" visibility="{{ teamVisible ?  'visible':'collapse' }}" ios.position="right" text="Leave" android.position="actionBar" (tap)="leaveTapped()"></ActionItem>
+        <ActionItem *ngIf="isMember" visibility="{{ teamVisible ?  'visible':'collapse' }}" ios.position="right" text="Leave" android.position="actionBar" (tap)="leaveTapped(accountService.account.ownerId)"></ActionItem>
     <!-- <ActionItem visibility="{{ isOwner ?  'visible':'collapse' }}" (tap)="addTapped()" ios.position="left" text="Add" android.position="actionBar"></ActionItem> -->
 </ActionBar>
 <!-- Make grid layout for the page naming row sizes-->
@@ -76,10 +76,10 @@
                     <FlexboxLayout flexWrap='wrap' orientation="horizontal">
                         <!-- Make individual label for members send the id of the tapped item to onTap-->                       
                         <label width="100%" class="t-30 m-b-2 m-t-8 m-l-10" (tap)="onTap(i)" [text]="member.firstname + ' ' + member.lastname"></label>
-                        <Button style="background-color: gray;" width="50%" height="auto" visibility="{{ editHit ?  'visible':'collapse' }}" col="1" class="btn-rounded-sm"  (tap)="deleteMember()"> 
+                        <Button style="background-color: gray;" width="50%" height="auto" visibility="{{ editHit ?  'visible':'collapse' }}" col="1" class="btn-rounded-sm"  (tap)="passOwner(member.ownerId)"> 
                             <Span style="color: whitesmoke;" textAlignment="center" textWrap="true" class='t-16' text="Pass Ownership"></Span>        
                         </Button>
-                        <Button style="background-color: tomato;" width="50%" height="auto" visibility="{{ editHit ?  'visible':'collapse' }}" col="1" class="btn-rounded-sm"  (tap)="deleteMember()"> 
+                        <Button style="background-color: tomato;" width="50%" height="auto" visibility="{{ editHit ?  'visible':'collapse' }}" col="1" class="btn-rounded-sm"  (tap)="deleteMember(team.ownerId, member.ownerId)"> 
                             <Span style="color: whitesmoke;" textAlignment="center" textWrap="true" class='t-16' text="Delete"></Span>        
                         </Button>
 
@@ -93,7 +93,7 @@
             </ng-template>
         </ListView>
     </FlexboxLayout>
-    <!-- Print tasks in list form-->
+    <!-- Print teams for permissions in list form-->
     <ListView *ngIf="isOwner"  visibility="{{ permissionVisible ?  'visible':'collapse' }}" [items]="teams$" row='4' class="list-group">
         <ng-template let-team="item">
           <StackLayout>

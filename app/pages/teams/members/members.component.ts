@@ -321,22 +321,92 @@ export class MembersComponent implements OnInit {
     this.editHit = false;
   }
 
-  leaveTapped(){
+  passOwner(id:number){
+    console.log(id);
+    if(id === this.team.ownerId){
+      dialogs.alert({
+        title: "This person is already the owner",
+        okButtonText: "Ok"
+      }).then(function () {
+          console.log("Dialog closed!");
+      });
+      return;
+    }
 
+    var oldOwner = this.team.ownerId;
+    this.team.ownerId = id;
+    this.serverService.passOwner(this.team, oldOwner).subscribe(rep=>{
+        console.log('Saved new owner');
+        this.editHit = false;
+        this.isOwner = false; 
+
+        dialogs.alert({
+          title: "Ownership changed",
+          okButtonText: "Ok"
+        }).then(function () {
+            console.log("Dialog closed!");
+        });
+    },err=>{
+      console.log('Error editing team in change ownership\n', err);
+    });
   }
 
   deleteTeam(){
-
-  }
-
-  deleteMember(){
     
   }
 
-  private saveEditTeamName(name:string){
+  leaveTapped(ownerId: number){
+    if(ownerId === this.team.ownerId){
+      dialogs.alert({
+        title: "You cannot leave/remove the team owner",
+        message:"Pass ownership first",
+        okButtonText: "Ok"
+      }).then(function () {
+          console.log("Dialog closed!");
+      });
 
- 
-   
+      return;
+    }
+
+    this.serverService
+    .removeMember(ownerId, ownerId, this.team.id)
+    .subscribe(res=>{
+      console.log('Successfully remove');
+      this.routerE.navigate(['/teams'], {
+        transition: {
+          name: 'slideRight'
+        },
+        clearHistory: true,
+      });
+    },err=>{
+      console.error("Error removing member", err);
+    });
+    console.log(ownerId);
+  }
+
+  deleteMember(callerId:number, targetId: number){
+    if(targetId === this.team.ownerId){
+      dialogs.alert({
+        title: "You cannot leave/remove the team owner",
+        message:"Pass ownership first",
+        okButtonText: "Ok"
+      }).then(function () {
+          console.log("Dialog closed!");
+      });
+
+      return;
+    }
+
+    this.serverService
+    .removeMember(callerId, targetId, this.team.id)
+    .subscribe(res=>{
+      console.log('Successfully remove');
+      this.teamVisible = false;
+      this.teamTapped();
+    },err=>{
+      console.error("Error removing member", err);
+    });
+    console.log(callerId + targetId);
   }
 
   editTeamName(name:string){
