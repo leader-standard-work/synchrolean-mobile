@@ -68,6 +68,11 @@ export class ServerService {
     return this.http.get<Account>(endpoint);
   }
 
+  getAccountById(ownerId:number):Observable<Account>{
+    let endpoint = this._url + '/api/accounts/owner/' + ownerId;
+    return this.http.get<Account>(endpoint);
+  }
+
   /****************** End Accounts Requests **********************/
   /****************** Begin Team Requests ************************/
   getTeams(): Observable<Team[]> {
@@ -102,7 +107,17 @@ export class ServerService {
       .pipe(map(response => new Team(response)));
   }
 
-  editTeam(team: Team) {}
+  editTeam(team: Team) {
+    let endpoint = this._url +'/api/team/'+team.ownerId+'/'+team.id;
+    let json = {
+      "id":team.id,
+      "ownerId":team.ownerId,
+      "teamDescription":team.teamDescription,
+      "teamName":team.teamName
+    };
+    return this.http
+           .put(endpoint, json,{responseType:"json"});
+  }
 
   getTeamMembers(id: number): Observable<Account[]> {
     let endpoint = this._url + '/api/team/members/' + id;
@@ -116,6 +131,17 @@ export class ServerService {
       this._url + '/api/team/invite/' + userId + '/' + ownerId + '/' + teamid;
     let body = '';
     return this.http.put(endpoint, body);
+  }
+
+  deleteTeam(ownerId:number, teamId:number){
+    let endpoint = this._url +'/api/team/invite/'+'/'+ownerId+'/'+teamId;
+  
+  }
+
+  getInvites(ownerId:number){
+    let endpoint = this._url +'/api/team/invite/outgoing'+'/'+ownerId;
+    return this.http
+           .get<any>(endpoint);
   }
 
   /****************** End Team Requests **************************/

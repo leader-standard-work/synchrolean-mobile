@@ -1,7 +1,7 @@
 import { Injectable, Component, OnInit } from '@angular/core';
 import { PageRoute, RouterExtensions } from 'nativescript-angular/router';
 import { switchMap } from 'rxjs/operators';
-
+import { TextField } from "ui/text-field";
 import { TeamService } from '~/shared/services/teams.service';
 
 import { Account } from '~/shared/models/account';
@@ -17,6 +17,8 @@ import { ServerService } from '~/shared/services/server.service';
 @Injectable({
   providedIn: 'root'
 })
+
+
 //name component and the markup and stayle sheet
 @Component({
   selector: 'Members',
@@ -25,19 +27,29 @@ import { ServerService } from '~/shared/services/server.service';
   styleUrls: ['./members.component.css']
 })
 export class MembersComponent implements OnInit {
-  public team: Team;
-  public teamName: string;
-  public teamDesc: string;
-  public members: ObservableArray<Account>;
-  public tasks$: Array<ObservableArray<Task>>;
-  public teams$:ObservableArray<Team>;
+  public team: Team;                                //holds team
+  public teamName: string;                          //holds team name
+  public teamDesc: string;                          //holds team description
+  public members: ObservableArray<Account>;         //Holds members of the team
+  public tasks$:  Array<ObservableArray<Task>>;     //holds each team members tasks
+  public teams$:  Array<Team>;            //holds teams for permissions
+  public invites: Array<any>;
+  public invitees: Array<Account>;
+
+  //permissions check
   public isOwner: Boolean;
-  public teamVisible: boolean;
-  public taskVisible: Array<boolean>;
-  public editHit: boolean;
   public isMember:boolean;
+
+  //button presses
+  public teamVisible: boolean;
+  public taskVisible: Array<boolean>; 
   public metericsVisible: boolean;
-  public tasks:Array<Array<string>>;
+  public permissionVisible;
+  public editHit: boolean;
+  public inviteVisible: boolean;
+  public editTeamNameHit: boolean;
+  public editTeamDescHit: boolean;
+ 
   public length: number;
 
   private id: number;
@@ -59,15 +71,22 @@ export class MembersComponent implements OnInit {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class
 
-    this.tasks = new Array<Array<string>>(["Take out garbagesdafsadfdscsdafdscdsafdscdsacdscsadf" ,"Cut grass", "Read book", "watch youtube", "code", "Cut grass", "Read book", "watch youtube", "code","code", "Cut grass", "Read book", "watch youtube", "code", 'read','walk the dog', 'play prepatch', 'wash car'],['read','walk the dog', 'play prepatch', 'wash car']);
-
     this.members = new ObservableArray<Account>();
     this.tasks$ = new Array<ObservableArray<Task>>();
-    this.teamVisible = true;
+    this.invites = new Array<any>();
+    this.invitees = new Array<Account>();
+    this.teams$ = new Array<Team>();
+
+    //permission intialized
     this.isOwner = false;
-    this.taskVisible = new Array<boolean>(false);
     this.isMember =false;
+    
+    //list visibilty with team being showed on page load
+    this.teamVisible = true;    
+    this.taskVisible = new Array<boolean>(false);
     this.metericsVisible=false;
+    this.inviteVisible = false;
+
     // Get team by id
     this.serverService.getTeam(this.id).subscribe(
       response => {
@@ -87,7 +106,9 @@ export class MembersComponent implements OnInit {
                   });
                 });
               this.members.push(account);
-              this.taskVisible.push(false);
+              this.taskVisible.push(false); 
+              
+              //check the user is a member of the team
               if(account.ownerId === this.accountService.account.ownerId){
                 this.isMember = true;
   
@@ -97,8 +118,7 @@ export class MembersComponent implements OnInit {
                   ? true
                   : false;
               }
-            });
-            //check the user is a member of the team
+            });  
           },
           error => {
             console.error('could not get team members', error);
@@ -111,19 +131,18 @@ export class MembersComponent implements OnInit {
       }
     );
 
-    //get roll-up tasks for team
+    
+  }
 
-    //get invites
+  getTaskListLength(tasks: Task[]):number{
+    if(tasks === undefined)
+      return 0;
+
+    return tasks.length;
   }
 
   //navigate to members task list taking id with it
   onTap(index: number) {
-    //
-    // this.routerE.navigate(['/members-tasks', id], {
-    //   transition: {
-    //     name: 'slideLeft'
-    //   }
-    // });
     if(this.taskVisible[index] === true){
       this.taskVisible[index] =false;
       return;
@@ -175,26 +194,50 @@ export class MembersComponent implements OnInit {
 
   teamTapped(){
     if(this.teamVisible === true){
-      this.editHit = false;
-      this.teamVisible = true;
       return;
     }
 
+    this.tasks$ = new Array<ObservableArray<Task>>();
+    this.members = new ObservableArray<Account>();
+    // Get team members call
+    this.serverService.getTeamMembers(this.id).subscribe(
+      accounts => {
+        accounts.forEach((account, index) => {
+          //get each members todo list
+          this.serverService.getuserTodo(account.ownerId)
+            .subscribe(tasks =>{
+              this.tasks$[index] = new ObservableArray<Task>();
+              tasks.forEach(task=>{
+                this.tasks$[index].push(task);
+              });
+            });
+          this.members.push(account);
+          this.taskVisible.push(false); 
+      },         
+        error => {
+          console.error('could not get team members', error);
+        });
+      },
+      error => {
+        console.error('could not load team in members', error);
+    });
+                
+
     this.editHit = false;
+    this.permissionVisible = false;
+    this.inviteVisible = false;
+    this.metericsVisible = false;
     this.teamVisible = true;
-    this.metericsVisible = true;
   }
 
   metricsTapped(){
     if(this.metericsVisible === true){ 
-      this.editHit = false;
-      this.teamVisible = false;
-      this.metericsVisible = true;
       return;
     }
 
     this.teamVisible = false;
     this.metericsVisible = true;
+    this.permissionVisible = false;
     this.editHit = false;
   }
 
@@ -205,12 +248,81 @@ export class MembersComponent implements OnInit {
       }
       else{ 
         this.editHit = false;
+        this.editTeamDescHit =false;
+        this.editTeamNameHit = false;
       }
     }
 
-    this.teamVisible = true;
+    this.inviteVisible = false;
+    this.permissionVisible = false;
     this.metericsVisible = false;
+    this.teamVisible = true;
     return;
+  }
+
+  permissionsTapped(){
+      if(this.permissionVisible === true){
+        return;
+      }
+
+      this.teams$ = new Array<Team>();
+
+      this.serverService.getTeams()
+      .subscribe(res=>{
+        res.forEach((value)=>{ 
+          this.teams$.push(value);
+        });
+      }, err=>{
+        console.error("couldnt get teams from server", err);
+      });
+
+      this.inviteVisible = false;
+      this.teamVisible = false;
+      this.metericsVisible = false;
+      this.permissionVisible = true;
+      this.editHit = false;
+  }
+
+  invitesTapped(){
+    if(this.inviteVisible === true){
+      return;
+    }
+
+    this.invites = new Array<any>();
+    this.invitees = new Array<Account>();
+    
+    this.serverService.getInvites(this.team.ownerId)
+    .subscribe(res=>{
+        res.forEach((value)=>{
+          this.invites.push(value);
+        });
+
+        //get accounts for invite
+        this.invites.forEach((value)=>{
+          this.serverService.getAccountById(value.inviteeId)
+            .subscribe(res=>{
+              //push invitee onto an accounts array
+              //if they are for this team
+              if(value.teamId === this.team.id){
+                this.invitees.push(res);
+              }
+            },err=>{
+              console.log('Error getting user info for invites', err);
+            });
+        });
+    }, err=>{
+        console.error('Error getting invites', err);
+    });
+    
+    this.teamVisible = false;
+    this.metericsVisible = false;
+    this.permissionVisible = false;
+    this.inviteVisible = true;
+    this.editHit = false;
+  }
+
+  leaveTapped(){
+
   }
 
   deleteTeam(){
@@ -221,19 +333,49 @@ export class MembersComponent implements OnInit {
     
   }
 
-  editTeamName(){
+  private saveEditTeamName(name:string){
+
+ 
+   
+  }
+
+  editTeamName(name:string){
+    if(this.editTeamNameHit === true){
+      this.editTeamNameHit =false;
+      this.teamName = name;
+      this.team.teamName = name;
+      this.serverService.editTeam(this.team).subscribe(res=>{
+          console.log(res);
+      },err=>{
+          console.error('Error updating the team in the server', err)
+      });
+      return;
+    }
+    this.editTeamNameHit = true;
+  }
+
+  editTeamDesc(desc:string){
+    if(this.editTeamDescHit === true){
+      this.editTeamDescHit =false;
+      this.teamDesc = desc;
+      this.team.teamDescription = desc;
+      this.serverService.editTeam(this.team).subscribe(res=>{
+          console.log(res);
+      },err=>{
+          console.error('Error updating the team in the server', err)
+      });
+      return;
+    }
+    this.editTeamDescHit = true;
+  }
+
+  inviteeTapped(){
 
   }
 
-  editTeamDesc(){
+  teamPermissionTapped(){
 
   }
 
-  invitesTapped(){
 
-  }
-
-  permissionsTapped(){
-
-  }
 }
