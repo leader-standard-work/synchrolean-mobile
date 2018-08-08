@@ -64,7 +64,7 @@
         </Button>
 
          <!-- team permissions visible to team owners -->
-        <Button style="background-color: gray; border: 1pt;"  visibility="{{ isOwner ?  'visible':'collapse' }}" class=" btn-grey" (tap)="permissionsTapped(member.id)"> 
+        <Button style="background-color: gray; border: 1pt;"  visibility="{{ isOwner ?  'visible':'collapse' }}" class=" btn-grey" (tap)="permissionsTapped()"> 
             <Span alignSelf="center" textAlignment="center" style="color: whitesmoke;" class='t-15' text="Permissions"></Span>        
         </Button>
     </FlexboxLayout>
@@ -93,7 +93,7 @@
             </ng-template>
         </ListView>
     </FlexboxLayout>
-    <!-- Print tasks in list form-->
+    <!-- Print teams for permissions in list form-->
     <ListView *ngIf="isOwner"  visibility="{{ permissionVisible ?  'visible':'collapse' }}" [items]="teams$" row='4' class="list-group">
         <ng-template let-team="item">
           <StackLayout>
