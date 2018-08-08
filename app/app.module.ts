@@ -1,6 +1,6 @@
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NativeScriptHttpClientModule } from 'nativescript-angular/http-client';
 import { NativeScriptModule } from 'nativescript-angular/nativescript.module';
 import { NativeScriptFormsModule } from 'nativescript-angular/forms';
@@ -26,8 +26,7 @@ import { MetricsComponent } from '~/pages/metrics/metrics.component';
 import { RegisterComponent } from '~/pages/account/register/register.component';
 import { MembersTasksComponent } from '~/pages/teams/members-tasks-list/members-tasks.component';
 import { AuthenticationService } from '~/shared/services/auth.service';
-import { HTTP_INTERCEPTORS } from '../node_modules/@angular/common/http';
-import { AuthInterceptor } from '~/shared/services/auth.interceptor';
+import { AuthInterceptor } from '~/shared/helpers/auth.interceptor';
 
 // Uncomment and add to NgModule imports  if you need to use the HTTP wrapper
 // import { NativeScriptHttpModule } from 'nativescript-angular/http';
@@ -59,11 +58,11 @@ import { AuthInterceptor } from '~/shared/services/auth.interceptor';
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [
-    // {
-    //   provide: HTTP_INTERCEPTORS,
-    //   useClass: AuthInterceptor,
-    //   multi: true
-    // },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    },
     TaskService,
     DatabaseService,
     ServerService,

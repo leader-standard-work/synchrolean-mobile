@@ -1,10 +1,9 @@
 //The login form component is used to create a NEW account
 //aka. User data did not previously exist on the server
 import { Component, OnInit } from '@angular/core';
-import { PageRoute, RouterExtensions } from 'nativescript-angular/router';
+import { RouterExtensions } from 'nativescript-angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Account } from '~/shared/models/account';
-import { ServerService } from '~/shared/services/server.service';
+import { AuthenticationService } from '~/shared/services/auth.service';
 import { AccountService } from '~/shared/services/account.service';
 
 @Component({
@@ -18,24 +17,16 @@ export class LoginComponent implements OnInit {
   public tempUrl: string = 'http://localhost:55542';
 
   constructor(
-    private serverService: ServerService,
+    private authService: AuthenticationService,
     private accountService: AccountService,
     private formBuilder: FormBuilder,
-    private pageRoute: PageRoute,
     private routerExtensions: RouterExtensions
-  ) {
-    //this.pageRoute.activatedRoute ...
-  }
+  ) {}
 
   ngOnInit(): void {
     let url = '';
     let email = '';
     let password = '';
-
-    /*if (this.account != null){
-      ........
-      
-    }*/
 
     this.accountFormGroup = this.formBuilder.group({
       serverUrl: [this.tempUrl, Validators.required],
@@ -48,13 +39,15 @@ export class LoginComponent implements OnInit {
   }
 
   loginTapped() {
-    let serverUrl = this.accountFormGroup.value.serverUrl;
+    let url = this.accountFormGroup.value.serverUrl;
     let email = this.accountFormGroup.value.email;
     let password = this.accountFormGroup.value.password;
 
-    this.serverService.login(serverUrl, email, password).subscribe(
-      () => {
-        this.serverService.getAccountByEmail(email).subscribe(
+    this.authService.login(url, email, password).subscribe(
+      response => {
+        let { token } = response;
+        this.authService.setSession(url, email, token);
+        this.accountService.getAccountByEmail(email).subscribe(
           account => {
             this.accountService.account = account;
             this.routerExtensions.navigate(['/teams'], {
@@ -63,12 +56,7 @@ export class LoginComponent implements OnInit {
             });
           },
           error => {
-            console.error(
-              'could not get account after login "',
-              email,
-              '" :',
-              error
-            );
+            console.error(`could not get account for '${email}, ${error}`);
           }
         );
       },

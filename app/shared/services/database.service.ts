@@ -18,22 +18,6 @@ const CreateTasksTable: string = `CREATE TABLE IF NOT EXISTS tasks (
           deleted TEXT
         )`;
 
-const CreateCompletionTable: string = `CREATE TABLE IF NOT EXISTS completion (
-          id INTEGER PRIMARY KEY AUTOINCREMENT, 
-          taskId INTEGER NOT NULL, 
-          completedOn TEXT,
-          duration TEXT,
-          FOREIGN KEY(taskId) REFERENCES tasks(databaseId)
-        )`;
-
-const CreateAccountTable: string = `CREATE TABLE IF NOT EXISTS account (
-          id INTEGER PRIMARY KEY AUTOINCREMENT, 
-          serverUrl Text,
-          email TEXT, 
-          firstname TEXT,
-          lastname TEXT,
-          token TEXT 
-        )`;
 /****************** End Table Creation  **********************/
 
 /****************** Begin Task SQL  **************************/
@@ -67,19 +51,6 @@ const UpdateTask: string = `UPDATE tasks SET
           WHERE databaseId = ?`;
 
 /****************** End Task SQL  ****************************/
-/****************** Begin Completion SQL *********************/
-const InsertCompletionEntry: string = `INSERT INTO completion (
-  taskId,
-  completedOn,
-  duration
-) VALUES (?,?)`;
-
-const DeleteLastCompletionEntry: string = `DELETE FROM completion WHERE taskId = ? ORDER BY date(completedOn) DESC LIMIT 1`;
-
-const QueryLastCompletion: string = `SELECT * FROM completion WHERE taskId = ? ORDER BY date(completedOn) DESC LIMIT 1`;
-
-const QueryAllCompletions: string = `SELECT * FROM completion`;
-/****************** End Completion SQL  **********************/
 
 @Injectable({
   providedIn: 'root'
@@ -99,22 +70,6 @@ export class DatabaseService {
           () => {},
           error => {
             console.log('failed to create tasks table', error);
-          }
-        );
-
-        // Create Completion Table
-        this.database.execSQL(CreateCompletionTable).then(
-          () => {},
-          error => {
-            console.log('failed to create completion table', error);
-          }
-        );
-
-        // Create Account Table
-        this.database.execSQL(CreateAccountTable).then(
-          () => {},
-          error => {
-            console.error('failed to create account table', error);
           }
         );
       },
@@ -213,43 +168,5 @@ export class DatabaseService {
         );
     });
   }
-  /****************** End Tasks Methods **********************/
-
-  /****************** Begin Completion Methods *****************/
-  completeTask(task: Task) {
-    this.updateTask(task);
-
-    if (task.complete) {
-      this.database.execSQL(InsertCompletionEntry, [
-        task.databaseId,
-        task.completedOn.toISOString()
-      ]);
-    } else {
-      this.database.execSQL(DeleteLastCompletionEntry, [task.databaseId]);
-    }
-  }
-
-  getCompletedTable() {
-    this.database.all(QueryAllCompletions).then(
-      results => {
-        for (let complete of results) {
-          console.log(
-            'RESULT',
-            complete.id,
-            complete.taskId,
-            complete.completedOn,
-            complete.duration
-          );
-        }
-        console.log('***********************************************');
-      },
-      error => {
-        console.log('could not get all completed tasks in database', error);
-      }
-    );
-  }
-  /****************** End Completion Methods *******************/
-
-  /****************** Begin Account Methods ******************/
-  /****************** End Account Methods ********************/
 }
+/****************** End Tasks Methods **********************/

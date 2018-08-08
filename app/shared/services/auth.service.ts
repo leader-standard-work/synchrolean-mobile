@@ -1,42 +1,55 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
+import { Observable } from 'rxjs';
 import { shareReplay, tap } from 'rxjs/operators';
 import * as AppSettings from 'application-settings';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class AuthenticationService {
-  private _url: string;
+  token: string;
+  userId: number;
+  email: string;
+  url: string;
+
   constructor(private http: HttpClient) {
     if (AppSettings.hasKey('token')) {
-      AppSettings.getString('token', '');
-      AppSettings.getString('url', '');
+      this.token = AppSettings.getString('token', '');
+      this.email = AppSettings.getString('email', '');
+      this.url = AppSettings.getString('url', '');
     }
   }
 
-  login(url: string, email: string, password: string) {
+  /**
+   * Log into the account for a given email
+   * @param url the url of the server to send to
+   * @param email the email of the account
+   * @param password the password for the account
+   * @returns Observable<any> with the JWT of the user.
+   */
+  login(url: string, email: string, password: string): Observable<any> {
     let endpoint = url + '/api/auth/login';
-    return this.http.post<any>(endpoint, { email, password }).pipe(
-      tap(token => {
-        this._url = url;
-        this.setSession(token);
-      }),
-      shareReplay()
-    );
+    let body = { email, password };
+    return this.http.post<any>(endpoint, body);
   }
 
-  private setSession(token: string) {
-    AppSettings.setString('token', token);
-    AppSettings.setString('url', this._url);
-  }
-
-  get url(): string {
-    return this._url;
+  /**
+   * Will set the url, and JWT into app settings
+   * @param token a JWT for a logged in user
+   */
+  setSession(url: string, email: string, token: string) {
+    this.url = url;
+    this.email = email;
+    this.token = token;
+    AppSettings.setString('url', this.url);
+    AppSettings.setString('email', this.email);
+    AppSettings.setString('token', this.token);
   }
 
   logout() {
+    this.url = '';
+    this.email = '';
+    this.token = '';
     AppSettings.clear();
   }
 

@@ -4,7 +4,9 @@ import { ServerService } from '~/shared/services/server.service';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { ObservableArray } from 'data/observable-array';
 import { AccountService } from '~/shared/services/account.service';
-var appSettings = require('application-settings');
+import { AuthenticationService } from '~/shared/services/auth.service';
+import { TeamService } from '~/shared/services/teams.service';
+
 @Component({
   selector: 'team-list',
   moduleId: module.id,
@@ -15,16 +17,17 @@ export class TeamListComponent implements OnInit {
   public teams$: ObservableArray<Team>;
 
   constructor(
-    private serverService: ServerService,
+    private teamService: TeamService,
+    private authService: AuthenticationService,
     private routerExtensions: RouterExtensions,
     private accounteService: AccountService
   ) {}
 
   ngOnInit() {
     this.teams$ = new ObservableArray<Team>();
-    
-    if (this.serverService.isLoggedIn()) {
-      this.serverService.getTeams().subscribe(
+
+    if (this.authService.isLoggedIn()) {
+      this.teamService.getTeams().subscribe(
         teams => {
           teams.forEach(team => this.teams$.push(team));
           console.log(teams);
@@ -38,26 +41,26 @@ export class TeamListComponent implements OnInit {
         transition: {
           name: 'slideTop'
         },
-        clearHistory: true,
+        clearHistory: true
       });
     }
   }
 
   isLoggedIn(): boolean {
-    return this.serverService.isLoggedIn();
+    return this.authService.isLoggedIn();
   }
 
   onTap(id: number) {
     this.routerExtensions.navigate(['/Members', id], {
       transition: {
-        name: 'slideLeft'  
+        name: 'slideLeft'
       }
     });
   }
 
   logoutTapped() {
-    if (this.serverService.isLoggedIn()) {
-      this.serverService.logout();
+    if (this.authService.isLoggedIn()) {
+      this.authService.logout();
       this.teams$ = new ObservableArray<Team>();
       this.routerExtensions.navigate(['/login'], {
         clearHistory: true,

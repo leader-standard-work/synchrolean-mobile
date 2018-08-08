@@ -1,65 +1,77 @@
 //  account.ts contains the account class
 
-export interface AccountServerInterface {
+export class Account {
   ownerId: number;
+  teamId: number;
   firstName: string;
   lastName: string;
   email: string;
+  password: string;
   isDeleted: boolean;
+
+  constructor() {}
 }
 
-export class Account {
-  private _ownerId: number;
-  private _firstname: string;
-  private _lastname: string;
-  private _email: string;
-  private _isDeleted: boolean;
-  private _serverUrl: string;
+// export interface AccountServerInterface {
+//   ownerId: number;
+//   firstName: string;
+//   lastName: string;
+//   email: string;
+//   isDeleted: boolean;
+// }
 
-  constructor(account: AccountServerInterface) {
-    this._ownerId = account.ownerId;
-    this._email = account.email;
-    this._firstname = account.firstName;
-    this._lastname = account.lastName;
-    this._isDeleted = account.isDeleted;
-  }
+// export class Account {
+//   private _ownerId: number;
+//   private _firstname: string;
+//   private _lastname: string;
+//   private _email: string;
+//   private _isDeleted: boolean;
+//   private _serverUrl: string;
 
-  get ownerId(): number {
-    return this._ownerId;
-  }
+//   constructor(account: AccountServerInterface) {
+//     this._ownerId = account.ownerId;
+//     this._email = account.email;
+//     this._firstname = account.firstName;
+//     this._lastname = account.lastName;
+//     this._isDeleted = account.isDeleted;
+//   }
 
-  //  Set/get for email
-  set email(newEmail: string) {
-    this._email = newEmail;
-  }
+//   get ownerId(): number {
+//     return this._ownerId;
+//   }
 
-  get email(): string {
-    return this._email;
-  }
+//   //  Set/get for email
+//   set email(newEmail: string) {
+//     this._email = newEmail;
+//   }
 
-  //  Set/get for firstname
-  set firstname(newFirstname: string) {
-    this._firstname = newFirstname;
-  }
+//   get email(): string {
+//     return this._email;
+//   }
 
-  get firstname(): string {
-    return this._firstname;
-  }
+//   //  Set/get for firstname
+//   set firstname(newFirstname: string) {
+//     this._firstname = newFirstname;
+//   }
 
-  //  Set/get for lastname
-  set lastname(newLastname: string) {
-    this._lastname = newLastname;
-  }
+//   get firstname(): string {
+//     return this._firstname;
+//   }
 
-  get lastname(): string {
-    return this._lastname;
-  }
+//   //  Set/get for lastname
+//   set lastname(newLastname: string) {
+//     this._lastname = newLastname;
+//   }
 
-  set serverUrl(url: string) {
-    this._serverUrl = url;
-  }
+//   get lastname(): string {
+//     return this._lastname;
+//   }
 
-  get serverUrl(): string {
-    return this._serverUrl;
-  }
-}
+//   set serverUrl(url: string) {
+//     this._serverUrl = url;
+//   }
+
+//   get serverUrl(): string {
+//     return this._serverUrl;
+//   }
+// }

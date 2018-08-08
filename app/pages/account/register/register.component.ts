@@ -6,6 +6,7 @@ import { RouterExtensions } from 'nativescript-angular/router';
 
 import { ServerService } from '~/shared/services/server.service';
 import { AccountService } from '~/shared/services/account.service';
+import { Account } from '~/shared/models/account';
 
 @Component({
   selector: 'register',
@@ -15,64 +16,50 @@ import { AccountService } from '~/shared/services/account.service';
 })
 export class RegisterComponent implements OnInit {
   public accountFormGroup: FormGroup;
-
   public tempUrl: string = 'http://localhost:55542';
 
   constructor(
-    private serverService: ServerService,
     private accountService: AccountService,
     private formBuilder: FormBuilder,
     private routerExtensions: RouterExtensions
   ) {}
 
   ngOnInit(): void {
-    let url = '';
-    let email = '';
-    let firstname = '';
-    let lastname = '';
-    let password = '';
-
     this.accountFormGroup = this.formBuilder.group({
       serverUrl: [this.tempUrl, Validators.required],
-      email: [
-        email,
-        Validators.compose([Validators.required, Validators.email])
-      ],
-      firstname: [firstname, Validators.required],
-      lastname: [lastname, Validators.required],
-      password: [password, Validators.required]
+      email: ['', Validators.compose([Validators.required, Validators.email])],
+      firstname: ['', Validators.required],
+      lastname: ['', Validators.required],
+      password: ['', Validators.required]
     });
   }
 
   signUpTapped() {
-    let url = this.accountFormGroup.value.serverUrl;
-    let email = this.accountFormGroup.value.email;
-    let firstname = this.accountFormGroup.value.firstname;
-    let lastname = this.accountFormGroup.value.lastname;
-    let password = this.accountFormGroup.value.password;
+    let account = new Account();
+    const url = this.accountFormGroup.value.serverUrl;
+    account.email = this.accountFormGroup.value.email;
+    account.firstName = this.accountFormGroup.value.firstname;
+    account.lastName = this.accountFormGroup.value.lastname;
+    account.password = this.accountFormGroup.value.password;
 
     let options = {
       title: 'Could not connect to server',
       okButtonText: 'Ok'
     };
 
-    this.serverService
-      .register(url, email, password, firstname, lastname)
-      .subscribe(
-        account => {
-          console.log(account);
-          account.serverUrl = url;      //this is ugly but is needed in user settings
-          this.accountService.account = account;
-          this.routerExtensions.navigate(['/login'], {
-            clearHistory: true,
-            transition: {
-              name: 'slideRight'
-            }
-          });
-        },
-        error => {
-          alert(options);
-        }
-      );
+    this.accountService.register(url, account).subscribe(
+      response => {
+        console.log(response);
+        this.routerExtensions.navigate(['/login'], {
+          clearHistory: true,
+          transition: {
+            name: 'slideRight'
+          }
+        });
+      },
+      error => {
+        alert(options);
+      }
+    );
   }
 }
