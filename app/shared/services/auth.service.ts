@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
-import { shareReplay, tap } from 'rxjs/operators';
 import * as AppSettings from 'application-settings';
+import * as JWT from 'jwt-decode';
 
 @Injectable()
 export class AuthenticationService {
@@ -17,6 +17,8 @@ export class AuthenticationService {
       this.token = AppSettings.getString('token', '');
       this.email = AppSettings.getString('email', '');
       this.url = AppSettings.getString('url', '');
+      let jwt = JWT(this.token);
+      this.userId = jwt['OwnerId'];
     }
   }
 
@@ -41,6 +43,8 @@ export class AuthenticationService {
     this.url = url;
     this.email = email;
     this.token = token;
+    let jwt = JWT(token);
+    this.userId = jwt['OwnerId'];
     AppSettings.setString('url', this.url);
     AppSettings.setString('email', this.email);
     AppSettings.setString('token', this.token);
@@ -50,6 +54,7 @@ export class AuthenticationService {
     this.url = '';
     this.email = '';
     this.token = '';
+    this.userId = -1;
     AppSettings.clear();
   }
 

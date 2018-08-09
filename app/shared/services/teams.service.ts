@@ -1,10 +1,10 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ObservableArray } from 'data/observable-array';
 
 import { Team } from '~/shared/models/team';
 import { Account } from '~/shared/models/account';
-import { ServerService } from '~/shared/services/server.service';
+import { AuthenticationService } from '~/shared/services/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,25 +12,55 @@ import { ServerService } from '~/shared/services/server.service';
 export class TeamService {
   private teams: Array<Team>;
 
-  constructor(private serverService: ServerService) {
+  constructor(
+    private http: HttpClient,
+    private authService: AuthenticationService
+  ) {
     this.teams = new Array<Team>();
   }
-  //end of constructor
+
+  /**
+   * Get all the teams for the organization
+   * @returns An Observable team array
+   */
   public getTeams(): Observable<Team[]> {
-    return this.serverService.getTeams();
+    let endpoint = this.authService.url + '/api/team';
+    return this.http.get<Team[]>(endpoint);
   }
 
+  /**
+   * Get team information by team id
+   * @param id the id of the requested team
+   * @returns an Observable team
+   */
   public getTeam(id: number): Observable<Team> {
-    return this.serverService.getTeam(id);
+    let endpoint = this.authService.url + '/api/team/' + id;
+    return this.http.get<Team>(endpoint);
   }
 
+  /**
+   * Adds a team to the organization
+   * @param name the name of the team
+   * @param description the description of the team
+   * @return Observable<Team> the team created
+   */
   public addTeam(name: string, description: string): Observable<Team> {
-    //incomplete, will add to global dummy data?
-    return this.serverService.addTeam(name, description);
+    let endpoint = this.authService.url + '/api/team';
+    let team = new Team();
+    team.ownerId = this.authService.userId;
+    team.teamName = name;
+    team.teamDescription = description;
+    return this.http.post<Team>(endpoint, team);
   }
 
+  /**
+   * Get all the accounts of team members
+   * @param id the team id
+   * @returns Observable<Account[]> an observable of the account array
+   */
   public getTeamMembers(id: number): Observable<Account[]> {
-    return this.serverService.getTeamMembers(id);
+    let endpoint = this.authService.url + '/api/team/members/' + id;
+    return this.http.get<Account[]>(endpoint);
   }
 
   //public updateTeam(){}

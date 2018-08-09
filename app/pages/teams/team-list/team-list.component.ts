@@ -20,7 +20,6 @@ export class TeamListComponent implements OnInit {
     private teamService: TeamService,
     private authService: AuthenticationService,
     private routerExtensions: RouterExtensions,
-    private accounteService: AccountService
   ) {}
 
   ngOnInit() {
