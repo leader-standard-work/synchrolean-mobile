@@ -32,9 +32,9 @@ export class MembersComponent implements OnInit {
   public teamDesc: string;                          //holds team description
   public members: ObservableArray<Account>;         //Holds members of the team
   public tasks$:  Array<ObservableArray<Task>>;     //holds each team members tasks
-  public teams$:  Array<Team>;            //holds teams for permissions
-  public invites: Array<any>;
-  public invitees: Array<Account>;
+  public teams$:  Array<Team>;                      //holds teams for permissions
+  public invites: Array<any>;                       //holds array of invite rousources
+  public invitees: Array<Account>;                  //holds accounts for invited useres
 
   //permissions check
   public isOwner: Boolean;
@@ -168,31 +168,35 @@ export class MembersComponent implements OnInit {
           this.serverService.getAccountByEmail(r.text).subscribe((res)=>{
             user = res;
             console.log(user.ownerId);
+
+            //SErver call to invite user to team
             this.serverService.inviteToTeam(user.ownerId, this.team.ownerId, this.team.id)
               .subscribe((res)=>{
                 console.log(res);
+
+                //dialog alert box to let the user know of success
                 dialogs.alert({
                   title:'Invite User',
                   message:'User invited',
                   okButtonText:'Ok'
                 }).then();
               }, err=>{
-                console.log(res);
+                console.error('Could not invite user',err);
+                                
+                //dialog alert box to let the user know of success
                 dialogs.alert({
                   title:'Invite User',
-                  message:'User invited',
+                  message:'Could not invite user',
                   okButtonText:'Ok'
                 }).then();
               }); 
           });
-          console.log('Dialog result: ' + r.result + ', text: ' + r.text);
-          //check result
-          //promot if it was ok or not
         }                
       });
   }
 
   teamTapped(){
+    //if team is already visible just leave
     if(this.teamVisible === true){
       return;
     }
@@ -211,9 +215,9 @@ export class MembersComponent implements OnInit {
                 this.tasks$[index].push(task);
               });
             });
-          this.members.push(account);
-          this.taskVisible.push(false); 
-      },         
+          this.members.push(account); // push account onto the component array
+          this.taskVisible.push(false);   //push false to array for visible members list
+        },         
         error => {
           console.error('could not get team members', error);
         });
@@ -241,6 +245,8 @@ export class MembersComponent implements OnInit {
     this.editHit = false;
   }
 
+
+  //controls the edit buttions showing by when the edit buttons is hit
   editTapped(){
     if(this.teamVisible === true){
       if(this.editHit === false){
@@ -260,13 +266,16 @@ export class MembersComponent implements OnInit {
     return;
   }
 
+  //Controls if persmisson list is visible
   permissionsTapped(){
       if(this.permissionVisible === true){
         return;
       }
 
+      //make new team array
       this.teams$ = new Array<Team>();
 
+      //get list of teams in organization
       this.serverService.getTeams()
       .subscribe(res=>{
         res.forEach((value)=>{ 
@@ -276,6 +285,7 @@ export class MembersComponent implements OnInit {
         console.error("couldnt get teams from server", err);
       });
 
+      //make sure lists and buttons for edit are hidden
       this.inviteVisible = false;
       this.teamVisible = false;
       this.metericsVisible = false;
@@ -284,13 +294,16 @@ export class MembersComponent implements OnInit {
   }
 
   invitesTapped(){
+    //If invites is already visible go away
     if(this.inviteVisible === true){
       return;
     }
 
+    //make new arrays 
     this.invites = new Array<any>();
     this.invitees = new Array<Account>();
     
+    //get invite resources
     this.serverService.getInvites(this.team.ownerId)
     .subscribe(res=>{
         res.forEach((value)=>{
@@ -314,6 +327,7 @@ export class MembersComponent implements OnInit {
         console.error('Error getting invites', err);
     });
     
+    //make other list invisible
     this.teamVisible = false;
     this.metericsVisible = false;
     this.permissionVisible = false;
@@ -321,8 +335,11 @@ export class MembersComponent implements OnInit {
     this.editHit = false;
   }
 
+  //pass ownership to team member
   passOwner(id:number){
     console.log(id);
+
+    //check if it's beeing passed to the current owner
     if(id === this.team.ownerId){
       dialogs.alert({
         title: "This person is already the owner",
@@ -333,13 +350,17 @@ export class MembersComponent implements OnInit {
       return;
     }
 
+    //holds old owner id
     var oldOwner = this.team.ownerId;
     this.team.ownerId = id;
+
+    //server call to pass ownership
     this.serverService.passOwner(this.team, oldOwner).subscribe(rep=>{
         console.log('Saved new owner');
         this.editHit = false;
         this.isOwner = false; 
 
+        //alert to change happen sucessfully
         dialogs.alert({
           title: "Ownership changed",
           okButtonText: "Ok"
@@ -347,15 +368,20 @@ export class MembersComponent implements OnInit {
             console.log("Dialog closed!");
         });
     },err=>{
+      dialogs.alert({
+        title: "Ownership couldn't be changed",
+        okButtonText: "Ok"
+      }).then(function () {
+          console.log("Dialog closed!");
+      });
       console.log('Error editing team in change ownership\n', err);
     });
   }
 
-  deleteTeam(){
-    
-  }
-
+  //lets member leave team
   leaveTapped(ownerId: number){
+    
+    //if the team owner is trying to leave don't let em
     if(ownerId === this.team.ownerId){
       dialogs.alert({
         title: "You cannot leave/remove the team owner",
@@ -368,10 +394,12 @@ export class MembersComponent implements OnInit {
       return;
     }
 
+    //call to remove team member
     this.serverService
     .removeMember(ownerId, ownerId, this.team.id)
     .subscribe(res=>{
       console.log('Successfully remove');
+      //navigate back to teams after leaving
       this.routerE.navigate(['/teams'], {
         transition: {
           name: 'slideRight'
@@ -385,6 +413,8 @@ export class MembersComponent implements OnInit {
   }
 
   deleteMember(callerId:number, targetId: number){
+
+    //if the target is the team owner that can't be let go
     if(targetId === this.team.ownerId){
       dialogs.alert({
         title: "You cannot leave/remove the team owner",
@@ -397,10 +427,12 @@ export class MembersComponent implements OnInit {
       return;
     }
 
+    //call to remove member
     this.serverService
     .removeMember(callerId, targetId, this.team.id)
     .subscribe(res=>{
       console.log('Successfully remove');
+      //after removing reload the list
       this.teamVisible = false;
       this.teamTapped();
     },err=>{
@@ -409,11 +441,15 @@ export class MembersComponent implements OnInit {
     console.log(callerId + targetId);
   }
 
+  //edit team name called
   editTeamName(name:string){
+    //if edit team name hit is already true save new data
+    //then flip the textfield back to label
     if(this.editTeamNameHit === true){
       this.editTeamNameHit =false;
       this.teamName = name;
       this.team.teamName = name;
+      //call to edit team
       this.serverService.editTeam(this.team).subscribe(res=>{
           console.log(res);
       },err=>{
@@ -425,10 +461,13 @@ export class MembersComponent implements OnInit {
   }
 
   editTeamDesc(desc:string){
+    //if edit team description hit is already true save new data
+    //then flip the textfield back to label
     if(this.editTeamDescHit === true){
       this.editTeamDescHit =false;
       this.teamDesc = desc;
       this.team.teamDescription = desc;
+      //call to edit team
       this.serverService.editTeam(this.team).subscribe(res=>{
           console.log(res);
       },err=>{
@@ -447,5 +486,7 @@ export class MembersComponent implements OnInit {
 
   }
 
-
+  deleteTeam(){
+    
+  }
 }
