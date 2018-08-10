@@ -439,8 +439,8 @@ export class MembersComponent implements OnInit {
     this.editTeamDescHit = true;
   }
 
-  inviteeTapped(){
-
+  inviteeTapped(index:number){
+      
   }
 
   teamPermissionTapped(){

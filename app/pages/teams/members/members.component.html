@@ -104,9 +104,9 @@
 
     <!-- print open invites for owner -->
     <ListView *ngIf="isOwner"  visibility="{{ inviteVisible ?  'visible':'collapse' }}" [items]="invitees" row='4' class="list-group">
-        <ng-template let-invitee="item">
+        <ng-template let-invitee="item" let-i="index">
           <StackLayout>
-            <Label class="t-30 m-b-2 m-l-15" [text]="invitee.firstName +' '+ invitee.lastName "></Label>    
+            <Label class="t-30 m-b-2 m-l-15" [text]="invitee.firstName +' '+ invitee.lastName " (tap)="inviteeTapped(index)"></Label>    
           </StackLayout>
         </ng-template>
     </ListView>

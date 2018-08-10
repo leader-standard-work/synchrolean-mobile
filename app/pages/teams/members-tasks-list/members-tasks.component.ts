@@ -1,4 +1,3 @@
-import { tasks } from "~/shared/dummyData"
 import { Component, OnInit } from "@angular/core";
 import { Task } from "~/shared/models/task";
 import { PageRoute, RouterExtensions } from "nativescript-angular/router";
@@ -33,6 +32,6 @@ export class MembersTasksComponent implements OnInit{
         //Add 'implements OnInit' to the class.
 
         //make call to server using server service
-        this.tasks = JSON.parse(tasks);
+        //this.tasks = JSON.parse(tasks);
     }
 }
