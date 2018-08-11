@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterExtensions } from 'nativescript-angular/router';
+import { Frame } from 'ui/frame';
+import { Observable } from 'rxjs';
+
 
 @Component({
   selector: 'metrics',
@@ -8,9 +11,16 @@ import { RouterExtensions } from 'nativescript-angular/router';
   styleUrls: ['./metrics.component.css']
 })
 export class MetricsComponent implements OnInit {
-  constructor(private routerExtensions: RouterExtensions) {}
+  public pageData$: Observable<number>;
+  constructor(
+    private routerExtensions: RouterExtensions,
+    private frame: Frame
+) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    //grab data from backend 
+    //this.pageData$ = this.pageData$.
+  }
 
   teamTapped() {
     this.routerExtensions.navigate(['/teams'], {
