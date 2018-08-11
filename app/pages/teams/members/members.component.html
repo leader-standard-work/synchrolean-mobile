@@ -2,7 +2,7 @@
 <ActionBar class="action-bar">
     <Label class="action-bar-title" fontSize="32" text=""></Label>
     <ActionItem *ngIf="isOwner" visibility="{{ teamVisible ?  'visible':'collapse' }}" ios.position="right" text="Edit" android.position="actionBar" (tap)="editTapped()"></ActionItem>
-    <ActionItem *ngIf="isMember" visibility="{{ teamVisible ?  'visible':'collapse' }}" ios.position="right" text="Leave" android.position="actionBar" (tap)="leaveTapped(accountService.account.ownerId)"></ActionItem>
+    <ActionItem *ngIf="isMember" visibility="{{ teamVisible ?  'visible':'collapse' }}" ios.position="right" text="Leave" android.position="actionBar" (tap)="leaveTapped()"></ActionItem>
     <!-- <ActionItem visibility="{{ isOwner ?  'visible':'collapse' }}" (tap)="addTapped()" ios.position="left" text="Add" android.position="actionBar"></ActionItem> -->
 </ActionBar>
 <!-- Make grid layout for the page naming row sizes-->

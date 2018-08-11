@@ -398,8 +398,9 @@ export class MembersComponent implements OnInit {
   }
 
   //lets member leave team
-  leaveTapped(ownerId: number) {
+  leaveTapped() {
     //if the team owner is trying to leave don't let em
+    const ownerId = this.authService.userId
     if (ownerId === this.team.ownerId) {
       dialogs
         .alert({
