@@ -37,6 +37,7 @@ export class Task {
   private _created: Date;
   private _updated: Date; //This date will change whenever a task is updated
   private _deleted: Date; // Can be null
+  private _weekdays: number;
 
   constructor(
     name: string,
@@ -55,6 +56,7 @@ export class Task {
     this._created = new Date();
     this._updated = new Date();
     this._deleted = null;
+    this._weekdays = 0;
   }
 
   public populateFromDB(
@@ -102,6 +104,23 @@ export class Task {
     this._created = created === 'null' ? null : new Date(created);
     this._updated = updated === 'null' ? null : new Date(updated);
     this._deleted = deleted === 'null' ? null : new Date(deleted);
+  }
+
+  set weekdays(days: number) {
+    if (days < 128) {
+      this._weekdays = days;
+    }
+  }
+
+  get weekdays(): number {
+    return this._weekdays;
+  }
+
+  setWeekday(day: number) {
+    if (day > 0 && day < 8) {
+      const d = 1 << (day - 1);
+      this._weekdays ^= d;
+    }
   }
 
   set serverId(id: number) {
