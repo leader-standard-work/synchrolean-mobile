@@ -4,7 +4,7 @@ export class Team {
   id: number;
   teamName: string;
   teamDescription: string;
-  ownerId: number;
+  ownerEmail: string;
 
   constructor() {}
 }

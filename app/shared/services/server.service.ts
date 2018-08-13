@@ -73,80 +73,80 @@ export class ServerService {
 
   /****************** End Accounts Requests **********************/
   /****************** Begin Team Requests ************************/
-  getTeams(): Observable<Team[]> {
-    let endpoint = this._url + '/api/team';
-    return this.http.get<Team[]>(endpoint);
-  }
+  // getTeams(): Observable<Team[]> {
+  //   let endpoint = this._url + '/api/team';
+  //   return this.http.get<Team[]>(endpoint);
+  // }
 
-  getTeam(id: number): Observable<Team> {
-    let endpoint = this._url + '/api/team/' + id;
-    return this.http.get<Team>(endpoint);
-  }
+  // getTeam(id: number): Observable<Team> {
+  //   let endpoint = this._url + '/api/team/' + id;
+  //   return this.http.get<Team>(endpoint);
+  // }
 
-  addTeam(name: string, description: string): Observable<Team> {
-    let endpoint = this._url + '/api/team';
-    let body = {
-      ownerId: this.accountService.account.ownerId,
-      teamName: name,
-      teamDescription: description
-    };
-    return this.http.post<Team>(endpoint, body);
-  }
+  // addTeam(name: string, description: string): Observable<Team> {
+  //   let endpoint = this._url + '/api/team';
+  //   let body = {
+  //     ownerId: this.accountService.account.ownerId,
+  //     teamName: name,
+  //     teamDescription: description
+  //   };
+  //   return this.http.post<Team>(endpoint, body);
+  // }
 
-  editTeam(team: Team) {
-    let endpoint = this._url + '/api/team/' + team.ownerId + '/' + team.id;
-    let json = {
-      id: team.id,
-      ownerId: team.ownerId,
-      teamDescription: team.teamDescription,
-      teamName: team.teamName
-    };
-    return this.http.put(endpoint, json, { responseType: 'json' });
-  }
+  // editTeam(team: Team) {
+  //   let endpoint = this._url + '/api/team/' + team.ownerEmail + '/' + team.id;
+  //   let json = {
+  //     id: team.id,
+  //     OwnerEmail: team.ownerEmail,
+  //     teamDescription: team.teamDescription,
+  //     teamName: team.teamName
+  //   };
+  //   return this.http.put(endpoint, json, { responseType: 'json' });
+  // }
 
-  getTeamMembers(id: number): Observable<Account[]> {
-    let endpoint = this._url + '/api/team/members/' + id;
-    return this.http.get<Account[]>(endpoint);
-  }
+  // getTeamMembers(id: number): Observable<Account[]> {
+  //   let endpoint = this._url + '/api/team/members/' + id;
+  //   return this.http.get<Account[]>(endpoint);
+  // }
 
-  passOwner(team: Team, oldOwner: number) {
-    let endpoint = this._url +'/api/team/'+oldOwner+'/'+team.id;
-    let json = {
-      "id":team.id,
-      "ownerId":team.ownerId,
-      "teamDescription":team.teamDescription,
-      "teamName":team.teamName
-    };
-    return this.http
-           .put(endpoint, json,{responseType:"json"});
-  }
+  // passOwner(team: Team, oldOwner: string) {
+  //   let endpoint = this._url +'/api/team/'+oldOwner+'/'+team.id;
+  //   let json = {
+  //     "id":team.id,
+  //     "ownerId":team.ownerEmail,
+  //     "teamDescription":team.teamDescription,
+  //     "teamName":team.teamName
+  //   };
+  //   return this.http
+  //          .put(endpoint, json,{responseType:"json"});
+  // }
 
-  inviteToTeam(userId: number, ownerId:number, teamid:number){
-    let endpoint = this._url +'/api/team/invite/'+ userId +'/'+ownerId+'/'+teamid;
-    let body ='';
-    return this.http.put(endpoint, body);
-  }
+  // inviteToTeam(ownerEmail:number, teamid:number){
+  //   let endpoint = this._url +'/api/team/invite/'+teamid+'/'+ownerEmail;
+  //   let body ='';
+  //   return this.http.put(endpoint, body);
+  // }
 
-  deleteTeam(ownerId: number, teamId: number) {
-    let endpoint =
-      this._url + '/api/team/invite/' + '/' + ownerId + '/' + teamId;
-  }
+  // deleteTeam(teamId: number) {
+  //   let endpoint =
+  //     this._url + '/api/team/invite/' + teamId;
+  // }
 
-  getInvites(ownerId: number) {
-    let endpoint = this._url + '/api/team/invite/outgoing' + '/' + ownerId;
-    return this.http.get<any>(endpoint);
-  }
+  // getInvites(ownerId: number) {
+  //   let endpoint = this._url + '/api/team/invite/outgoing' + '/' + ownerId;
+  //   return this.http.get<any>(endpoint);
+  // }
 
-  removeMember(callerId: number, targetId:number, teamId:number){
-    let endpoint = this._url + '/api/team/remove/' + callerId +'/' + targetId +'/' + teamId;
-    let body ='';
-    return this.http.put(endpoint, body);
-  }
+  // removeMember(callerId: number, targetId:number, teamId:number){
+  //   let endpoint = this._url + '/api/team/remove/' + callerId +'/' + targetId +'/' + teamId;
+  //   let body ='';
+  //   return this.http.put(endpoint, body);
+  // }
   /****************** End Team Requests **************************/
   /****************** Begin Task Requests ************************/
-  getuserTodo(userId: number): Observable<Task[]> {
-    let endpoint = this._url + '/api/tasks/todo/' + userId;
-    return this.http.get<Task[]>(endpoint);
-  }
+  // getuserTodo(userId: number): Observable<Task[]> {
+  //   let endpoint = this._url + '/api/tasks/todo/' + userId;
+  //   return this.http.get<Task[]>(endpoint);
+  // }
   /****************** End Task Requests **************************/
 }

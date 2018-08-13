@@ -24,7 +24,7 @@ export class TeamService {
    * @returns An Observable team array
    */
   public getTeams(): Observable<Team[]> {
-    let endpoint = this.authService.url + '/api/team';
+    let endpoint = this.authService.url + '/api/teams';
     return this.http.get<Team[]>(endpoint);
   }
 
@@ -34,7 +34,7 @@ export class TeamService {
    * @returns an Observable team
    */
   public getTeam(id: number): Observable<Team> {
-    let endpoint = this.authService.url + '/api/team/' + id;
+    let endpoint = this.authService.url + '/api/teams/' + id;
     return this.http.get<Team>(endpoint);
   }
 
@@ -45,9 +45,9 @@ export class TeamService {
    * @return Observable<Team> the team created
    */
   public addTeam(name: string, description: string): Observable<Team> {
-    let endpoint = this.authService.url + '/api/team';
+    let endpoint = this.authService.url + '/api/teams';
     let team = new Team();
-    team.ownerId = this.authService.userId;
+    team.ownerEmail = this.authService.email;
     team.teamName = name;
     team.teamDescription = description;
     return this.http.post<Team>(endpoint, team);
@@ -59,11 +59,51 @@ export class TeamService {
    * @returns Observable<Account[]> an observable of the account array
    */
   public getTeamMembers(id: number): Observable<Account[]> {
-    let endpoint = this.authService.url + '/api/team/members/' + id;
+    let endpoint = this.authService.url + '/api/teams/members/' + id;
     return this.http.get<Account[]>(endpoint);
   }
 
-  //public updateTeam(){}
+  editTeam(team: Team) {
+    let endpoint = this.authService.url + '/api/teams/' + team.id;
+    let json = {
+      id: team.id,
+      OwnerEmail: team.ownerEmail,
+      teamDescription: team.teamDescription,
+      teamName: team.teamName
+    };
+    return this.http.put(endpoint, json, { responseType: 'json' });
+  }
 
-  //public deleteTeam(){}
+  passOwner(team: Team) {
+    let endpoint = this.authService.url +'/api/teams/'+team.id;
+    let json = {
+      "id":team.id,
+      "OwnerEmail":team.ownerEmail,
+      "teamDescription":team.teamDescription,
+      "teamName":team.teamName
+    };
+    return this.http
+           .put(endpoint, json,{responseType:"json"});
+  }
+
+  inviteToTeam(ownerEmail:string, teamid:number){
+    let endpoint = this.authService.url +'/api/teams/invite/'+teamid+'/'+ownerEmail;
+    let body ='';
+    return this.http.put(endpoint, body);
+  }
+
+  deleteTeam(teamId: number) {
+    let endpoint = this.authService.url + '/api/teams/invite/' + teamId;
+  }
+
+  getInvites() {
+    let endpoint = this.authService.url + '/api/teams/invite/outgoing';
+    return this.http.get<any>(endpoint);
+  }
+
+  removeMember(teamId:number, targetEmail:string){
+    let endpoint = this.authService.url + '/api/teams/remove/' + teamId +'/' + targetEmail;
+    let body ='';
+    return this.http.put(endpoint, body);
+  }
 }

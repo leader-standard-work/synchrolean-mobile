@@ -3,6 +3,8 @@ import { Observable, of } from 'rxjs';
 
 import { DatabaseService } from '~/shared/services/database.service';
 import { Task, compareTask, Duration } from '~/shared/models/task';
+import { HttpClient } from '@angular/common/http';
+import { AuthenticationService } from '~/shared/services/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +12,9 @@ import { Task, compareTask, Duration } from '~/shared/models/task';
 export class TaskService {
   private tasks: Array<Task>;
 
-  constructor(private databaseService: DatabaseService) {
+  constructor(private databaseService: DatabaseService,
+    private http: HttpClient,
+    private authService: AuthenticationService) {
     this.tasks = new Array<Task>();
   }
 
@@ -97,5 +101,12 @@ export class TaskService {
       }
     });
     this.tasks.sort(compareTask);
+  }
+
+
+  //this is after refeactor
+  getuserTodo(email: string): Observable<Task[]> {
+    let endpoint = this.authService.url + '/api/tasks/todo/' + email;
+    return this.http.get<Task[]>(endpoint);
   }
 }
