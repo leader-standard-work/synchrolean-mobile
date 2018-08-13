@@ -28,6 +28,7 @@ export class TaskFormComponent implements OnInit {
 
   public taskFormGroup: FormGroup;
   public title: string;
+  public weekdays: number;
   public task: Task;
   public deleteButtonVisible: string;
   public durationBarItems: Array<SegmentedBarItem>;
@@ -67,12 +68,14 @@ export class TaskFormComponent implements OnInit {
       name = this.task.name;
       description = this.task.description;
       this.duration = this.task.duration;
+      this.weekdays = this.task.weekdays;
       this.title = 'Edit Task';
       this.mode = Mode.Edit;
       this.deleteButtonVisible = 'visible';
     }
 
     this.setDurationBar();
+    this.weekdays = 0;
 
     this.taskFormGroup = this.formBuilder.group({
       description: [name, Validators.required],
@@ -133,6 +136,8 @@ export class TaskFormComponent implements OnInit {
     }
   }
 
+  daySelected($event) {}
+
   onSave() {
     let name = this.taskFormGroup.value.description;
     let description = this.taskFormGroup.value.note;
@@ -146,6 +151,7 @@ export class TaskFormComponent implements OnInit {
         case Mode.New: {
           options.title = 'New task added';
           let task: Task = new Task(name, description, this.duration);
+          task.weekdays = this.weekdays;
           this.tasksService.addTask(task);
           this.taskFormGroup.reset();
           alert(options);
@@ -154,6 +160,7 @@ export class TaskFormComponent implements OnInit {
         case Mode.Edit: {
           let task: Task = new Task(name, description, this.duration);
           task.databaseId = this.task.databaseId;
+          task.weekdays = this.weekdays;
           this.tasksService.updateTask(task);
           this.routerExtensions.backToPreviousPage();
           break;

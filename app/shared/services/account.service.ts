@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Account } from '~/shared/models/account';
 import { AuthenticationService } from '~/shared/services/auth.service';
-import { tap, shareReplay } from 'rxjs/operators';
+import { Team } from '~/shared/models/team';
 
 @Injectable({
   providedIn: 'root'
@@ -42,9 +42,8 @@ export class AccountService {
    * @param id the user id
    * @returns Observal
    */
-  // getTeamsForAccount(id: number): Observable<Team[]> {
-  //   const endpoint =
-  //     this.authService.url + '/api/accounts/teams/' + id;
-  //   return this.http.get<Team[]>(endpoint);
-  // }
+  getTeamsForAccount(id: number): Observable<Team[]> {
+    const endpoint = this.authService.url + '/api/accounts/teams/' + id;
+    return this.http.get<Team[]>(endpoint);
+  }
 }
