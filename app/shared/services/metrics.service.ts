@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, observable, of } from 'rxjs';
 
 import { AuthenticationService } from '~/shared/services/auth.service';
 
@@ -19,16 +19,16 @@ export class MetricsService {
   }
   
   //GetTeamCompletionRate gets the completion rate of a team from a specified date range
-  public getTeamCompletionRate(teamId: number, startDate: Date, endDate: Date) {
-    //const endpoint = this.authService.url + `/api/tasks/metrics/team/${teamId}/${startDate}/
-    //${endDate}`;
+  public getTeamCompletionRate(teamId: number, startDate: Date, endDate: Date): Observable<number> {
+    //const endpoint = this.authService.url + `/api/tasks/metrics/team/${teamId}/${startDate}/${endDate}`;
     //return this.http.get<any>(endpoint);
+    return of(0.75);
   }
 
   //GetMemberCompletionRate gets the completion rate of an individual from a specified date range
-  public getMemberCompletionRate(memberId: number, startDate: Date, endDate: Date) {
-    //const endpoint = this.authService.url + `/api/tasks/metrics/user/${memberId}/${startDate}/
-    //${endDate}`;
+  public getMemberCompletionRate(memberId: number, startDate: Date, endDate: Date): Observable<number> {
+    //const endpoint = this.authService.url + `/api/tasks/metrics/user/${memberId}/${startDate}/${endDate}`;
     //return this.http.get<any>(endpoint);
+    return of(0.50);
   }
 }

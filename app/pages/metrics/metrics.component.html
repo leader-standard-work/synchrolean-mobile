@@ -7,8 +7,13 @@
         <Label text="Metrics Testing page"></Label>
     </StackLayout>
 <!-- Begin Graphs -->
-
-<!-- End Graphs-->
+  <ListView [items]="TeamCompletionRate$ | async" row="0">
+    <ng-template let-item="item">
+      <TeamCompletionRate-item class="t-25" [TeamCompletionRate]="item"></TeamCompletionRate-item>
+    </ng-template>>
+  </ng-template>
+  </ListView>
+  <!-- End Graphs-->
     <!-- Begin Bottom Bar -->
     <StackLayout row="1" orientation="horizontal">
         <Button textWrap="true" width="33%" textAlignment="center" (onTap)="tasksTapped()">
