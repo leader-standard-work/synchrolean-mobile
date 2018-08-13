@@ -33,7 +33,7 @@ export class MetricsComponent implements OnInit {
 
     this.metricsService.getMemberCompletionRate(1,startDate,endDate).subscribe(
       response => {this.MemberCompletionRate$= response}, error => {console.error("Failed to get MemberCompletionRate in ngInit")});
-
+    console.log("Values are: ", this.TeamCompletionRate$, this.MemberCompletionRate$)
   }
 
 
