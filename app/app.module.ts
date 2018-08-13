@@ -5,6 +5,7 @@ import { NativeScriptHttpClientModule } from 'nativescript-angular/http-client';
 import { NativeScriptModule } from 'nativescript-angular/nativescript.module';
 import { NativeScriptFormsModule } from 'nativescript-angular/forms';
 import { TNSCheckBoxModule } from 'nativescript-checkbox/angular';
+import { NativeScriptUIChartModule } from 'nativescript-ui-chart/angular';
 
 import { TaskService } from '~/shared/services/tasks.service';
 import { DatabaseService } from '~/shared/services/database.service';
@@ -40,7 +41,8 @@ import { AuthInterceptor } from '~/shared/helpers/auth.interceptor';
     ReactiveFormsModule,
     AppRoutingModule,
     TNSCheckBoxModule,
-    HttpClientModule
+    HttpClientModule,
+    NativeScriptUIChartModule
   ],
   declarations: [
     AppComponent,
