@@ -13,6 +13,7 @@ import { TeamService } from '~/shared/services/teams.service';
 import { ServerService } from '~/shared/services/server.service';
 import { AccountService } from '~/shared/services/account.service';
 import { AuthenticationService } from '~/shared/services/auth.service';
+import { MetricsService } from '~/shared/services/metrics.service';
 
 import { AppRoutingModule } from '~/app.routing';
 import { AppComponent } from '~/app.component';
@@ -73,7 +74,8 @@ import { AuthInterceptor } from '~/shared/helpers/auth.interceptor';
     ServerService,
     TeamService,
     AccountService,
-    AuthenticationService
+    AuthenticationService,
+    MetricsService
   ]
 })
 /*
