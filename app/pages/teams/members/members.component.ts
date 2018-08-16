@@ -12,9 +12,7 @@ import { ServerService } from '~/shared/services/server.service';
 import { AuthenticationService } from '~/shared/services/auth.service';
 import { TaskService } from '~/shared/services/tasks.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+
 //name component and the markup and stayle sheet
 @Component({
   selector: 'Members',
