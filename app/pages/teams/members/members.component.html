@@ -71,8 +71,8 @@
 
     <!-- Print members in list form visible to members-->
     <FlexboxLayout row='4'>
-        <ListView  *ngIf="isMember" visibility="{{ teamVisible ?  'visible':'collapse' }}" [items]="members">
-            <ng-template let-member="item" let-i="index">
+        <ListView *ngIf="isMember" visibility="{{ teamVisible ?  'visible':'collapse' }}" [items]="members">
+            <ng-template let-member="item |async" let-i="index">
                     <FlexboxLayout flexWrap='wrap' orientation="horizontal">
                         <!-- Make individual label for members send the id of the tapped item to onTap-->                       
                         <label width="100%" class="t-30 m-b-2 m-t-8 m-l-10" (tap)="onTap(i)" [text]="member.firstName + ' ' + member.lastName"></label>
