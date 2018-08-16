@@ -155,45 +155,37 @@ export class MembersComponent implements OnInit {
       })
       .then(r => {
         //check result
-
         if (r.result !== false) {
           //make server call to add by email
           var user: Account;
-
-          this.serverService.getAccountByEmail(r.text).subscribe(res => {
-            user = res;
-            console.log(user.ownerId);
-
             //SErver call to invite user to team
-            this.teamService
-              .inviteToTeam(this.team.ownerEmail, this.team.id)
-              .subscribe(
-                res => {
-                  console.log(res);
+          this.teamService
+            .inviteToTeam(this.team.ownerEmail, this.team.id)
+            .subscribe(
+              res => {
+                console.log(res);
 
-                  //dialog alert box to let the user know of success
-                  dialogs
-                    .alert({
-                      title: 'Invite User',
-                      message: 'User invited',
-                      okButtonText: 'Ok'
-                    })
-                    .then();
-                },
-                err => {
-                  console.error('Could not invite user', err);
+                //dialog alert box to let the user know of success
+                dialogs
+                  .alert({
+                    title: 'Invite User',
+                    message: 'User invited',
+                    okButtonText: 'Ok'
+                  })
+                  .then();
+              },
+              err => {
+                console.error('Could not invite user', err);
 
-                  //dialog alert box to let the user know of success
-                  dialogs
-                    .alert({
-                      title: 'Invite User',
-                      message: 'Could not invite user',
-                      okButtonText: 'Ok'
-                    })
-                    .then();
-                }
-              );
-          });
+                //dialog alert box to let the user know of success
+                dialogs
+                  .alert({
+                    title: 'Invite User',
+                    message: 'Could not invite user',
+                    okButtonText: 'Ok'
+                  })
+                  .then();
+              });      
         }
       });
   }
@@ -395,7 +387,7 @@ export class MembersComponent implements OnInit {
   leaveTapped() {
     //if the team owner is trying to leave don't let em
     const email = this.authService.email
-    if (email === this.team.ownerEmail) {
+    if (email === this.team.ownerEmail && this.members.length === 1) {
       dialogs
         .alert({
           title: 'You cannot leave/remove the team owner',
