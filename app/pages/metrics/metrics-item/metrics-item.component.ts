@@ -58,10 +58,10 @@ export class MetricsItemComponent implements OnInit {
                 break;
             }
 
-            this.metricsService.getMemberCompletionRate(this.memberId, startDate, endDate).subscribe(
-                response => {this.value= response}, error => {console.error("Failed to get MemberCompletionRate in ngInit")});
         }
 
+        this.metricsService.getMemberCompletionRate(this.memberId, startDate, endDate).subscribe(
+            response => {this.value= response}, error => {console.error("Failed to get MemberCompletionRate in ngInit")});
     } 
     else if(this.teamId != 0){
         //we have a teamId, display team metrics
@@ -90,10 +90,10 @@ export class MetricsItemComponent implements OnInit {
                 startDate.setHours( 0,0,0,0 );
                 break;
             }
-            this.metricsService.getTeamCompletionRate(this.teamId,startDate,endDate).subscribe(
-                response => {this.value= response}, error => {console.error("Failed to get TeamCompletionRate in ngInit")});
-          
+            
         }
+        this.metricsService.getTeamCompletionRate(this.teamId,startDate,endDate).subscribe(
+            response => {this.value= response}, error => {console.error("Failed to get TeamCompletionRate in ngInit")});
     }
   }
 }
