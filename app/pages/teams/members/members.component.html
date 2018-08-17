@@ -29,7 +29,7 @@
     </FlexboxLayout>
 
     <!-- button to add team member by email only visible if team owner and edit hasn't been hit-->
-    <Button class="btn btn-primary w-full" *ngIf="!editHit" row="2" visibility="{{ isMember ?  'visible':'collapse' }}" (tap)="addTapped()">
+    <Button class="btn btn-primary w-full" *ngIf="!editHit" row="2" visibility="{{ addMember ?  'visible':'collapse' }}" (tap)="addTapped()">
         <FormattedString>
             <Span text="&#xf067; " fontFamily="FontAwesome" fontSize="12"></Span>
             <Span text="Add Members" textWrap="true"></Span>
@@ -99,7 +99,7 @@
     <ListView *ngIf="isOwner"  visibility="{{ permissionVisible ?  'visible':'collapse' }}" [items]="teams$" row='4' class="list-group">
         <ng-template let-team="item">
           <StackLayout>
-            <Label class="t-30 m-b-2 m-l-15" [text]="team.teamName"></Label>    
+            <Label class="t-30 m-b-2 m-l-15" [text]="team.teamName" (tap)="teamPermissionTapped(team)"></Label>    
           </StackLayout>
         </ng-template>
     </ListView>

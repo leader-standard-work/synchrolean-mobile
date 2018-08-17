@@ -113,7 +113,7 @@ export class TeamService {
     let endpoint = this.authService.url + '/api/teams/invite/incoming/authorize';
     return this.http.get<any>(endpoint);
   }
-  
+
   recindInvite(teamId:number, inviteeEmail:string){
     let endpoint = this.authService.url + '/api/teams/invite/rescind/' + teamId + '/' + inviteeEmail;
     let body ='';
@@ -128,6 +128,23 @@ export class TeamService {
 
   vetoInvite(teamId:number, inviteeEmail:string){
     let endpoint = this.authService.url + '/api/teams/invite/veto/' + teamId + '/' + inviteeEmail;
+    let body ='';
+    return this.http.put(endpoint, body);
+  }
+
+  getTeamPermissions(teamId:number){
+    let endpoint = this.authService.url + '/api/teams/permissions/' + teamId;
+    return this.http.get<Team[]>(endpoint);
+  }
+
+  permitTeam(objectId:number, subjectId:number){
+    let endpoint = this.authService.url + '/api/teams/permissions/grant/' + objectId+'/'+subjectId;
+    let body ='';
+    return this.http.put(endpoint, body);
+  }
+
+  forbidTeam(objectId:number, subjectId:number){
+    let endpoint = this.authService.url + '/api/teams/permissions/revoke/' + objectId+'/'+subjectId;
     let body ='';
     return this.http.put(endpoint, body);
   }

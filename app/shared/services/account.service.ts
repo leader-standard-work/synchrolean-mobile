@@ -42,8 +42,8 @@ export class AccountService {
    * @param id the user id
    * @returns Observal
    */
-  getTeamsForAccount(id: number): Observable<Team[]> {
-    const endpoint = this.authService.url + '/api/accounts/teams/' + id;
+  getTeamsForAccount(email: string): Observable<Team[]> {
+    const endpoint = this.authService.url + '/api/accounts/teams/' + email;
     return this.http.get<Team[]>(endpoint);
   }
 }

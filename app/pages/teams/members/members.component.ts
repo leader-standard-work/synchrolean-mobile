@@ -30,6 +30,7 @@ export class MembersComponent implements OnInit {
   public invites: Array<any>; //holds array of invite rousources
   public invitees: Array<Account>; //holds accounts for invited users
   public authInvites: Array<Account>;
+  public permittedTeams:Array<Team>;
 
   //permissions check
   public isOwner: Boolean;
@@ -44,6 +45,7 @@ export class MembersComponent implements OnInit {
   public inviteVisible: boolean;
   public editTeamNameHit: boolean;
   public editTeamDescHit: boolean;
+  public addMember:boolean;
 
   public length: number;
 
@@ -73,6 +75,8 @@ export class MembersComponent implements OnInit {
     this.invites = new Array<any>();
     this.invitees = new Array<Account>();
     this.teams$ = new Array<Team>();
+    this.permittedTeams = new Array<Team>();
+    this.authInvites = new Array<Account>();
 
     //permission intialized
     this.isOwner = false;
@@ -84,6 +88,7 @@ export class MembersComponent implements OnInit {
     this.metericsVisible = false;
     this.inviteVisible = false;
     this.editHit = false;
+    this.addMember = false;
 
     // Get team by id
     this.teamService.getTeam(this.id).subscribe(
@@ -110,10 +115,36 @@ export class MembersComponent implements OnInit {
               //check the user is a member of the team
               if (account.email === this.authService.email) {
                 this.isMember = true;
+                this.addMember = true;
 
                 //check if they are the owner
                 this.isOwner =
                   this.team.ownerEmail === this.authService.email ? true : false;
+              }
+
+              if(!this.isMember){
+                this.teamService.getTeamPermissions(this.team.id)
+                .subscribe(res=>{
+                  this.permittedTeams = res;
+                },err=>{
+                  console.log('Could not get permitted teams!');
+                });
+          
+                let userTeams = new Array<Team>();
+                this.accountService.getTeamsForAccount(this.authService.email)
+                .subscribe(res=>{
+                  userTeams = res;
+                }, err=>{
+                  console.log('Could not get user teams!');
+                });
+          
+                this.permittedTeams.forEach(permitted=>{
+                   userTeams.forEach(userteam=>{
+                     if(permitted.id = userteam.id){
+                       this.isMember = true;
+                     }
+                   })
+                });
               }
             });
           },
@@ -127,6 +158,9 @@ export class MembersComponent implements OnInit {
         this.isOwner = false;
       }
     );
+
+    //check team permissions
+ 
   }
 
   getTaskListLength(tasks: Task[]): number {
@@ -278,7 +312,8 @@ export class MembersComponent implements OnInit {
     this.teamService.getTeams().subscribe(
       res => {
         res.forEach(value => {
-          this.teams$.push(value);
+          if(value.id != this.team.id)
+            this.teams$.push(value);
         });
       },
       err => {
@@ -335,6 +370,7 @@ export class MembersComponent implements OnInit {
     this.teamService.getAuthInvites().subscribe(
       res => {
         this.invites = new Array<any>();
+        this.authInvites = new Array<Account>();
         res.forEach(value => {
           this.invites.push(value);
         });
@@ -445,6 +481,7 @@ export class MembersComponent implements OnInit {
       message: "Are you sure you want to leave "+ this.team.teamName +"?",
       okButtonText: "Yes",
       cancelButtonText: "No",
+      cancelable: true
     }).then(result=>{
       if(result){
         //call to remove team member
@@ -509,6 +546,7 @@ export class MembersComponent implements OnInit {
       message: "Are you sure you want to delete " + this.members[index].firstName +' ' + this.members[index].lastName,
       okButtonText: "Yes",
       cancelButtonText: "No",
+      cancelable: true
     }).then(result=>{
       if(result){
         //call to remove member
@@ -600,6 +638,7 @@ export class MembersComponent implements OnInit {
       message: "Are you sure you weant to recind the invite to " + this.invitees[index].firstName +' ' + this.invitees[index].lastName,
       okButtonText: "Yes",
       cancelButtonText: "No",
+      cancelable: true
     }).then(result=>{
       if(result){
        this.teamService.recindInvite(this.team.id, this.invitees[index].email)
@@ -627,15 +666,20 @@ export class MembersComponent implements OnInit {
       message: "What would you like to do with invite?",
       okButtonText: "Authorize",
       cancelButtonText: "Veto",
-      neutralButtonText:"Cancel"
+      neutralButtonText:"Cancel",
+      cancelable: true
     }).then(result=>{
-      if(result){
+      if(result === undefined){
+        return;
+      }
+      if(result === true){
        this.teamService.authorizeInvite(this.team.id, this.authInvites[index].email)
        .subscribe(res=>{
         dialogs.alert({
           title: "Invite authorized",
           okButtonText: "Ok",
         }).then(res=>{
+          this.inviteVisible = false;
           this.invitesTapped();
         });
        },err=>{
@@ -644,13 +688,15 @@ export class MembersComponent implements OnInit {
           okButtonText: "Ok",
         }).then();
        });
-      }if(!result){
+      }
+      if(result === false){
         this.teamService.vetoInvite(this.team.id, this.authInvites[index].email)
         .subscribe(res=>{
           dialogs.alert({
             title: "Invite vetoed",
             okButtonText: "Ok",
           }).then(res=>{
+            this.inviteVisible = false;
             this.invitesTapped();
           });
         },err=>{
@@ -660,10 +706,82 @@ export class MembersComponent implements OnInit {
           }).then();
         });
       }
+ 
     });
   }
 
-  teamPermissionTapped() {}
+  teamPermissionTapped(teamToTarget:Team) {
+    let num = this.permittedTeams.findIndex((value)=>{
+      return teamToTarget.id === value.id;
+    });
+
+    if(num > -1){
+      dialogs
+      .confirm({
+        title: "Permissions",
+        message:"Would you like to REJECT permission to view you team from this team?",
+        okButtonText:'Yes',
+        cancelButtonText:'No'
+      }).then(r=>{
+          if(r){
+            this.teamService.forbidTeam(this.team.id, teamToTarget.id)
+            .subscribe(res=>{
+              dialogs.alert({
+                title: "Team Permissions",
+                message: "Team"+ teamToTarget.teamName +" DENIED permission to view " + this.team.teamName,
+                okButtonText:'ok',
+              }).then();
+            },err=>{
+              dialogs.alert({
+                title: "Team Permissions",
+                message: "Could not DENY viewing rights to " + teamToTarget.teamName,
+                okButtonText:'ok',
+              }).then();
+            });
+
+            this.teamService.getTeamPermissions(this.team.id)
+            .subscribe(res=>{
+              this.permittedTeams = res;
+            },err=>{
+              console.log('Could not get permitted teams!');
+            });
+          }
+      });
+    }else{
+      dialogs
+      .confirm({
+        title: "Permissions",
+        message:"Would you like to GRANT permission to view you team from this team?",
+        okButtonText:'Yes',
+        cancelButtonText:'No'
+      }).then(r=>{
+          if(r){
+            this.teamService.permitTeam(this.team.id, teamToTarget.id)
+            .subscribe(res=>{
+              dialogs.alert({
+                title: "Team Permissions",
+                message: "Team"+ teamToTarget.teamName +" GRANTED permission to view " + this.team.teamName,
+                okButtonText:'ok',
+              }).then();
+            },err=>{
+              console.log(err);
+              dialogs.alert({
+                title: "Team Permissions",
+                message: "Could not GRANT viewing rights to " + teamToTarget.teamName,
+                okButtonText:'ok',
+              }).then();
+            });
+
+            this.teamService.getTeamPermissions(this.team.id)
+            .subscribe(res=>{
+              this.permittedTeams = res;
+            },err=>{
+              console.log('Could not get permitted teams!');
+            });
+          }
+      });
+    }
+  }
 
   deleteTeam() {
     dialogs.confirm({
@@ -702,7 +820,7 @@ export class MembersComponent implements OnInit {
             
           });  
       });
-    }
+      }
     },err=>{
 
     });
