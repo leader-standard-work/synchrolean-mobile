@@ -86,14 +86,22 @@ export class TeamService {
            .put(endpoint, json,{responseType:"json"});
   }
 
+  deleteTeam(teamId:number){
+      let endpoint = this.authService.url + '/api/teams/delete/' + teamId;
+      let body ='';
+      return this.http.post(endpoint, body);
+  }
+
   inviteToTeam(ownerEmail:string, teamid:number){
     let endpoint = this.authService.url +'/api/teams/invite/'+teamid+'/'+ownerEmail;
     let body ='';
     return this.http.put(endpoint, body);
   }
 
-  deleteTeam(teamId: number) {
-    let endpoint = this.authService.url + '/api/teams/invite/' + teamId;
+  removeMember(teamId:number, targetEmail:string){
+    let endpoint = this.authService.url + '/api/teams/remove/' + teamId +'/' + targetEmail;
+    let body ='';
+    return this.http.put(endpoint, body);
   }
 
   getInvites() {
@@ -101,8 +109,25 @@ export class TeamService {
     return this.http.get<any>(endpoint);
   }
 
-  removeMember(teamId:number, targetEmail:string){
-    let endpoint = this.authService.url + '/api/teams/remove/' + teamId +'/' + targetEmail;
+  getAuthInvites() {
+    let endpoint = this.authService.url + '/api/teams/invite/incoming/authorize';
+    return this.http.get<any>(endpoint);
+  }
+  
+  recindInvite(teamId:number, inviteeEmail:string){
+    let endpoint = this.authService.url + '/api/teams/invite/rescind/' + teamId + '/' + inviteeEmail;
+    let body ='';
+    return this.http.put(endpoint, body);
+  }
+  
+  authorizeInvite(teamId:number, inviteeEmail:string){
+    let endpoint = this.authService.url + '/api/teams/invite/authorize/' + teamId + '/' + inviteeEmail;
+    let body ='';
+    return this.http.put(endpoint, body);
+  }
+
+  vetoInvite(teamId:number, inviteeEmail:string){
+    let endpoint = this.authService.url + '/api/teams/invite/veto/' + teamId + '/' + inviteeEmail;
     let body ='';
     return this.http.put(endpoint, body);
   }
