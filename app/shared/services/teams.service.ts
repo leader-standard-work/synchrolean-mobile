@@ -133,8 +133,8 @@ export class TeamService {
   }
 
   getTeamPermissions(teamId:number){
-    let endpoint = this.authService.url + '/api/teams/permissions/' + teamId;
-    return this.http.get<Team[]>(endpoint);
+    let endpoint = this.authService.url + '/api/teams/permissions/team/' + teamId;
+    return this.http.get<boolean>(endpoint);
   }
 
   permitTeam(objectId:number, subjectId:number){
