@@ -121,32 +121,15 @@ export class MembersComponent implements OnInit {
                 this.isOwner =
                   this.team.ownerEmail === this.authService.email ? true : false;
               }
-
-              if(!this.isMember){
-                this.teamService.getTeamPermissions(this.team.id)
-                .subscribe(res=>{
-                  this.permittedTeams = res;
-                },err=>{
-                  console.log('Could not get permitted teams!');
-                });
-          
-                let userTeams = new Array<Team>();
-                this.accountService.getTeamsForAccount(this.authService.email)
-                .subscribe(res=>{
-                  userTeams = res;
-                }, err=>{
-                  console.log('Could not get user teams!');
-                });
-          
-                this.permittedTeams.forEach(permitted=>{
-                   userTeams.forEach(userteam=>{
-                     if(permitted.id = userteam.id){
-                       this.isMember = true;
-                     }
-                   })
-                });
-              }
             });
+            if(!this.isMember){
+              this.teamService.getTeamPermissions(this.team.id)
+              .subscribe(res=>{
+                this.isMember = res
+              },err=>{
+                console.log('Could not get permitted teams!');
+              });
+            }
           },
           error => {
             console.error('could not get team members', error);
@@ -425,38 +408,40 @@ export class MembersComponent implements OnInit {
       okButtonText: "Yes",
       cancelButtonText: "No",
     }).then(res=>{
+      if(res){
+        this.team.ownerEmail = this.members[index].email;
 
-      this.team.ownerEmail = this.members[index].email;
+        //server call to pass ownership
+        this.teamService.passOwner(this.team).subscribe(
+          rep => {
+            console.log('Saved new owner');
+            this.editHit = false;
+            this.isOwner = false;
 
-      //server call to pass ownership
-      this.teamService.passOwner(this.team).subscribe(
-        rep => {
-          console.log('Saved new owner');
-          this.editHit = false;
-          this.isOwner = false;
-
-          //alert to change happen sucessfully
-          dialogs
-            .alert({
-              title: 'Ownership changed',
-              okButtonText: 'Ok'
-            })
-            .then(function() {
-              console.log('Dialog closed!');
-            });
-        },
-        err => {
-          dialogs
-            .alert({
-              title: "Ownership couldn't be changed",
-              okButtonText: 'Ok'
-            })
-            .then(function() {
-              console.log('Dialog closed!');
-            });
-          console.log('Error editing team in change ownership\n', err);
-        });
+            //alert to change happen sucessfully
+            dialogs
+              .alert({
+                title: 'Ownership changed',
+                okButtonText: 'Ok'
+              })
+              .then(function() {
+                console.log('Dialog closed!');
+              });
+          },
+          err => {
+            dialogs
+              .alert({
+                title: "Ownership couldn't be changed",
+                okButtonText: 'Ok'
+              })
+              .then(function() {
+                console.log('Dialog closed!');
+              });
+            console.log('Error editing team in change ownership\n', err);
+          });
+      }
     });
+    
   }
 
   //lets member leave team
@@ -738,13 +723,6 @@ export class MembersComponent implements OnInit {
                 okButtonText:'ok',
               }).then();
             });
-
-            this.teamService.getTeamPermissions(this.team.id)
-            .subscribe(res=>{
-              this.permittedTeams = res;
-            },err=>{
-              console.log('Could not get permitted teams!');
-            });
           }
       });
     }else{
@@ -770,13 +748,6 @@ export class MembersComponent implements OnInit {
                 message: "Could not GRANT viewing rights to " + teamToTarget.teamName,
                 okButtonText:'ok',
               }).then();
-            });
-
-            this.teamService.getTeamPermissions(this.team.id)
-            .subscribe(res=>{
-              this.permittedTeams = res;
-            },err=>{
-              console.log('Could not get permitted teams!');
             });
           }
       });
@@ -825,6 +796,4 @@ export class MembersComponent implements OnInit {
 
     });
   }
-
-
 }

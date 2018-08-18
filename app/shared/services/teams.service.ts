@@ -149,9 +149,9 @@ export class TeamService {
     return this.http.put(endpoint, body);
   }
 
-  getTeamPermissions(teamId: number) {
-    let endpoint = this.authService.url + '/api/teams/permissions/' + teamId;
-    return this.http.get<Team[]>(endpoint);
+  getTeamPermissions(teamId:number){
+    let endpoint = this.authService.url + '/api/teams/permissions/team/' + teamId;
+    return this.http.get<boolean>(endpoint);
   }
 
   permitTeam(objectId: number, subjectId: number) {
