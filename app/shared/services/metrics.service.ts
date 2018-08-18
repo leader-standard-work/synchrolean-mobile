@@ -26,7 +26,7 @@ export class MetricsService {
   }
 
   //GetMemberCompletionRate gets the completion rate of an individual from a specified date range
-  public getMemberCompletionRate(memberId: number, startDate: Date, endDate: Date): Observable<number> {
+  public getMemberCompletionRate(memberId: string, startDate: Date, endDate: Date): Observable<number> {
     //const endpoint = this.authService.url + `/api/tasks/metrics/user/${memberId}/${startDate}/${endDate}`;
     //return this.http.get<any>(endpoint);
     return of(0.50);

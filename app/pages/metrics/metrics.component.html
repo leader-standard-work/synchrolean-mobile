@@ -4,10 +4,10 @@
 
 <GridLayout rows="*, 62.5" class="page">
     <StackLayout>
-        <Label text="Metrics Testing page"></Label>
+        <metrics-item [userId]="userEmail" frequency="1"></metrics-item>
+        <Label [text]="MemberCompletionRate$"></Label>
     </StackLayout>
-<!-- Begin Graphs -->
-    <Label [text]="TeamCompletionRate$"></Label>
+
 <!-- End Graphs-->
     <!-- Begin Bottom Bar -->
     <StackLayout row="1" orientation="horizontal">

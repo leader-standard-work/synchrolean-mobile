@@ -29,6 +29,7 @@ import { MetricsComponent } from '~/pages/metrics/metrics.component';
 import { RegisterComponent } from '~/pages/account/register/register.component';
 import { MembersTasksComponent } from '~/pages/teams/members-tasks-list/members-tasks.component';
 import { DayBoxesComponent } from '~/pages/tasks/day-boxes/day-boxes.component';
+import { MetricsItemComponent } from '~/pages/metrics/metrics-item/metrics-item.component';
 
 import { AuthInterceptor } from '~/shared/helpers/auth.interceptor';
 
@@ -60,7 +61,8 @@ import { AuthInterceptor } from '~/shared/helpers/auth.interceptor';
     TeamFormComponent,
     MetricsComponent,
     MembersTasksComponent,
-    DayBoxesComponent
+    DayBoxesComponent,
+    MetricsItemComponent
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [

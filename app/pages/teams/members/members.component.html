@@ -29,7 +29,7 @@
     </FlexboxLayout>
 
     <!-- button to add team member by email only visible if team owner and edit hasn't been hit-->
-    <Button class="btn btn-primary w-full" *ngIf="!editHit" row="2" visibility="{{ isOwner ?  'visible':'collapse' }}" (tap)="addTapped()">
+    <Button class="btn btn-primary w-full" *ngIf="!editHit" row="2" visibility="{{ addMember ?  'visible':'collapse' }}" (tap)="addTapped()">
         <FormattedString>
             <Span text="&#xf067; " fontFamily="FontAwesome" fontSize="12"></Span>
             <Span text="Add Members" textWrap="true"></Span>
@@ -71,7 +71,7 @@
 
     <!-- Print members in list form visible to members-->
     <FlexboxLayout row='4'>
-        <ListView  *ngIf="isMember" visibility="{{ teamVisible ?  'visible':'collapse' }}" [items]="members">
+        <ListView visibility="{{ teamVisible ?  'visible':'collapse' }}" [items]="members">
             <ng-template let-member="item" let-i="index">
                     <FlexboxLayout flexWrap='wrap' orientation="horizontal">
                         <!-- Make individual label for members send the id of the tapped item to onTap-->                       
@@ -99,20 +99,26 @@
     <ListView *ngIf="isOwner"  visibility="{{ permissionVisible ?  'visible':'collapse' }}" [items]="teams$" row='4' class="list-group">
         <ng-template let-team="item">
           <StackLayout>
-            <Label class="t-30 m-b-2 m-l-15" [text]="team.teamName"></Label>    
+            <Label class="t-30 m-b-2 m-l-15" [text]="team.teamName" (tap)="teamPermissionTapped(team)"></Label>    
           </StackLayout>
         </ng-template>
     </ListView>
 
     <!-- print open invites for owner -->
-    <ListView *ngIf="isOwner"  visibility="{{ inviteVisible ?  'visible':'collapse' }}" [items]="invitees" row='4' class="list-group">
-        <ng-template let-invitee="item">
-          <StackLayout>
-            <Label class="t-30 m-b-2 m-l-15" [text]="invitee.firstName +' '+ invitee.lastName "></Label>    
-          </StackLayout>
-        </ng-template>
-    </ListView>
-
+        <GridLayout *ngIf="isOwner" visibility="{{ inviteVisible ?  'visible':'collapse' }}"  rows="auto,*,auto, *" row='4'>
+            <Label class="t-30 m-b-2 m-l-15" style="color:black" row="0" text="Your Invites" textWrap="true"></Label>
+            <ListView [items]="invitees" row='1'>
+                <ng-template let-invitee="item" let-i="index">
+                    <Label class="t-30 m-b-2 m-l-15" [text]="invitee.firstName +' '+ invitee.lastName " (tap)="inviteeTapped(i)"></Label>  
+                </ng-template>
+            </ListView>
+            <Label class="t-30 m-b-2 m-l-15" style="color:black" text="Other Invites" textWrap="true" row="2"></Label>
+            <ListView [items]="authInvites" row='3'>
+                <ng-template let-auth="item" let-j="index">
+                    <Label class="t-30 m-b-2 m-l-15" [text]="auth.firstName +' '+ auth.lastName +j" (tap)="authTapped(j)"></Label>    
+                </ng-template>
+            </ListView>
+        </GridLayout>
     <!--team Mertics -->
 
 </Gridlayout>
