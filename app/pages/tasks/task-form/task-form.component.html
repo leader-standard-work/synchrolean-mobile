@@ -14,7 +14,8 @@
             <TextView class="input" formControlName="description" hint="Description" height="80" borderWidth="1" borderColor="#dedede"></TextView>
             <StackLayout class="hr-light m-10"></StackLayout>
         </StackLayout>
-        <day-boxes [weekdays]="weekdays" *ngIf="dayBoxesVisible" (selection)="daySelected($event)"></day-boxes>
+        <day-boxes *ngIf="dayBoxesVisible" [weekdays]="weekdays" (selection)="daySelected($event)"></day-boxes>
+        <ListPicker *ngIf="loggedIn" [items]="listPickerText | async"></ListPicker>
         <Button class="btn btn-outline w-full" borderColor="red" color="red" text="delete" [visibility]="deleteButtonVisible" (tap)="onDelete()"></Button>
     </StackLayout>
 </FlexBoxLayout>

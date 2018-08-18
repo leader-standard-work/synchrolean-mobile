@@ -47,9 +47,9 @@ export class TeamService {
   public addTeam(name: string, description: string): Observable<Team> {
     let endpoint = this.authService.url + '/api/teams';
     let team = new Team();
-    team.ownerEmail = this.authService.email;
     team.teamName = name;
     team.teamDescription = description;
+    team.ownerEmail = this.authService.email;
     return this.http.post<Team>(endpoint, team);
   }
 
@@ -75,32 +75,33 @@ export class TeamService {
   }
 
   passOwner(team: Team) {
-    let endpoint = this.authService.url +'/api/teams/'+team.id;
+    let endpoint = this.authService.url + '/api/teams/' + team.id;
     let json = {
-      "id":team.id,
-      "OwnerEmail":team.ownerEmail,
-      "teamDescription":team.teamDescription,
-      "teamName":team.teamName
+      id: team.id,
+      OwnerEmail: team.ownerEmail,
+      teamDescription: team.teamDescription,
+      teamName: team.teamName
     };
-    return this.http
-           .put(endpoint, json,{responseType:"json"});
+    return this.http.put(endpoint, json, { responseType: 'json' });
   }
 
-  deleteTeam(teamId:number){
-      let endpoint = this.authService.url + '/api/teams/delete/' + teamId;
-      let body ='';
-      return this.http.post(endpoint, body);
+  deleteTeam(teamId: number) {
+    let endpoint = this.authService.url + '/api/teams/delete/' + teamId;
+    let body = '';
+    return this.http.post(endpoint, body);
   }
 
-  inviteToTeam(ownerEmail:string, teamid:number){
-    let endpoint = this.authService.url +'/api/teams/invite/'+teamid+'/'+ownerEmail;
-    let body ='';
+  inviteToTeam(ownerEmail: string, teamid: number) {
+    let endpoint =
+      this.authService.url + '/api/teams/invite/' + teamid + '/' + ownerEmail;
+    let body = '';
     return this.http.put(endpoint, body);
   }
 
-  removeMember(teamId:number, targetEmail:string){
-    let endpoint = this.authService.url + '/api/teams/remove/' + teamId +'/' + targetEmail;
-    let body ='';
+  removeMember(teamId: number, targetEmail: string) {
+    let endpoint =
+      this.authService.url + '/api/teams/remove/' + teamId + '/' + targetEmail;
+    let body = '';
     return this.http.put(endpoint, body);
   }
 
@@ -110,42 +111,68 @@ export class TeamService {
   }
 
   getAuthInvites() {
-    let endpoint = this.authService.url + '/api/teams/invite/incoming/authorize';
+    let endpoint =
+      this.authService.url + '/api/teams/invite/incoming/authorize';
     return this.http.get<any>(endpoint);
   }
 
-  recindInvite(teamId:number, inviteeEmail:string){
-    let endpoint = this.authService.url + '/api/teams/invite/rescind/' + teamId + '/' + inviteeEmail;
-    let body ='';
-    return this.http.put(endpoint, body);
-  }
-  
-  authorizeInvite(teamId:number, inviteeEmail:string){
-    let endpoint = this.authService.url + '/api/teams/invite/authorize/' + teamId + '/' + inviteeEmail;
-    let body ='';
-    return this.http.put(endpoint, body);
-  }
-
-  vetoInvite(teamId:number, inviteeEmail:string){
-    let endpoint = this.authService.url + '/api/teams/invite/veto/' + teamId + '/' + inviteeEmail;
-    let body ='';
+  recindInvite(teamId: number, inviteeEmail: string) {
+    let endpoint =
+      this.authService.url +
+      '/api/teams/invite/rescind/' +
+      teamId +
+      '/' +
+      inviteeEmail;
+    let body = '';
     return this.http.put(endpoint, body);
   }
 
-  getTeamPermissions(teamId:number){
+  authorizeInvite(teamId: number, inviteeEmail: string) {
+    let endpoint =
+      this.authService.url +
+      '/api/teams/invite/authorize/' +
+      teamId +
+      '/' +
+      inviteeEmail;
+    let body = '';
+    return this.http.put(endpoint, body);
+  }
+
+  vetoInvite(teamId: number, inviteeEmail: string) {
+    let endpoint =
+      this.authService.url +
+      '/api/teams/invite/veto/' +
+      teamId +
+      '/' +
+      inviteeEmail;
+    let body = '';
+    return this.http.put(endpoint, body);
+  }
+
+  getTeamPermissions(teamId: number) {
     let endpoint = this.authService.url + '/api/teams/permissions/' + teamId;
     return this.http.get<Team[]>(endpoint);
   }
 
-  permitTeam(objectId:number, subjectId:number){
-    let endpoint = this.authService.url + '/api/teams/permissions/grant/' + objectId+'/'+subjectId;
-    let body ='';
+  permitTeam(objectId: number, subjectId: number) {
+    let endpoint =
+      this.authService.url +
+      '/api/teams/permissions/grant/' +
+      objectId +
+      '/' +
+      subjectId;
+    let body = '';
     return this.http.put(endpoint, body);
   }
 
-  forbidTeam(objectId:number, subjectId:number){
-    let endpoint = this.authService.url + '/api/teams/permissions/revoke/' + objectId+'/'+subjectId;
-    let body ='';
+  forbidTeam(objectId: number, subjectId: number) {
+    let endpoint =
+      this.authService.url +
+      '/api/teams/permissions/revoke/' +
+      objectId +
+      '/' +
+      subjectId;
+    let body = '';
     return this.http.put(endpoint, body);
   }
 }
