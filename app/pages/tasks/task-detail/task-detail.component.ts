@@ -24,8 +24,25 @@ export class TaskDetailComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  public getRoute(): string {
+  getRoute(): string {
     let route = '/task-edit/:' + this.task.databaseId.toString();
     return route;
+  }
+
+  getFrequency(): string {
+    switch (this.task.frequency) {
+      case 1: {
+        return 'Daily';
+      }
+      case 2: {
+        return 'Weekly';
+      }
+      case 3: {
+        return 'Monthly';
+      }
+      default: {
+        return 'Once';
+      }
+    }
   }
 }

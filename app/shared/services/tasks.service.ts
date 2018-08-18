@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
 import { DatabaseService } from '~/shared/services/database.service';
-import { Task, compareTask, Duration } from '~/shared/models/task';
+import { Task, compareTask, Frequency } from '~/shared/models/task';
 import { HttpClient } from '@angular/common/http';
 import { AuthenticationService } from '~/shared/services/auth.service';
 
@@ -12,9 +12,11 @@ import { AuthenticationService } from '~/shared/services/auth.service';
 export class TaskService {
   private tasks: Array<Task>;
 
-  constructor(private databaseService: DatabaseService,
+  constructor(
+    private databaseService: DatabaseService,
     private http: HttpClient,
-    private authService: AuthenticationService) {
+    private authService: AuthenticationService
+  ) {
     this.tasks = new Array<Task>();
   }
 
@@ -53,10 +55,20 @@ export class TaskService {
   public updateTask(task: Task) {
     for (let value of this.tasks) {
       if (value.databaseId === task.databaseId) {
+        value.id = task.id;
         value.name = task.name;
         value.description = task.description;
-        value.duration = task.duration;
-        value.complete = task.complete;
+        value.isRecurring = task.isRecurring;
+        value.weekdays = task.weekdays;
+        value.creationDate = task.creationDate;
+        value.isCompleted = task.isCompleted;
+        value.completionDate = task.completionDate;
+        value.isDeleted = task.isDeleted;
+        value.ownerEmail = task.ownerEmail;
+        value.frequency = task.frequency;
+        value.teamId = task.teamId;
+        value.dirty = true;
+        value.expires = task.expires;
         this.databaseService.updateTask(value).then(
           id => {
             console.log(value);
@@ -72,7 +84,8 @@ export class TaskService {
   public deleteTask(id: number) {
     this.tasks.forEach((item, index) => {
       if (item.databaseId === id) {
-        item.delete();
+        item.isDeleted = true;
+        item.dirty = true;
         this.tasks.splice(index, 1);
         this.databaseService.updateTask(item);
       }
@@ -82,7 +95,7 @@ export class TaskService {
   public checkTask(task: Task) {
     this.tasks.forEach((item, index) => {
       if (item.databaseId === task.databaseId) {
-        item.complete = task.complete;
+        item.isCompleted = task.isCompleted;
         this.databaseService.updateTask(item);
         console.log(item);
       }
@@ -93,16 +106,15 @@ export class TaskService {
     this.tasks.forEach(task => {
       let today = new Date();
       if (task.expires < today) {
-        if (task.duration === Duration.Once) {
+        if (task.frequency === Frequency.Once) {
           task.delete();
         }
         task.setResetDate();
-        task.complete = false;
+        task.isCompleted = false;
       }
     });
     this.tasks.sort(compareTask);
   }
-
 
   //this is after refeactor
   getuserTodo(email: string): Observable<Task[]> {

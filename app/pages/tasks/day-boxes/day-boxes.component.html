@@ -1,4 +1,4 @@
-<StackLayout orientation="horizontal">
+<FlexboxLayout flexDirection="row" justifyContent="space-around">
 
     <StackLayout class="sunday">
         <CheckBox #SUN (checkedChange)="onChecked(1)"></CheckBox>
@@ -7,7 +7,7 @@
 
     <StackLayout class="monday">
         <CheckBox #MON (checkedChange)="onChecked(2)"></CheckBox>
-        <Label text="S"></Label>
+        <Label text="M"></Label>
     </StackLayout>
 
     <StackLayout class="tuesday">
@@ -35,4 +35,4 @@
         <Label text="S"></Label>
     </StackLayout>
 
-</StackLayout>
+</FlexboxLayout>
