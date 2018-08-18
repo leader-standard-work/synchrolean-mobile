@@ -41,33 +41,36 @@ export class DayBoxesComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    if (this.weekdays === 0b1) {
+    console.log('Weekdays ', this.weekdays);
+    if (this.weekdays & 0b1) {
       this.sundayBox.nativeElement.checked = true;
     }
-    if (this.weekdays === 0b10) {
+    if (this.weekdays & 0b10) {
       this.mondayBox.nativeElement.checked = true;
     }
-    if (this.weekdays === 0b100) {
+    if (this.weekdays & 0b100) {
       this.tuesdayBox.nativeElement.checked = true;
     }
-    if (this.weekdays === 0b1000) {
+    if (this.weekdays & 0b1000) {
       this.wednesdayBox.nativeElement.checked = true;
     }
-    if (this.weekdays === 0b10000) {
+    if (this.weekdays & 0b10000) {
       this.thrusdayBox.nativeElement.checked = true;
     }
-    if (this.weekdays === 0b100000) {
+    if (this.weekdays & 0b100000) {
       this.fridayBox.nativeElement.checked = true;
     }
-    if (this.weekdays === 0b1000000) {
+    if (this.weekdays & 0b1000000) {
       this.saturdayBox.nativeElement.checked = true;
     }
     this.initialized = true;
   }
 
   onChecked(day: number) {
-    this.setWeekday(day);
-    this.selection.emit();
+    if (this.initialized) {
+      this.setWeekday(day);
+      this.selection.emit(this.weekdays);
+    }
   }
 
   setWeekday(day: number) {

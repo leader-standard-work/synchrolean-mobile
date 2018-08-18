@@ -8,13 +8,13 @@
         <SegmentedBar class="duration-segment" [items]="durationBarItems" [selectedIndex]="durationBarIndex" (selectedIndexChanged)="onDurationSelected($event)"></SegmentedBar>
 
         <StackLayout class="input-field" [formGroup]="taskFormGroup">
-            <TextField class="input" formControlName="description" hint=" Description" required></TextField>
+            <TextField class="input" formControlName="name" hint=" Name" required></TextField>
             <StackLayout class="hr-light m-10"></StackLayout>
 
-            <TextView class="input" formControlName="note" hint="Notes" height="80" borderWidth="1" borderColor="#dedede"></TextView>
+            <TextView class="input" formControlName="description" hint="Description" height="80" borderWidth="1" borderColor="#dedede"></TextView>
             <StackLayout class="hr-light m-10"></StackLayout>
         </StackLayout>
-        <day-boxes [weekdays]="weekdays" (selection)="daySelected($event)"></day-boxes>
+        <day-boxes [weekdays]="weekdays" *ngIf="dayBoxesVisible" (selection)="daySelected($event)"></day-boxes>
         <Button class="btn btn-outline w-full" borderColor="red" color="red" text="delete" [visibility]="deleteButtonVisible" (tap)="onDelete()"></Button>
     </StackLayout>
 </FlexBoxLayout>
