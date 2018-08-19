@@ -105,10 +105,10 @@ export class TaskService {
   taskReset() {
     this.tasks.forEach(task => {
       let today = new Date();
+      if (task.frequency === Frequency.Once) {
+        task.delete();
+      }
       if (task.expires < today) {
-        if (task.frequency === Frequency.Once) {
-          task.delete();
-        }
         task.setResetDate();
         task.isCompleted = false;
       }
