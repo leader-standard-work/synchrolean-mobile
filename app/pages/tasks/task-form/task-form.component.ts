@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { ListPicker } from 'ui/list-picker';
+import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { PageRoute, RouterExtensions } from 'nativescript-angular/router';
 import {
@@ -28,10 +29,13 @@ enum Mode {
 export class TaskFormComponent implements OnInit {
   private mode: Mode = Mode.New;
   private frequency: Frequency;
+  private teamId: number;
 
   public task: Task;
   public teams: Array<{ name: string; id: number }>;
+  public teamNames: Array<string>;
   public listPickerText: Observable<string[]>;
+  public pickerIndex: number;
   public taskFormGroup: FormGroup;
   public title: string;
   public weekdays: number;
@@ -61,6 +65,7 @@ export class TaskFormComponent implements OnInit {
     this.title = 'New Task';
     this.frequency = 0;
     this.weekdays = 0;
+    this.teamId = 0;
     this.deleteButtonVisible = 'collapse';
     let name = '';
     let description = '';
@@ -75,31 +80,37 @@ export class TaskFormComponent implements OnInit {
     monthlyItem.title = 'Monthly';
 
     this.durationBarItems = [onceItem, dailyItem, weeklyItem, monthlyItem];
+    this.pickerIndex = 0;
 
     // If the user is logged in display a list of teams.
     if (this.authService.isLoggedIn()) {
-      let teamNames = new Array<string>();
+      this.teamNames = new Array<string>();
       this.teams = new Array<{ name: string; id: number }>();
       this.teams.push({ name: 'Personal Task', id: -1 });
-      teamNames.push('No team selected');
+      this.teamNames.push('No team selected');
       this.accountService.getTeamsForAccount(this.authService.email).subscribe(
         teams => {
           for (let team of teams) {
             this.teams.push({ name: team.teamName, id: team.id });
-            teamNames.push(team.teamName);
+            this.teamNames.push(team.teamName);
+          }
+          this.listPickerText = of(this.teamNames);
+          if (this.task !== null && this.task.teamId !== -1) {
+            this.teams.forEach((team, index) => {
+              if (team.id === this.task.teamId) {
+                this.pickerIndex = index;
+              }
+            });
           }
         },
         error => {
           console.log(
             'could not get teams for account: ',
-            this.authService.email
+            this.authService.email,
+            error
           );
         }
       );
-      this.listPickerText = new Observable(observer => {
-        observer.next(teamNames);
-        observer.complete();
-      });
       this.loggedIn = true;
     }
 
@@ -145,6 +156,11 @@ export class TaskFormComponent implements OnInit {
     this.weekdays = weekdays;
   }
 
+  selectedIndexChanged(args) {
+    let picker = <ListPicker>args.object;
+    this.teamId = this.teams[picker.selectedIndex].id;
+  }
+
   onSave() {
     let name = this.taskFormGroup.value.name;
     let description = this.taskFormGroup.value.description;
@@ -159,6 +175,7 @@ export class TaskFormComponent implements OnInit {
       task.description = description;
       task.frequency = this.frequency;
       task.weekdays = this.weekdays;
+      task.teamId = this.teamId;
       if (this.frequency === Frequency.Once) {
         task.isRecurring = false;
       } else {

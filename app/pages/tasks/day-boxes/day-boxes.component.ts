@@ -41,7 +41,6 @@ export class DayBoxesComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    console.log('Weekdays ', this.weekdays);
     if (this.weekdays & 0b1) {
       this.sundayBox.nativeElement.checked = true;
     }
