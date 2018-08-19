@@ -11,6 +11,7 @@ import { ObservableArray } from 'data/observable-array/observable-array';
 import { AuthenticationService } from '~/shared/services/auth.service';
 import { TaskService } from '~/shared/services/tasks.service';
 import { AccountService } from '~/shared/services/account.service';
+import { SearchBar } from "ui/search-bar";
 
 
 //name component and the markup and stayle sheet
@@ -31,6 +32,8 @@ export class MembersComponent implements OnInit {
   public invitees: Array<Account>; //holds accounts for invited users
   public authInvites: Array<Account>;
   public permittedTeams:Array<Team>;
+  public searchPhrase: string;
+  public searchMembers: Array<Account>;
 
   //permissions check
   public isOwner: Boolean;
@@ -64,6 +67,20 @@ export class MembersComponent implements OnInit {
       .forEach(params => {
         this.id = +params['id'];
       });
+  }
+
+  onSubmit(args) {
+    let searchBar = <SearchBar>args.object;
+    let searchValue = searchBar.text.toLowerCase();
+
+    this.searchMembers = new Array<Account>();
+    if(searchValue !== ""){
+      for(let i = 0; i < this.teams$.length; ++i){
+        if(this.members[i].lastName.toLowerCase().indexOf(searchValue) !== -1){
+          this.searchMembers.push(this.members[i])
+        }
+      }
+    }
   }
 
   ngOnInit(): void {
