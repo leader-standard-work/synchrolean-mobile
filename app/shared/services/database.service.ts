@@ -92,11 +92,12 @@ export class DatabaseService {
 
   /****************** Begin Tasks Methods ********************/
 
-  getTasks(): Array<Task> {
+  getTasks(): Task[] {
     let tasks = new Array<Task>();
-
+    // return new Promise((resolve, reject) => {
     this.database.all(QueryUndeletedTasks).then(
       results => {
+        console.log('THIS WAS CALLED');
         for (var result of results) {
           let task: Task = new Task();
           task.databaseId = result.databaseId;
@@ -125,13 +126,18 @@ export class DatabaseService {
           tasks.push(task);
         }
         tasks.sort(compareTask);
+        console.log(tasks);
+
+        // resolve(tasks);
       },
       error => {
         console.error('database getTasks failed', error);
         return null;
+        // reject(error);
       }
     );
     return tasks;
+    // });
   }
 
   insertTask(task: Task): Promise<number> {
