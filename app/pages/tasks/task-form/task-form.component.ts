@@ -39,7 +39,7 @@ export class TaskFormComponent implements OnInit {
   public taskFormGroup: FormGroup;
   public title: string;
   public weekdays: number;
-  public loggedIn = false;
+  public loggedIn: boolean;
 
   public dayBoxesVisible = false;
   public deleteButtonVisible: string;
@@ -66,6 +66,7 @@ export class TaskFormComponent implements OnInit {
     this.frequency = 0;
     this.weekdays = 0;
     this.teamId = 0;
+    this.loggedIn = false;
     this.deleteButtonVisible = 'collapse';
     let name = '';
     let description = '';
@@ -86,8 +87,8 @@ export class TaskFormComponent implements OnInit {
     if (this.authService.isLoggedIn()) {
       this.teamNames = new Array<string>();
       this.teams = new Array<{ name: string; id: number }>();
-      this.teams.push({ name: 'Personal Task', id: -1 });
-      this.teamNames.push('No team selected');
+      this.teams.push({ name: 'No Team Selected', id: -1 });
+      this.teamNames.push('No Team Selected');
       this.accountService.getTeamsForAccount(this.authService.email).subscribe(
         teams => {
           for (let team of teams) {
@@ -102,6 +103,7 @@ export class TaskFormComponent implements OnInit {
               }
             });
           }
+          this.loggedIn = true;
         },
         error => {
           console.log(
@@ -111,7 +113,6 @@ export class TaskFormComponent implements OnInit {
           );
         }
       );
-      this.loggedIn = true;
     }
 
     // Set the task variables if a task as been passed in
@@ -158,7 +159,10 @@ export class TaskFormComponent implements OnInit {
 
   selectedIndexChanged(args) {
     let picker = <ListPicker>args.object;
-    this.teamId = this.teams[picker.selectedIndex].id;
+    const index = picker.selectedIndex;
+    if (index > 0 || index < this.teams.length) {
+      this.teamId = this.teams[index].id;
+    }
   }
 
   onSave() {
