@@ -121,4 +121,20 @@ export class TaskService {
     let endpoint = this.authService.url + '/api/tasks/todo/' + email;
     return this.http.get<Task[]>(endpoint);
   }
+
+  getServerTasks(): Observable<Task[]> {
+    let endpoint =
+      this.authService.url + '/api/tasks/' + this.authService.email;
+    return this.http.get<Task[]>(endpoint);
+  }
+
+  addServerTask(task: Task) {
+    let endpoint = this.authService.url + '/api/tasks';
+    return this.http.post(endpoint, task);
+  }
+
+  editServerTask(task: Task) {
+    let endpoint = this.authService.url + '/api/tasks/' + task.id;
+    return this.http.put(endpoint, task);
+  }
 }
