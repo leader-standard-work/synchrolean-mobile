@@ -4,9 +4,10 @@
     <ActionItem *ngIf="isOwner" visibility="{{ teamVisible ?  'visible':'collapse' }}" ios.position="right" text="Edit" android.position="actionBar" (tap)="editTapped()"></ActionItem>
     <ActionItem *ngIf="isMember" visibility="{{ teamVisible ?  'visible':'collapse' }}" ios.position="right" text="Leave" android.position="actionBar" (tap)="leaveTapped()"></ActionItem>
     <!-- <ActionItem visibility="{{ isOwner ?  'visible':'collapse' }}" (tap)="addTapped()" ios.position="left" text="Add" android.position="actionBar"></ActionItem> -->
+    <SearchBar hint="Member search by last name" [text]="searchPhrase" (submit)="onSubmit($event)" (clear)="onClear($event)" textFieldHintColor="#e39e2c" ></SearchBar>
 </ActionBar>
 <!-- Make grid layout for the page naming row sizes-->
-<Gridlayout class='page' rows="auto, auto, auto, auto, *">
+<Gridlayout class='page' rows="auto, auto, auto, auto, auto, *">
     <!-- Make labels to display name and description of team-->
     <FlexboxLayout class="m-t-4" width="100%" justifyContent ='center' row='0'>
         <Label width="100%" class="t-30 text-center" [text]="teamName" textWrap="true" visibility="{{ editTeamNameHit ? 'collapse': 'visible' }}"></Label>
@@ -69,8 +70,16 @@
         </Button>
     </FlexboxLayout>
 
-    <!-- Print members in list form visible to members-->
     <FlexboxLayout row='4'>
+            <ListView  [items]="searchMembers">
+                <ng-template let-member="item">
+                     <label [text]="member.firstName + ' ' + member.lastName" class="search-item"></label>
+                </ng-template>
+            </ListView>
+    </FlexboxLayout>
+
+    <!-- Print members in list form visible to members-->
+    <FlexboxLayout row='5'>
         <ListView visibility="{{ teamVisible ?  'visible':'collapse' }}" [items]="members">
             <ng-template let-member="item" let-i="index">
                     <FlexboxLayout flexWrap='wrap' orientation="horizontal">

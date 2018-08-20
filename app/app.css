@@ -64,3 +64,12 @@ button {
     font-weight: bold;
     font-size: 24;
 }
+
+.search-item {
+    color: #e39e2c;
+    font-size: 20;
+}
+
+SearchBar {
+    color: #e39e2c;
+}
