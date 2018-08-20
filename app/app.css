@@ -68,8 +68,11 @@ button {
 .search-item {
     color: #e39e2c;
     font-size: 20;
+    margin-left: 16;
+    margin-right: 16;
 }
 
 SearchBar {
     color: #e39e2c;
+    font-size: 20;
 }
