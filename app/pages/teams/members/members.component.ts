@@ -1,22 +1,17 @@
-import { Injectable, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { PageRoute, RouterExtensions } from 'nativescript-angular/router';
 import { switchMap } from 'rxjs/operators';
-import { TextField } from "ui/text-field";
 import { TeamService } from '~/shared/services/teams.service';
 
 import { Account } from '~/shared/models/account';
 import { Team } from '~/shared/models/team';
 import * as dialogs from 'ui/dialogs';
-import { AccountService } from '~/shared/services/account.service';
 import { Task } from '~/shared/models/task';
-import { ObservableInput } from 'rxjs';
-import { Observable } from 'ui/page/page';
 import { ObservableArray } from 'data/observable-array/observable-array';
-import { ServerService } from '~/shared/services/server.service';
-
-@Injectable({
-  providedIn: 'root'
-})
+import { AuthenticationService } from '~/shared/services/auth.service';
+import { TaskService } from '~/shared/services/tasks.service';
+import { AccountService } from '~/shared/services/account.service';
+import { SearchBar } from "ui/search-bar";
 
 
 //name component and the markup and stayle sheet
@@ -27,37 +22,44 @@ import { ServerService } from '~/shared/services/server.service';
   styleUrls: ['./members.component.css']
 })
 export class MembersComponent implements OnInit {
-  public team: Team;                                //holds team
-  public teamName: string;                          //holds team name
-  public teamDesc: string;                          //holds team description
-  public members: ObservableArray<Account>;         //Holds members of the team
-  public tasks$:  Array<ObservableArray<Task>>;     //holds each team members tasks
-  public teams$:  Array<Team>;                      //holds teams for permissions
-  public invites: Array<any>;                       //holds array of invite rousources
-  public invitees: Array<Account>;                  //holds accounts for invited useres
+  public team: Team; //holds team
+  public teamName: string; //holds team name
+  public teamDesc: string; //holds team description
+  public members: Array<Account>; //Holds members of the team
+  public tasks$: Array<Array<Task>>; //holds each team members tasks
+  public teams$: Array<Team>; //holds teams for permissions
+  public invites: Array<any>; //holds array of invite rousources
+  public invitees: Array<Account>; //holds accounts for invited users
+  public authInvites: Array<Account>;
+  public permittedTeams:Array<Team>;
+  public searchPhrase: string;
+  public searchMembers: Array<Account>;
 
   //permissions check
   public isOwner: Boolean;
-  public isMember:boolean;
+  public isMember: boolean;
 
   //button presses
   public teamVisible: boolean;
-  public taskVisible: Array<boolean>; 
+  public taskVisible: Array<boolean>;
   public metericsVisible: boolean;
   public permissionVisible;
   public editHit: boolean;
   public inviteVisible: boolean;
   public editTeamNameHit: boolean;
   public editTeamDescHit: boolean;
- 
+  public addMember:boolean;
+
   public length: number;
 
   private id: number;
 
   constructor(
-    private serverService: ServerService,
     private accountService: AccountService,
+    private authService: AuthenticationService,
+    private teamService: TeamService,
     private pageR: PageRoute,
+    private taskService: TaskService,
     private routerE: RouterExtensions
   ) {
     this.pageR.activatedRoute
@@ -67,58 +69,91 @@ export class MembersComponent implements OnInit {
       });
   }
 
+  onSubmit(args) {
+    let searchBar = <SearchBar>args.object;
+    let searchValue = searchBar.text.toLowerCase();
+
+    this.searchMembers = new Array<Account>();
+    if(searchValue !== ""){
+      for(let i = 0; i < this.members.length; ++i){
+        if(this.members[i].lastName.toLowerCase().indexOf(searchValue) !== -1){
+          this.searchMembers.push(this.members[i])
+        }
+      }
+    }
+  }
+
+  onClear(args) {
+    let searchBar = <SearchBar>args.object;
+    searchBar.text = "";
+    searchBar.hint = "Member search by last name";
+    this.searchMembers = new Array<Account>();
+  }
+
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class
 
-    this.members = new ObservableArray<Account>();
-    this.tasks$ = new Array<ObservableArray<Task>>();
+    this.members = new Array<Account>();
+    this.tasks$ = new Array<Array<Task>>();
     this.invites = new Array<any>();
     this.invitees = new Array<Account>();
     this.teams$ = new Array<Team>();
+    this.permittedTeams = new Array<Team>();
+    this.authInvites = new Array<Account>();
 
     //permission intialized
     this.isOwner = false;
-    this.isMember =false;
-    
+    this.isMember = false;
+
     //list visibilty with team being showed on page load
-    this.teamVisible = true;    
+    this.teamVisible = true;
     this.taskVisible = new Array<boolean>(false);
-    this.metericsVisible=false;
+    this.metericsVisible = false;
     this.inviteVisible = false;
+    this.editHit = false;
+    this.addMember = false;
 
     // Get team by id
-    this.serverService.getTeam(this.id).subscribe(
+    this.teamService.getTeam(this.id).subscribe(
       response => {
         this.teamName = response.teamName;
         this.teamDesc = response.teamDescription;
         this.team = response;
         // Get team members call
-        this.serverService.getTeamMembers(this.id).subscribe(
+        this.teamService.getTeamMembers(this.id).subscribe(
           accounts => {
             accounts.forEach((account, index) => {
-              //get each members todo list
-              this.serverService.getuserTodo(account.ownerId)
-                .subscribe(tasks =>{
-                  this.tasks$[index] = new ObservableArray<Task>();
-                  tasks.forEach(task=>{
+              // get each members todo list
+              this.taskService
+                .getuserTodo(account.email)
+                .subscribe(tasks => {
+                  this.tasks$[index] = new Array<Task>();
+                  tasks.forEach(task => {
                     this.tasks$[index].push(task);
                   });
                 });
               this.members.push(account);
-              this.taskVisible.push(false); 
-              
+              this.taskVisible.push(false);
+
               //check the user is a member of the team
-              if(account.ownerId === this.accountService.account.ownerId){
+              if (account.email === this.authService.email) {
                 this.isMember = true;
-  
+                this.addMember = true;
+
                 //check if they are the owner
                 this.isOwner =
-                this.team.ownerId === this.accountService.account.ownerId
-                  ? true
-                  : false;
+                  this.team.ownerEmail === this.authService.email ? true : false;
               }
-            });  
+            });
+            if(!this.isMember){
+              this.teamService.getTeamPermissions(this.team.id)
+              .subscribe(res=>{
+                this.isMember = res
+              },err=>{
+                console.log('Could not get permitted teams!');
+              });
+            }
           },
           error => {
             console.error('could not get team members', error);
@@ -131,20 +166,20 @@ export class MembersComponent implements OnInit {
       }
     );
 
-    
+    //check team permissions
+ 
   }
 
-  getTaskListLength(tasks: Task[]):number{
-    if(tasks === undefined)
-      return 0;
+  getTaskListLength(tasks: Task[]): number {
+    if (tasks === undefined) return 0;
 
     return tasks.length;
   }
 
   //navigate to members task list taking id with it
   onTap(index: number) {
-    if(this.taskVisible[index] === true){
-      this.taskVisible[index] =false;
+    if (this.taskVisible[index] === true) {
+      this.taskVisible[index] = false;
       return;
     }
 
@@ -152,80 +187,86 @@ export class MembersComponent implements OnInit {
   }
 
   addTapped() {
-    dialogs.prompt({
+    dialogs
+      .prompt({
         title: "Please enter the user's email",
         okButtonText: 'Send invite',
         cancelButtonText: 'Cancel',
         inputType: dialogs.inputType.email
       })
-      .then(r => {     
+      .then(r => {
         //check result
-     
-        if(r.result !== false){
+        if (r.result !== false) {
           //make server call to add by email
-          var user:Account;
-           
-          this.serverService.getAccountByEmail(r.text).subscribe((res)=>{
-            user = res;
-            console.log(user.ownerId);
-
+          var user: Account;
             //SErver call to invite user to team
-            this.serverService.inviteToTeam(user.ownerId, this.team.ownerId, this.team.id)
-              .subscribe((res)=>{
+          this.teamService
+            .inviteToTeam(r.text, this.team.id)
+            .subscribe(
+              res => {
                 console.log(res);
 
                 //dialog alert box to let the user know of success
-                dialogs.alert({
-                  title:'Invite User',
-                  message:'User invited',
-                  okButtonText:'Ok'
-                }).then();
-              }, err=>{
-                console.error('Could not invite user',err);
-                                
+                dialogs
+                  .alert({
+                    title: 'Invite User',
+                    message: 'User invited',
+                    okButtonText: 'Ok'
+                  })
+                  .then();
+                  if(this.inviteVisible){
+                    this.inviteVisible = false;
+                    this.invitesTapped();
+                  }
+              },
+              err => {
+                console.error('Could not invite user', err);
+
                 //dialog alert box to let the user know of success
-                dialogs.alert({
-                  title:'Invite User',
-                  message:'Could not invite user',
-                  okButtonText:'Ok'
-                }).then();
-              }); 
-          });
-        }                
+                dialogs
+                  .alert({
+                    title: 'Invite User',
+                    message: 'Could not invite user',
+                    okButtonText: 'Ok'
+                  })
+                  .then();
+              });      
+        }
       });
   }
 
-  teamTapped(){
+  teamTapped() {
     //if team is already visible just leave
-    if(this.teamVisible === true){
+    if (this.teamVisible === true) {
       return;
     }
 
-    this.tasks$ = new Array<ObservableArray<Task>>();
-    this.members = new ObservableArray<Account>();
+    this.tasks$ = new Array<Array<Task>>();
+    this.members = new Array<Account>();
     // Get team members call
-    this.serverService.getTeamMembers(this.id).subscribe(
+    this.teamService.getTeamMembers(this.id).subscribe(
       accounts => {
-        accounts.forEach((account, index) => {
-          //get each members todo list
-          this.serverService.getuserTodo(account.ownerId)
-            .subscribe(tasks =>{
-              this.tasks$[index] = new ObservableArray<Task>();
-              tasks.forEach(task=>{
+        accounts.forEach(
+          (account, index) => {
+            //get each members todo list
+            this.taskService.getuserTodo(account.email).subscribe(tasks => {
+              this.tasks$[index] = new Array<Task>();
+              tasks.forEach(task => {
                 this.tasks$[index].push(task);
               });
             });
-          this.members.push(account); // push account onto the component array
-          this.taskVisible.push(false);   //push false to array for visible members list
-        },         
-        error => {
-          console.error('could not get team members', error);
-        });
+            this.members.push(account); // push account onto the component array
+            this.taskVisible.push(false); //push false to array for visible members list
+          },
+          error => {
+            console.error('could not get team members', error);
+          }
+        );
       },
       error => {
         console.error('could not load team in members', error);
-    });
-                
+      }
+    );
 
     this.editHit = false;
     this.permissionVisible = false;
@@ -234,27 +275,26 @@ export class MembersComponent implements OnInit {
     this.teamVisible = true;
   }
 
-  metricsTapped(){
-    if(this.metericsVisible === true){ 
+  metricsTapped() {
+    if (this.metericsVisible === true) {
       return;
     }
 
     this.teamVisible = false;
     this.metericsVisible = true;
     this.permissionVisible = false;
+    this.inviteVisible = false;
     this.editHit = false;
   }
 
-
   //controls the edit buttions showing by when the edit buttons is hit
-  editTapped(){
-    if(this.teamVisible === true){
-      if(this.editHit === false){
-         this.editHit = true;
-      }
-      else{ 
+  editTapped() {
+    if (this.teamVisible === true) {
+      if (this.editHit === false) {
+        this.editHit = true;
+      } else {
         this.editHit = false;
-        this.editTeamDescHit =false;
+        this.editTeamDescHit = false;
         this.editTeamNameHit = false;
       }
     }
@@ -267,66 +307,102 @@ export class MembersComponent implements OnInit {
   }
 
   //Controls if persmisson list is visible
-  permissionsTapped(){
-      if(this.permissionVisible === true){
-        return;
-      }
-
-      //make new team array
-      this.teams$ = new Array<Team>();
-
-      //get list of teams in organization
-      this.serverService.getTeams()
-      .subscribe(res=>{
-        res.forEach((value)=>{ 
-          this.teams$.push(value);
-        });
-      }, err=>{
-        console.error("couldnt get teams from server", err);
-      });
-
-      //make sure lists and buttons for edit are hidden
-      this.inviteVisible = false;
-      this.teamVisible = false;
-      this.metericsVisible = false;
-      this.permissionVisible = true;
-      this.editHit = false;
-  }
-
-  invitesTapped(){
-    //If invites is already visible go away
-    if(this.inviteVisible === true){
+  permissionsTapped() {
+    if (this.permissionVisible === true) {
       return;
     }
 
-    //make new arrays 
+    //make new team array
+    this.teams$ = new Array<Team>();
+
+    //get list of teams in organization
+    this.teamService.getTeams().subscribe(
+      res => {
+        res.forEach(value => {
+          if(value.id != this.team.id)
+            this.teams$.push(value);
+        });
+      },
+      err => {
+        console.error('couldnt get teams from server', err);
+      }
+    );
+
+    //make sure lists and buttons for edit are hidden
+    this.inviteVisible = false;
+    this.teamVisible = false;
+    this.metericsVisible = false;
+    this.permissionVisible = true;
+    this.editHit = false;
+  }
+
+  invitesTapped() {
+    //If invites is already visible go away
+    if (this.inviteVisible === true) {
+      return;
+    }
+
+    //make new arrays
     this.invites = new Array<any>();
     this.invitees = new Array<Account>();
-    
+
     //get invite resources
-    this.serverService.getInvites(this.team.ownerId)
-    .subscribe(res=>{
-        res.forEach((value)=>{
+    this.teamService.getInvites().subscribe(
+      res => {
+        res.forEach(value => {
           this.invites.push(value);
         });
 
         //get accounts for invite
-        this.invites.forEach((value)=>{
-          this.serverService.getAccountById(value.inviteeId)
-            .subscribe(res=>{
+        this.invites.forEach(value => {
+          this.accountService.getAccountByEmail(value.inviteeEmail).subscribe(
+            res => {
               //push invitee onto an accounts array
               //if they are for this team
-              if(value.teamId === this.team.id){
+              if (value.teamId === this.team.id) {
                 this.invitees.push(res);
               }
-            },err=>{
+            },
+            err => {
               console.log('Error getting user info for invites', err);
-            });
+            }
+          );
         });
-    }, err=>{
+      },
+      err => {
         console.error('Error getting invites', err);
-    });
-    
+      }
+    );
+
+    this.teamService.getAuthInvites().subscribe(
+      res => {
+        this.invites = new Array<any>();
+        this.authInvites = new Array<Account>();
+        res.forEach(value => {
+          this.invites.push(value);
+        });
+
+        //get accounts for invite
+        this.invites.forEach(value => {
+          this.accountService.getAccountByEmail(value.inviteeEmail).subscribe(
+            res => {
+              //push invitee onto an accounts array
+              //if they are for this team
+              if (value.teamId === this.team.id) {
+                this.authInvites.push(res);
+              }
+            },
+            err => {
+              console.log('Error getting user info for invites', err);
+            }
+          );
+        });
+      },
+      err => {
+        console.error('Error getting invites', err);
+      }
+    );
+
     //make other list invisible
     this.teamVisible = false;
     this.metericsVisible = false;
@@ -336,157 +412,412 @@ export class MembersComponent implements OnInit {
   }
 
   //pass ownership to team member
-  passOwner(id:number){
-    console.log(id);
-
+  passOwner(index: number) {
     //check if it's beeing passed to the current owner
-    if(id === this.team.ownerId){
-      dialogs.alert({
-        title: "This person is already the owner",
-        okButtonText: "Ok"
-      }).then(function () {
-          console.log("Dialog closed!");
-      });
+    if (this.members[index].email == this.team.ownerEmail) {
+      dialogs
+        .alert({
+          title: 'This person is already the owner',
+          okButtonText: 'Ok'
+        })
+        .then(function() {
+          console.log('Dialog closed!');
+        });
       return;
     }
 
-    //holds old owner id
-    var oldOwner = this.team.ownerId;
-    this.team.ownerId = id;
+    dialogs.confirm({
+      title: "Are you sure?",
+      message: "Are you sure you want to pass ownership to "+ this.members[index].firstName  + ' ' + this.members[index].lastName +"?",
+      okButtonText: "Yes",
+      cancelButtonText: "No",
+    }).then(res=>{
+      if(res){
+        this.team.ownerEmail = this.members[index].email;
 
-    //server call to pass ownership
-    this.serverService.passOwner(this.team, oldOwner).subscribe(rep=>{
-        console.log('Saved new owner');
-        this.editHit = false;
-        this.isOwner = false; 
+        //server call to pass ownership
+        this.teamService.passOwner(this.team).subscribe(
+          rep => {
+            console.log('Saved new owner');
+            this.editHit = false;
+            this.isOwner = false;
 
-        //alert to change happen sucessfully
-        dialogs.alert({
-          title: "Ownership changed",
-          okButtonText: "Ok"
-        }).then(function () {
-            console.log("Dialog closed!");
-        });
-    },err=>{
-      dialogs.alert({
-        title: "Ownership couldn't be changed",
-        okButtonText: "Ok"
-      }).then(function () {
-          console.log("Dialog closed!");
-      });
-      console.log('Error editing team in change ownership\n', err);
+            //alert to change happen sucessfully
+            dialogs
+              .alert({
+                title: 'Ownership changed',
+                okButtonText: 'Ok'
+              })
+              .then(function() {
+                console.log('Dialog closed!');
+              });
+          },
+          err => {
+            dialogs
+              .alert({
+                title: "Ownership couldn't be changed",
+                okButtonText: 'Ok'
+              })
+              .then(function() {
+                console.log('Dialog closed!');
+              });
+            console.log('Error editing team in change ownership\n', err);
+          });
+      }
     });
+    
   }
 
   //lets member leave team
-  leaveTapped(ownerId: number){
-    
+  leaveTapped() {
     //if the team owner is trying to leave don't let em
-    if(ownerId === this.team.ownerId){
-      dialogs.alert({
-        title: "You cannot leave/remove the team owner",
-        message:"Pass ownership first",
-        okButtonText: "Ok"
-      }).then(function () {
-          console.log("Dialog closed!");
-      });
-
-      return;
+    const email = this.authService.email
+    if (email === this.team.ownerEmail && this.members.length > 1) {
+      dialogs
+        .alert({
+          title: 'WARNING',
+          message: 'Leaving as the owner will pass leadership to a randon member',
+          okButtonText: 'Ok'
+        })
+        .then(function() {
+          console.log('Dialog closed!');
+        });
     }
 
-    //call to remove team member
-    this.serverService
-    .removeMember(ownerId, ownerId, this.team.id)
-    .subscribe(res=>{
-      console.log('Successfully remove');
-      //navigate back to teams after leaving
-      this.routerE.navigate(['/teams'], {
-        transition: {
-          name: 'slideRight'
-        },
-        clearHistory: true,
-      });
-    },err=>{
-      console.error("Error removing member", err);
+
+    dialogs.confirm({
+      title: "Are you sure?",
+      message: "Are you sure you want to leave "+ this.team.teamName +"?",
+      okButtonText: "Yes",
+      cancelButtonText: "No",
+      cancelable: true
+    }).then(result=>{
+      if(result){
+        //call to remove team member
+        this.teamService.removeMember(this.team.id, this.authService.email).subscribe(
+          res => {
+            console.log('Successfully Left');
+            //navigate back to teams after leaving
+            this.routerE.navigate(['/teams'], {
+              transition: {
+                name: 'slideRight'
+              },
+              clearHistory: true
+            });
+          },
+          err => {
+            if(this.members.length === 1){          
+              console.log('Successfully Left', err);
+              dialogs.alert({
+                title: "You have left and deleted " + this.team.teamName,
+                okButtonText: "Ok",
+              }).then(res=>{
+                
+              }); 
+              this.routerE.navigate(['/teams'], {
+                transition: {
+                  name: 'slideRight'
+                },
+                clearHistory: true
+              });
+            }else{
+              console.log('could not leave team');
+              dialogs.alert({
+                title: "Could not remove leave",
+                okButtonText: "Ok",
+              }).then(res=>{
+                
+              });
+            }
+          }
+        );
+      }
     });
-    console.log(ownerId);
   }
 
-  deleteMember(callerId:number, targetId: number){
-
+  deleteMember(index:number) {
     //if the target is the team owner that can't be let go
-    if(targetId === this.team.ownerId){
-      dialogs.alert({
-        title: "You cannot leave/remove the team owner",
-        message:"Pass ownership first",
-        okButtonText: "Ok"
-      }).then(function () {
-          console.log("Dialog closed!");
-      });
-
-      return;
+    if (this.members[index].email === this.team.ownerEmail && this.members.length > 1) {
+      dialogs
+        .alert({
+          title: 'WARNING',
+          message: 'deleting the owner will pass onwership to a random member',
+          okButtonText: 'Ok'
+        })
+        .then(function() {
+          console.log('Dialog closed!');
+        });
     }
 
-    //call to remove member
-    this.serverService
-    .removeMember(callerId, targetId, this.team.id)
-    .subscribe(res=>{
-      console.log('Successfully remove');
-      //after removing reload the list
-      this.teamVisible = false;
-      this.teamTapped();
-    },err=>{
-      console.error("Error removing member", err);
+    
+    dialogs.confirm({
+      title: "Are you sure?",
+      message: "Are you sure you want to delete " + this.members[index].firstName +' ' + this.members[index].lastName,
+      okButtonText: "Yes",
+      cancelButtonText: "No",
+      cancelable: true
+    }).then(result=>{
+      if(result){
+        //call to remove member
+        this.teamService.removeMember(this.team.id,this.members[index].email)
+        .subscribe(res => {
+          dialogs.alert({
+            title: "They were removed from the team",
+            okButtonText: "Ok",
+          }).then(res=>{});
+            this.teamTapped();
+        },
+        err => {
+          if(this.members.length === 1){          
+            console.log('Successfully Left', err);
+            dialogs.alert({
+              title: "You have left and deleted " + this.team.teamName,
+              okButtonText: "Ok",
+            }).then(res=>{
+              
+            }); 
+            this.routerE.navigate(['/teams'], {
+              transition: {
+                name: 'slideRight'
+              },
+              clearHistory: true
+            });
+          }else{
+            console.log('could not leave team')
+          
+            dialogs.alert({
+              title: "Could not remove team member",
+              okButtonText: "Ok",
+            }).then(res=>{
+              
+            });
+          }
+        }
+        );
+      }
     });
-    console.log(callerId + targetId);
   }
 
   //edit team name called
-  editTeamName(name:string){
+  editTeamName(name: string) {
     //if edit team name hit is already true save new data
     //then flip the textfield back to label
-    if(this.editTeamNameHit === true){
-      this.editTeamNameHit =false;
+    if (this.editTeamNameHit === true) {
+      this.editTeamNameHit = false;
       this.teamName = name;
       this.team.teamName = name;
       //call to edit team
-      this.serverService.editTeam(this.team).subscribe(res=>{
+      this.teamService.editTeam(this.team).subscribe(
+        res => {
           console.log(res);
-      },err=>{
-          console.error('Error updating the team in the server', err)
-      });
+        },
+        err => {
+          console.error('Error updating the team in the server', err);
+        }
+      );
       return;
     }
     this.editTeamNameHit = true;
   }
 
-  editTeamDesc(desc:string){
+  editTeamDesc(desc: string) {
     //if edit team description hit is already true save new data
     //then flip the textfield back to label
-    if(this.editTeamDescHit === true){
-      this.editTeamDescHit =false;
+    if (this.editTeamDescHit === true) {
+      this.editTeamDescHit = false;
       this.teamDesc = desc;
       this.team.teamDescription = desc;
       //call to edit team
-      this.serverService.editTeam(this.team).subscribe(res=>{
+      this.teamService.editTeam(this.team).subscribe(
+        res => {
           console.log(res);
-      },err=>{
-          console.error('Error updating the team in the server', err)
-      });
+        },
+        err => {
+          console.error('Error updating the team in the server', err);
+        }
+      );
       return;
     }
     this.editTeamDescHit = true;
   }
 
-  inviteeTapped(index:number){
-      
+  inviteeTapped(index :number) {
+    dialogs.confirm({
+      title: "Are you sure?",
+      message: "Are you sure you weant to recind the invite to " + this.invitees[index].firstName +' ' + this.invitees[index].lastName,
+      okButtonText: "Yes",
+      cancelButtonText: "No",
+      cancelable: true
+    }).then(result=>{
+      if(result){
+       this.teamService.recindInvite(this.team.id, this.invitees[index].email)
+       .subscribe(res=>{
+        dialogs.alert({
+          title: "The invite was rescind",
+          okButtonText: "Ok",
+        }).then(res=>{
+          this.inviteVisible = false;
+          this.invitesTapped();
+        });
+       },err=>{
+        dialogs.alert({
+          title: "Could not rescind invite",
+          okButtonText: "Ok",
+        }).then();
+       })
+      }
+    })
   }
 
-  teamPermissionTapped(){
-
+  authTapped(index :number) {
+    dialogs.confirm({
+      title: "Are you sure?",
+      message: "What would you like to do with invite?",
+      okButtonText: "Authorize",
+      cancelButtonText: "Veto",
+      neutralButtonText:"Cancel",
+      cancelable: true
+    }).then(result=>{
+      if(result === undefined){
+        return;
+      }
+      if(result === true){
+       this.teamService.authorizeInvite(this.team.id, this.authInvites[index].email)
+       .subscribe(res=>{
+        dialogs.alert({
+          title: "Invite authorized",
+          okButtonText: "Ok",
+        }).then(res=>{
+          this.inviteVisible = false;
+          this.invitesTapped();
+        });
+       },err=>{
+        dialogs.alert({
+          title: "Could not authorize invite",
+          okButtonText: "Ok",
+        }).then();
+       });
+      }
+      if(result === false){
+        this.teamService.vetoInvite(this.team.id, this.authInvites[index].email)
+        .subscribe(res=>{
+          dialogs.alert({
+            title: "Invite vetoed",
+            okButtonText: "Ok",
+          }).then(res=>{
+            this.inviteVisible = false;
+            this.invitesTapped();
+          });
+        },err=>{
+          dialogs.alert({
+            title: "Could not veto invite",
+            okButtonText: "Ok",
+          }).then();
+        });
+      }
+ 
+    });
   }
 
-  deleteTeam(){
-    
+  teamPermissionTapped(teamToTarget:Team) {
+    let num = this.permittedTeams.findIndex((value)=>{
+      return teamToTarget.id === value.id;
+    });
+
+    if(num > -1){
+      dialogs
+      .confirm({
+        title: "Permissions",
+        message:"Would you like to REJECT permission to view you team from this team?",
+        okButtonText:'Yes',
+        cancelButtonText:'No'
+      }).then(r=>{
+          if(r){
+            this.teamService.forbidTeam(this.team.id, teamToTarget.id)
+            .subscribe(res=>{
+              dialogs.alert({
+                title: "Team Permissions",
+                message: "Team"+ teamToTarget.teamName +" DENIED permission to view " + this.team.teamName,
+                okButtonText:'ok',
+              }).then();
+            },err=>{
+              dialogs.alert({
+                title: "Team Permissions",
+                message: "Could not DENY viewing rights to " + teamToTarget.teamName,
+                okButtonText:'ok',
+              }).then();
+            });
+          }
+      });
+    }else{
+      dialogs
+      .confirm({
+        title: "Permissions",
+        message:"Would you like to GRANT permission to view you team from this team?",
+        okButtonText:'Yes',
+        cancelButtonText:'No'
+      }).then(r=>{
+          if(r){
+            this.teamService.permitTeam(this.team.id, teamToTarget.id)
+            .subscribe(res=>{
+              dialogs.alert({
+                title: "Team Permissions",
+                message: "Team"+ teamToTarget.teamName +" GRANTED permission to view " + this.team.teamName,
+                okButtonText:'ok',
+              }).then();
+            },err=>{
+              console.log(err);
+              dialogs.alert({
+                title: "Team Permissions",
+                message: "Could not GRANT viewing rights to " + teamToTarget.teamName,
+                okButtonText:'ok',
+              }).then();
+            });
+          }
+      });
+    }
+  }
+
+  deleteTeam() {
+    dialogs.confirm({
+      title: "Deleting Team",
+      message: "Are you sure you want to delete this team?",
+      okButtonText: "Yes",
+      cancelButtonText: "No",
+    }).then(res=>{
+      if(res){
+        this.teamService.deleteTeam(this.team.id)
+        .subscribe(res=>{
+            dialogs
+            .alert( {         
+              title: 'Team deleted',
+              message: this.team.teamName+' has been deleted',
+              okButtonText: 'Ok'})
+            .then(function(){
+
+            });
+            
+            this.routerE.navigate(['/teams'], {
+              transition: {
+                name: 'slideLeft'
+              },
+              clearHistory: true
+            });
+            
+        },err=>{
+          console.log(err);
+          dialogs
+          .alert( {         
+            title: 'Could not deleted team',
+            message: 'The team could not be deleted',
+            okButtonText: 'Ok'})
+          .then(function(){
+            
+          });  
+      });
+      }
+    },err=>{
+
+    });
   }
 }

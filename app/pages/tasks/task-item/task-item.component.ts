@@ -31,8 +31,8 @@ export class TaskItemComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     this.task = changes['task'].currentValue;
-    this.checkBox.nativeElement.checked = this.task.complete;
-    if (this.task.complete) {
+    this.checkBox.nativeElement.checked = this.task.isCompleted;
+    if (this.task.isCompleted) {
       this.backgroundColor = new Color('lightGreen');
     } else {
       this.backgroundColor = new Color('white');
@@ -42,8 +42,8 @@ export class TaskItemComponent implements OnChanges {
 
   onChecked() {
     if (this.initialized) {
-      this.task.complete = this.checkBox.nativeElement.checked;
-      if (this.task.complete) {
+      this.task.isCompleted = this.checkBox.nativeElement.checked;
+      if (this.task.isCompleted) {
         this.backgroundColor = new Color('lightGreen');
       } else {
         this.backgroundColor = new Color('white');

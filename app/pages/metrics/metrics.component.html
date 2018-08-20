@@ -4,9 +4,11 @@
 
 <GridLayout rows="*, 62.5" class="page">
     <StackLayout>
-        <Label text="Coming Soon"></Label>
+        <metrics-item [userId]="userEmail" frequency="1"></metrics-item>
+        <Label [text]="MemberCompletionRate$"></Label>
     </StackLayout>
 
+<!-- End Graphs-->
     <!-- Begin Bottom Bar -->
     <StackLayout row="1" orientation="horizontal">
         <Button textWrap="true" width="33%" textAlignment="center" (onTap)="tasksTapped()">

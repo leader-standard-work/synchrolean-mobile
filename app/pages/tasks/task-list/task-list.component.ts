@@ -5,6 +5,7 @@ import { RouterExtensions } from 'nativescript-angular/router';
 import { Task } from '~/shared/models/task';
 import { TaskService } from '~/shared/services/tasks.service';
 import { ServerService } from '~/shared/services/server.service';
+import { AuthenticationService } from '~/shared/services/auth.service';
 
 @Component({
   selector: 'tasks-list',
@@ -18,7 +19,7 @@ export class TaskListComponent implements OnInit {
   private midnight: Date;
 
   constructor(
-    private serverService: ServerService,
+    private authService: AuthenticationService,
     private tasksService: TaskService,
     private routerExtensions: RouterExtensions
   ) {}
@@ -39,7 +40,7 @@ export class TaskListComponent implements OnInit {
   }
 
   teamTapped() {
-    if (this.serverService.isLoggedIn()) {
+    if (this.authService.isLoggedIn()) {
       this.routerExtensions.navigate(['/teams'], {
         clearHistory: true,
         animated: false

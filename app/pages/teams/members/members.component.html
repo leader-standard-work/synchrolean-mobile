@@ -2,11 +2,12 @@
 <ActionBar class="action-bar">
     <Label class="action-bar-title" fontSize="32" text=""></Label>
     <ActionItem *ngIf="isOwner" visibility="{{ teamVisible ?  'visible':'collapse' }}" ios.position="right" text="Edit" android.position="actionBar" (tap)="editTapped()"></ActionItem>
-    <ActionItem *ngIf="isMember" visibility="{{ teamVisible ?  'visible':'collapse' }}" ios.position="right" text="Leave" android.position="actionBar" (tap)="leaveTapped(accountService.account.ownerId)"></ActionItem>
+    <ActionItem *ngIf="isMember" visibility="{{ teamVisible ?  'visible':'collapse' }}" ios.position="right" text="Leave" android.position="actionBar" (tap)="leaveTapped()"></ActionItem>
     <!-- <ActionItem visibility="{{ isOwner ?  'visible':'collapse' }}" (tap)="addTapped()" ios.position="left" text="Add" android.position="actionBar"></ActionItem> -->
+    <SearchBar hint="Member search by last name" [text]="searchPhrase" (submit)="onSubmit($event)" (clear)="onClear($event)" textFieldHintColor="#e39e2c" ></SearchBar>
 </ActionBar>
 <!-- Make grid layout for the page naming row sizes-->
-<Gridlayout class='page' rows="auto, auto, auto, auto, *">
+<Gridlayout class='page' rows="auto, auto, auto, auto, auto, *">
     <!-- Make labels to display name and description of team-->
     <FlexboxLayout class="m-t-4" width="100%" justifyContent ='center' row='0'>
         <Label width="100%" class="t-30 text-center" [text]="teamName" textWrap="true" visibility="{{ editTeamNameHit ? 'collapse': 'visible' }}"></Label>
@@ -29,7 +30,7 @@
     </FlexboxLayout>
 
     <!-- button to add team member by email only visible if team owner and edit hasn't been hit-->
-    <Button class="btn btn-primary w-full" *ngIf="!editHit" row="2" visibility="{{ isOwner ?  'visible':'collapse' }}" (tap)="addTapped()">
+    <Button class="btn btn-primary w-full" *ngIf="!editHit" row="2" visibility="{{ addMember ?  'visible':'collapse' }}" (tap)="addTapped()">
         <FormattedString>
             <Span text="&#xf067; " fontFamily="FontAwesome" fontSize="12"></Span>
             <Span text="Add Members" textWrap="true"></Span>
@@ -45,7 +46,7 @@
     </Button>
 
     <!-- flexbox to contain buttons for differnt lists in page two visible to team members and 4 to team owner -->
-    <FlexboxLayout class="m-t-4 m-l-2" justifyContent="space-around" visibility="{{ isMember ?  'visible':'collapse' }}" width="100%" row='3' orientation="horizontal">
+    <FlexboxLayout class="m-t-4 m-l-2" justifyContent="space-around" width="100%" row='3' orientation="horizontal">
         <!--this button shows up to center the two button config-->
         <Button width="10%" height="1%" visibility="{{ isOwner ? 'collapse' : 'visible' }}"></Button>
         
@@ -69,22 +70,32 @@
         </Button>
     </FlexboxLayout>
 
-    <!-- Print members in list form visible to members-->
     <FlexboxLayout row='4'>
-        <ListView  *ngIf="isMember" visibility="{{ teamVisible ?  'visible':'collapse' }}" [items]="members">
+            <ListView  [items]="searchMembers">
+                <ng-template let-member="item">
+                     <label [text]="member.firstName + ' ' + member.lastName" class="search-item"></label>
+                </ng-template>
+            </ListView>
+    </FlexboxLayout>
+
+    <!-- Print members in list form visible to members-->
+    <FlexboxLayout row='5'>
+        <ListView visibility="{{ teamVisible ?  'visible':'collapse' }}" [items]="members">
             <ng-template let-member="item" let-i="index">
                     <FlexboxLayout flexWrap='wrap' orientation="horizontal">
                         <!-- Make individual label for members send the id of the tapped item to onTap-->                       
-                        <label width="100%" class="t-30 m-b-2 m-t-8 m-l-10" (tap)="onTap(i)" [text]="member.firstname + ' ' + member.lastname"></label>
-                        <Button style="background-color: gray;" width="50%" height="auto" visibility="{{ editHit ?  'visible':'collapse' }}" col="1" class="btn-rounded-sm"  (tap)="passOwner(member.ownerId)"> 
+                        <label width="100%" class="t-30 m-b-2 m-t-8 m-l-10" (tap)="onTap(i)" [text]="member.firstName + ' ' + member.lastName"></label>
+                        <Button style="background-color: gray;" width="50%" height="auto" visibility="{{ editHit ?  'visible':'collapse' }}" col="1" class="btn-rounded-sm"  (tap)="passOwner(i)"> 
                             <Span style="color: whitesmoke;" textAlignment="center" textWrap="true" class='t-16' text="Pass Ownership"></Span>        
                         </Button>
-                        <Button style="background-color: tomato;" width="50%" height="auto" visibility="{{ editHit ?  'visible':'collapse' }}" col="1" class="btn-rounded-sm"  (tap)="deleteMember(team.ownerId, member.ownerId)"> 
+                        <Button style="background-color: tomato;" width="50%" height="auto" visibility="{{ editHit ?  'visible':'collapse' }}" col="1" class="btn-rounded-sm"  (tap)="deleteMember(i)"> 
                             <Span style="color: whitesmoke;" textAlignment="center" textWrap="true" class='t-16' text="Delete"></Span>        
                         </Button>
 
+                        <!-- Personal metrics label -->
+
                         <!-- make list of tasks to display underteam member name -->
-                        <ListView *ngIf="taskVisible[i]" width="100%" class="list" [height]="22.70 *getTaskListLength(tasks$[i])" AlignSelf="stretch" [items]="tasks$[i]"> 
+                        <ListView *ngIf="taskVisible[i]" visibility="{{ isMember ?  'visible':'collapse' }}" width="100%" class="list" [height]="22.70 *getTaskListLength(tasks$[i])" AlignSelf="stretch" [items]="tasks$[i]"> 
                             <ng-template tkListItemTemplate let-task="item" let-i="index">
                                 <label class="m-l-15 t-16" [text]="task.name"></label>
                             </ng-template>   
@@ -97,17 +108,26 @@
     <ListView *ngIf="isOwner"  visibility="{{ permissionVisible ?  'visible':'collapse' }}" [items]="teams$" row='4' class="list-group">
         <ng-template let-team="item">
           <StackLayout>
-            <Label class="t-30 m-b-2 m-l-15" [text]="team.teamName"></Label>    
+            <Label class="t-30 m-b-2 m-l-15" [text]="team.teamName" (tap)="teamPermissionTapped(team)"></Label>    
           </StackLayout>
         </ng-template>
     </ListView>
 
     <!-- print open invites for owner -->
-    <ListView *ngIf="isOwner"  visibility="{{ inviteVisible ?  'visible':'collapse' }}" [items]="invitees" row='4' class="list-group">
-        <ng-template let-invitee="item" let-i="index">
-          <StackLayout>
-            <Label class="t-30 m-b-2 m-l-15" [text]="invitee.firstName +' '+ invitee.lastName " (tap)="inviteeTapped(index)"></Label>    
-          </StackLayout>
-        </ng-template>
-    </ListView>
+        <GridLayout *ngIf="isOwner" visibility="{{ inviteVisible ?  'visible':'collapse' }}"  rows="auto,*,auto, *" row='4'>
+            <Label class="t-30 m-b-2 m-l-15" style="color:black" row="0" text="Your Invites" textWrap="true"></Label>
+            <ListView [items]="invitees" row='1'>
+                <ng-template let-invitee="item" let-i="index">
+                    <Label class="t-30 m-b-2 m-l-15" [text]="invitee.firstName +' '+ invitee.lastName " (tap)="inviteeTapped(i)"></Label>  
+                </ng-template>
+            </ListView>
+            <Label class="t-30 m-b-2 m-l-15" style="color:black" text="Other Invites" textWrap="true" row="2"></Label>
+            <ListView [items]="authInvites" row='3'>
+                <ng-template let-auth="item" let-j="index">
+                    <Label class="t-30 m-b-2 m-l-15" [text]="auth.firstName +' '+ auth.lastName +j" (tap)="authTapped(j)"></Label>    
+                </ng-template>
+            </ListView>
+        </GridLayout>
+    <!--team Mertics -->
+
 </Gridlayout>
