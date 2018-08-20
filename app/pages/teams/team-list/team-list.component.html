@@ -2,7 +2,7 @@
     <Label class="action-bar-title" fontSize="32" text="Teams"></Label>
     <ActionItem nsRouterLink="/team-form" text="Create Team" android.position="actionBar" ios.position="right"></ActionItem>
     <ActionItem text="Logout" (tap)="logoutTapped()" android.position="actionBar"></ActionItem>
-    <SearchBar hint="Team search" [text]="searchPhrase" (submit)="onSubmit($event)" textFieldHintColor="#e39e2c"></SearchBar>
+    <SearchBar hint="Team search" [text]="searchPhrase" (submit)="onSubmit($event)" (clear)="onClear($event)" textFieldHintColor="#e39e2c"></SearchBar>
 </ActionBar>
 
 <GridLayout rows="auto,*,62.5" class="page"> 

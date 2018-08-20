@@ -39,6 +39,13 @@ export class TeamListComponent implements OnInit {
     }
   }
 
+  onClear(args) {
+    let searchBar = <SearchBar>args.object;
+    searchBar.text = "";
+    searchBar.hint = "Team search";
+    this.searchTeams = new ObservableArray<Team>();
+  }
+
   ngOnInit() {
     this.teams$ = new ObservableArray<Team>();
 

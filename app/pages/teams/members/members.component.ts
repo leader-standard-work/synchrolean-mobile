@@ -83,6 +83,13 @@ export class MembersComponent implements OnInit {
     }
   }
 
+  onClear(args) {
+    let searchBar = <SearchBar>args.object;
+    searchBar.text = "";
+    searchBar.hint = "Member search by last name";
+    this.searchMembers = new Array<Account>();
+  }
+
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class
