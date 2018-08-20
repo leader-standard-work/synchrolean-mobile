@@ -174,7 +174,13 @@ export class TaskFormComponent implements OnInit {
     };
 
     if (name !== '') {
-      let task: Task = new Task();
+      let task: Task;
+
+      if (this.mode === Mode.Edit) {
+        task = new Task(this.task);
+      } else {
+        task = new Task();
+      }
       task.name = name;
       task.description = description;
       task.frequency = this.frequency;
@@ -195,7 +201,6 @@ export class TaskFormComponent implements OnInit {
           break;
         }
         case Mode.Edit: {
-          task.databaseId = this.task.databaseId;
           this.tasksService.updateTask(task);
           this.routerExtensions.backToPreviousPage();
           break;
