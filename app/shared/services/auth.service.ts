@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
-import * as AppSettings from 'application-settings';
+import * as AppSettings from 'tns-core-modules/application-settings/application-settings';
 import * as JWT from 'jwt-decode';
 
 @Injectable()

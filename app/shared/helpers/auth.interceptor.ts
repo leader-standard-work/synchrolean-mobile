@@ -7,7 +7,7 @@ import {
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import * as AppSettings from 'application-settings';
+import * as AppSettings from 'tns-core-modules/application-settings/application-settings';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {

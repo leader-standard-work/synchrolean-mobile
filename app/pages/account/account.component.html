@@ -1,12 +1,11 @@
 <ActionBar title="Account" icon="" class="action-bar">
 </ActionBar>
 
-<GridLayout rows="*, *, *, 62.5" class="page">
-    <Label text="0, 0" row="0" ></Label>
-    <Label text="0, 1" row="1" ></Label>
-    <Label text="1, 0" row="2" ></Label>
+<GridLayout rows="*, 62.5" class="page">
+        <Button row= '0' text="Edit Account" (tap)="editTapped()"></Button>
+    
         <!-- Begin Bottom Bar -->
-        <StackLayout row="3" orientation="horizontal">
+        <StackLayout row="1" orientation="horizontal">
             <Button textWrap="true" width="33%" textAlignment="center" (onTap)="tasksTapped()">
                 <FormattedString>
                     <Span text="&#xf03a;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>

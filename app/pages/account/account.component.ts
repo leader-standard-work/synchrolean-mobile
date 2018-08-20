@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterExtensions } from 'nativescript-angular/router';
+import { AuthenticationService } from '~/shared/services/auth.service';
 
 @Component({
     selector: 'account',
@@ -8,11 +9,31 @@ import { RouterExtensions } from 'nativescript-angular/router';
     styleUrls: ['./account.component.css']
   })
   export class AccountComponent implements OnInit {
-    constructor(private routerExtensions: RouterExtensions,){}
+    constructor(
+      private routerExtensions: RouterExtensions,
+      private authService: AuthenticationService,
+    ){}
 
     ngOnInit(): void {
+      if (!this.authService.isLoggedIn()){
+        this.routerExtensions.navigate(['/login'], {
+          transition: {
+            name: 'slideTop'
+          },
+          clearHistory: true
+        });
+      }
+    }
 
+    isLoggedIn(): boolean {
+      return this.authService.isLoggedIn();
+    }
 
+    editTapped() {
+      this.routerExtensions.navigate(['/edit-account'], {
+        clearHistory: true,
+        animated: false
+      });
     }
 
     teamTapped() {

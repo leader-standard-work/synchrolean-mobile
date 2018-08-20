@@ -13,6 +13,7 @@ import { MetricsComponent } from '~/pages/metrics/metrics.component';
 import { RegisterComponent } from '~/pages/account/register/register.component';
 import { MembersTasksComponent } from '~/pages/teams/members-tasks-list/members-tasks.component';
 import { AccountComponent } from '~/pages/account/account.component';
+import { EditAccountComponent } from '~/pages/account/edit-account/edit-account.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/task-list', pathMatch: 'full' },
@@ -29,7 +30,8 @@ const routes: Routes = [
   { path: 'metrics', component: MetricsComponent },
   { path: 'members-tasks', component: MembersTasksComponent },
   { path: 'members-tasks/:id', component: MembersTasksComponent },
-  { path: 'account', component: AccountComponent}
+  { path: 'account', component: AccountComponent},
+  { path: 'edit-account', component: EditAccountComponent}
 ];
 
 @NgModule({
