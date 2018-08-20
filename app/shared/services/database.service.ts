@@ -92,46 +92,50 @@ export class DatabaseService {
 
   /****************** Begin Tasks Methods ********************/
 
-  getTasks(): Array<Task> {
-    let tasks = new Array<Task>();
+  getTasks(): Promise<Task[]> {
+    return new Promise((resolve, reject) => {
+      this.database.all(QueryUndeletedTasks).then(
+        results => {
+          let tasks = new Array<Task>();
+          for (var result of results) {
+            let task: Task = new Task();
+            task.databaseId = result.databaseId;
+            task.id = result.serverId;
+            task.name = result.name;
+            task.description = result.description;
+            task.isRecurring = result.isRecurring === 1 ? true : false;
+            task.weekdays = result.weekdays;
+            task.creationDate =
+              result.creationDate === 'null'
+                ? null
+                : new Date(result.creationDate);
+            task.isCompleted = result.isCompleted === 1 ? true : false;
+            task.completionDate =
+              result.completionDate === 'null'
+                ? null
+                : new Date(result.completionDate);
+            task.isDeleted = result.isDeleted === 1 ? true : false;
+            task.ownerEmail = result.ownerEmail;
+            task.frequency = result.frequency;
+            task.teamId = result.teamId;
+            task.dirty = result.dirty === 1 ? true : false;
+            task.expires =
+              result.expires === 'null' ? null : new Date(result.expires);
+            task.setResetDate();
+            tasks.push(task);
+          }
+          tasks.sort(compareTask);
 
-    this.database.all(QueryUndeletedTasks).then(
-      results => {
-        for (var result of results) {
-          let task: Task = new Task();
-          task.databaseId = result.databaseId;
-          task.id = result.serverId;
-          task.name = result.name;
-          task.description = result.description;
-          task.isRecurring = result.isRecurring === 1 ? true : false;
-          task.weekdays = result.weekdays;
-          task.creationDate =
-            result.creationDate === 'null'
-              ? null
-              : new Date(result.creationDate);
-          task.isCompleted = result.isCompleted === 1 ? true : false;
-          task.completionDate =
-            result.completionDate === 'null'
-              ? null
-              : new Date(result.completionDate);
-          task.isDeleted = result.isDeleted === 1 ? true : false;
-          task.ownerEmail = result.ownerEmail;
-          task.frequency = result.frequency;
-          task.teamId = result.teamId;
-          task.dirty = result.dirty === 1 ? true : false;
-          task.expires =
-            result.expires === 'null' ? null : new Date(result.expires);
-          task.setResetDate();
-          tasks.push(task);
+          resolve(tasks);
+        },
+        error => {
+          console.error('database getTasks failed', error);
+          // return null;
+          reject(error);
         }
-        tasks.sort(compareTask);
-      },
-      error => {
-        console.error('database getTasks failed', error);
-        return null;
-      }
-    );
-    return tasks;
+      );
+      // return tasks;
+    });
   }
 
   insertTask(task: Task): Promise<number> {
@@ -143,11 +147,11 @@ export class DatabaseService {
           task.description,
           task.isRecurring === true ? 1 : 0,
           task.weekdays,
-          task.creationDate === null ? 'null' : task.creationDate.toISOString(),
+          task.creationDate === null ? 'null' : task.creationDate.toString(),
           task.isCompleted === true ? 1 : 0,
           task.completionDate === null
             ? 'null'
-            : task.completionDate.toISOString(),
+            : task.completionDate.toString(),
           task.isDeleted === true ? 1 : 0,
           task.ownerEmail,
           task.frequency,
@@ -176,11 +180,11 @@ export class DatabaseService {
           task.description,
           task.isRecurring === true ? 1 : 0,
           task.weekdays,
-          task.creationDate === null ? 'null' : task.creationDate.toISOString(),
+          task.creationDate === null ? 'null' : task.creationDate.toString(),
           task.isCompleted === true ? 1 : 0,
           task.completionDate === null
             ? 'null'
-            : task.completionDate.toISOString(),
+            : task.completionDate.toString(),
           task.isDeleted === true ? 1 : 0,
           task.ownerEmail,
           task.frequency,

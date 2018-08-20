@@ -6,6 +6,7 @@ import { ObservableArray } from 'data/observable-array';
 import { AccountService } from '~/shared/services/account.service';
 import { AuthenticationService } from '~/shared/services/auth.service';
 import { TeamService } from '~/shared/services/teams.service';
+import { SearchBar } from "ui/search-bar";
 
 @Component({
   selector: 'team-list',
@@ -15,12 +16,35 @@ import { TeamService } from '~/shared/services/teams.service';
 })
 export class TeamListComponent implements OnInit {
   public teams$: ObservableArray<Team>;
+  public searchPhrase: string;
+  public searchTeams: ObservableArray<Team>;
 
   constructor(
     private teamService: TeamService,
     private authService: AuthenticationService,
     private routerExtensions: RouterExtensions,
   ) {}
+
+  onSubmit(args) {
+    let searchBar = <SearchBar>args.object;
+    let searchValue = searchBar.text.toLowerCase();
+
+    this.searchTeams = new ObservableArray<Team>();
+    if(searchValue !== ""){
+      for(let i = 0; i < this.teams$.length; ++i){
+        if(this.teams$.getItem(i).teamName.toLowerCase().indexOf(searchValue) !== -1){
+          this.searchTeams.push(this.teams$.getItem(i))
+        }
+      }
+    }
+  }
+
+  onClear(args) {
+    let searchBar = <SearchBar>args.object;
+    searchBar.text = "";
+    searchBar.hint = "Team search";
+    this.searchTeams = new ObservableArray<Team>();
+  }
 
   ngOnInit() {
     this.teams$ = new ObservableArray<Team>();

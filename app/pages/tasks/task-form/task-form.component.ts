@@ -179,7 +179,7 @@ export class TaskFormComponent implements OnInit {
       task.description = description;
       task.frequency = this.frequency;
       task.weekdays = this.weekdays;
-      task.teamId = this.teamId;
+      task.teamId = this.teamId === 0 ? -1 : this.teamId;
       if (this.frequency === Frequency.Once) {
         task.isRecurring = false;
       } else {
