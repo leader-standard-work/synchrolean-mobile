@@ -147,11 +147,11 @@ export class DatabaseService {
           task.description,
           task.isRecurring === true ? 1 : 0,
           task.weekdays,
-          task.creationDate === null ? 'null' : task.creationDate.toISOString(),
+          task.creationDate === null ? 'null' : task.creationDate.toString(),
           task.isCompleted === true ? 1 : 0,
           task.completionDate === null
             ? 'null'
-            : task.completionDate.toISOString(),
+            : task.completionDate.toString(),
           task.isDeleted === true ? 1 : 0,
           task.ownerEmail,
           task.frequency,
@@ -180,11 +180,11 @@ export class DatabaseService {
           task.description,
           task.isRecurring === true ? 1 : 0,
           task.weekdays,
-          task.creationDate === null ? 'null' : task.creationDate.toISOString(),
+          task.creationDate === null ? 'null' : task.creationDate.toString(),
           task.isCompleted === true ? 1 : 0,
           task.completionDate === null
             ? 'null'
-            : task.completionDate.toISOString(),
+            : task.completionDate.toString(),
           task.isDeleted === true ? 1 : 0,
           task.ownerEmail,
           task.frequency,
