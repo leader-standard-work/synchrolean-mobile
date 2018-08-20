@@ -1,0 +1,29 @@
+<ActionBar title="Account" icon="" class="action-bar">
+</ActionBar>
+
+<GridLayout rows="*, *, *, 62.5" class="page">
+    <Label text="0, 0" row="0" ></Label>
+    <Label text="0, 1" row="1" ></Label>
+    <Label text="1, 0" row="2" ></Label>
+        <!-- Begin Bottom Bar -->
+        <StackLayout row="3" orientation="horizontal">
+            <Button textWrap="true" width="33%" textAlignment="center" (onTap)="tasksTapped()">
+                <FormattedString>
+                    <Span text="&#xf03a;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>
+                    <Span text="Tasks"></Span>
+                </FormattedString>
+            </Button>
+            <Button textWrap="true" width="33%" textAlignment="center" (onTap)="teamTapped()">
+                <FormattedString>
+                    <Span text="&#xf0c0;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>
+                    <Span text="Teams"></Span>
+                </FormattedString>
+            </Button>
+            <Button class="active-button" textWrap="true" width="33%" textAlignment="center">
+                <FormattedString>
+                    <Span text="&#xf080;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>
+                    <Span text="Account"></Span>
+                </FormattedString>
+            </Button>
+        </StackLayout>
+</GridLayout>

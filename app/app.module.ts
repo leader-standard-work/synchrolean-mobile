@@ -32,6 +32,7 @@ import { DayBoxesComponent } from '~/pages/tasks/day-boxes/day-boxes.component';
 import { MetricsItemComponent } from '~/pages/metrics/metrics-item/metrics-item.component';
 
 import { AuthInterceptor } from '~/shared/helpers/auth.interceptor';
+import { AccountComponent } from '~/pages/account/account.component';
 
 // Uncomment and add to NgModule imports  if you need to use the HTTP wrapper
 // import { NativeScriptHttpModule } from 'nativescript-angular/http';
@@ -62,7 +63,8 @@ import { AuthInterceptor } from '~/shared/helpers/auth.interceptor';
     MetricsComponent,
     MembersTasksComponent,
     DayBoxesComponent,
-    MetricsItemComponent
+    MetricsItemComponent,
+    AccountComponent
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [

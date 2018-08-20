@@ -14,7 +14,7 @@ import { AccountService } from '~/shared/services/account.service';
 })
 export class LoginComponent implements OnInit {
   public accountFormGroup: FormGroup;
-  public tempUrl: string = 'http://localhost:55542';
+  public tempUrl: string = 'https://synchrolean-server.appspot.com';
 
   constructor(
     private authService: AuthenticationService,
