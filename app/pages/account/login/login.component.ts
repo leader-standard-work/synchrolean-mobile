@@ -14,7 +14,7 @@ import { AccountService } from '~/shared/services/account.service';
 })
 export class LoginComponent implements OnInit {
   public accountFormGroup: FormGroup;
-  public tempUrl: string = 'http://10.0.2.2:55542';
+  public tempUrl: string = 'http://localhost';
 
   constructor(
     private authService: AuthenticationService,
