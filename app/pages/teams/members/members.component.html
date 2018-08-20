@@ -70,15 +70,12 @@
         </Button>
     </FlexboxLayout>
 
-    <!--FlexboxLayout row='4'>
+    <FlexboxLayout row='4'>
             <ListView  [items]="searchMembers">
                 <ng-template let-member="item">
                      <label [text]="member.firstName + ' ' + member.lastName" class="search-item"></label>
                 </ng-template>
             </ListView>
-    </FlexboxLayout-->>
-    <FlexboxLayout row='4'>
-        <Label width="100%" class="t-30 text-center" [text]="teamName" textWrap="true" visibility="{{ editTeamNameHit ? 'collapse': 'visible' }}"></Label>
     </FlexboxLayout>
 
     <!-- Print members in list form visible to members-->

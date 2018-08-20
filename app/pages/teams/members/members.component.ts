@@ -75,7 +75,7 @@ export class MembersComponent implements OnInit {
 
     this.searchMembers = new Array<Account>();
     if(searchValue !== ""){
-      for(let i = 0; i < this.teams$.length; ++i){
+      for(let i = 0; i < this.members.length; ++i){
         if(this.members[i].lastName.toLowerCase().indexOf(searchValue) !== -1){
           this.searchMembers.push(this.members[i])
         }
