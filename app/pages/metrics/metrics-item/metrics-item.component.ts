@@ -20,19 +20,24 @@ import {
 
 export class MetricsItemComponent implements OnInit {
   public value; //either the member completion rate or the team completion rate
-  @Input() frequency: number;
+  //@Input() frequency: number;
   @Input() teamId: number;
   @Input() memberId: string;
 
   constructor(private metricsService: MetricsService){}
 
   ngOnInit(){
-    let startDate = new Date();
-    let endDate = new Date();
+  }
 
+  //refreshMetrics is used with buttons on the metrics page to update
+  //the values when a button is pressed.
+  public refreshMetrics(frequency: Number){
+        //initalize the start date and end date
+        let startDate= new Date();
+        let endDate = new Date();
     if (this.memberId != null){
         //we have a memberId, display member statistics
-        switch(this.frequency){
+        switch(frequency){
             case 0:{  //Daily metrics
                 //calculate the start date and end date
                 startDate.setHours( 0,0,0,0 );
@@ -65,7 +70,7 @@ export class MetricsItemComponent implements OnInit {
     } 
     else if(this.teamId != 0){
         //we have a teamId, display team metrics
-        switch(this.frequency){
+        switch(frequency){
             case 0:{  //Daily metrics
                 //calculate the start date and end date
                 startDate.setHours( 0,0,0,0 );
@@ -96,4 +101,23 @@ export class MetricsItemComponent implements OnInit {
             response => {this.value= response}, error => {console.error("Failed to get TeamCompletionRate in ngInit")});
     }
   }
+  
+  public metricsDailyTapped() {
+    //Call the refreshMetrics function passing it 0, which represents daily
+    this.refreshMetrics(0);
+    //end
+  }
+
+  public metricsWeeklyTapped() {
+    //Call the refreshMetrics function passing it 1, which represents weekly
+    this.refreshMetrics(1);
+    //end
+  }
+
+  public metricsMonthyTapped() {
+    //Call the refreshMetrics function passing it 2, which represents monthy
+    this.refreshMetrics(2);
+    //end
+  }
+
 }

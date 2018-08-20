@@ -1,3 +1,25 @@
 <StackLayout>
-    <Label [text]="value"></Label>
+    <!--Start buttons-->
+    <StackLayout row="1" orientation="horizontal">
+            <Button textWrap="true" width="33%" textAlignment="center" (onTap)="metricsDailyTapped()">
+                <FormattedString>
+                    <Span text="Daily"></Span>
+                </FormattedString>
+            </Button>
+            <Button textWrap="true" width="33%" textAlignment="center" (onTap)="metricsWeekyTapped()">
+                <FormattedString>
+                    <Span text="Weekly"></Span>
+                </FormattedString>
+            </Button>
+            <Button textWrap="true" width="33%" textAlignment="center" (onTap)="metricsMontyTapped()">
+                <FormattedString>
+                    <Span text="Monthly"></Span>
+                </FormattedString> 
+            </Button>
+        </StackLayout>
+    <!--End buttons-->
+
+    <!--Start Info Display-->
+
+    <!--End Info Display-->
 </StackLayout> 

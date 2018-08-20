@@ -41,28 +41,6 @@ export class MetricsComponent implements OnInit {
     console.log("Values are: ", this.TeamCompletionRate$, this.MemberCompletionRate$)
   }
 
-  metricsDailyTapped() {
-    //let start = new Date();
-    //let end = new Date();
-    //start.setDate(end.getDate() - end.getDay());
-    //Call to service with start and end values
-  }
-
-  metricsWeeklyTapped() {
-    //let start = new Date();
-    //let end = new Date();
-    //start.setDate(end.getDate() - end.getDay());
-    //Call to server with start and end values
-  }
-
-  metricsMonthyTapped() {
-    //let start = new Date();
-    //let end = new Date();
-    //start.setDate(1)
-    //Call to server with start and end values
-  }
-
-
   teamTapped() {
     this.routerExtensions.navigate(['/teams'], {
       clearHistory: true,
