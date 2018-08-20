@@ -92,52 +92,50 @@ export class DatabaseService {
 
   /****************** Begin Tasks Methods ********************/
 
-  getTasks(): Task[] {
-    let tasks = new Array<Task>();
-    // return new Promise((resolve, reject) => {
-    this.database.all(QueryUndeletedTasks).then(
-      results => {
-        console.log('THIS WAS CALLED');
-        for (var result of results) {
-          let task: Task = new Task();
-          task.databaseId = result.databaseId;
-          task.id = result.serverId;
-          task.name = result.name;
-          task.description = result.description;
-          task.isRecurring = result.isRecurring === 1 ? true : false;
-          task.weekdays = result.weekdays;
-          task.creationDate =
-            result.creationDate === 'null'
-              ? null
-              : new Date(result.creationDate);
-          task.isCompleted = result.isCompleted === 1 ? true : false;
-          task.completionDate =
-            result.completionDate === 'null'
-              ? null
-              : new Date(result.completionDate);
-          task.isDeleted = result.isDeleted === 1 ? true : false;
-          task.ownerEmail = result.ownerEmail;
-          task.frequency = result.frequency;
-          task.teamId = result.teamId;
-          task.dirty = result.dirty === 1 ? true : false;
-          task.expires =
-            result.expires === 'null' ? null : new Date(result.expires);
-          task.setResetDate();
-          tasks.push(task);
-        }
-        tasks.sort(compareTask);
-        console.log(tasks);
+  getTasks(): Promise<Task[]> {
+    return new Promise((resolve, reject) => {
+      this.database.all(QueryUndeletedTasks).then(
+        results => {
+          let tasks = new Array<Task>();
+          for (var result of results) {
+            let task: Task = new Task();
+            task.databaseId = result.databaseId;
+            task.id = result.serverId;
+            task.name = result.name;
+            task.description = result.description;
+            task.isRecurring = result.isRecurring === 1 ? true : false;
+            task.weekdays = result.weekdays;
+            task.creationDate =
+              result.creationDate === 'null'
+                ? null
+                : new Date(result.creationDate);
+            task.isCompleted = result.isCompleted === 1 ? true : false;
+            task.completionDate =
+              result.completionDate === 'null'
+                ? null
+                : new Date(result.completionDate);
+            task.isDeleted = result.isDeleted === 1 ? true : false;
+            task.ownerEmail = result.ownerEmail;
+            task.frequency = result.frequency;
+            task.teamId = result.teamId;
+            task.dirty = result.dirty === 1 ? true : false;
+            task.expires =
+              result.expires === 'null' ? null : new Date(result.expires);
+            task.setResetDate();
+            tasks.push(task);
+          }
+          tasks.sort(compareTask);
 
-        // resolve(tasks);
-      },
-      error => {
-        console.error('database getTasks failed', error);
-        return null;
-        // reject(error);
-      }
-    );
-    return tasks;
-    // });
+          resolve(tasks);
+        },
+        error => {
+          console.error('database getTasks failed', error);
+          // return null;
+          reject(error);
+        }
+      );
+      // return tasks;
+    });
   }
 
   insertTask(task: Task): Promise<number> {
