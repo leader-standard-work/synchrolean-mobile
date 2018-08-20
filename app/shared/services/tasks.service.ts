@@ -76,7 +76,6 @@ export class TaskService {
                 // TODO: This is a bug where locally deleted tasks offline will get recreated.
                 if (found === undefined) {
                   let newTask = new Task(task);
-                  this.tasks.push(newTask);
                   this.addDatabaseTask(newTask);
                 }
               }
