@@ -2,23 +2,24 @@
     <Label class="action-bar-title" fontSize="32" text="Teams"></Label>
     <ActionItem nsRouterLink="/team-form" text="Create Team" android.position="actionBar" ios.position="right"></ActionItem>
     <ActionItem text="Logout" (tap)="logoutTapped()" android.position="actionBar"></ActionItem>
-    <SearchBar hint="Team search" [text]="searchPhrase" (submit)="onSubmit($event)" (clear)="onClear($event)" textFieldHintColor="#e39e2c"></SearchBar>
 </ActionBar>
 
-<GridLayout rows="auto,*,62.5" class="page"> 
-    <FlexboxLayout row='0'>
-        <ListView  [items]="searchTeams">
-         <ng-template let-team="item">
-                 <label (tap)='onTap(team.id)' [text]="team.teamName" class="search-item"></label>
-          </ng-template>
-        </ListView>
-    </FlexboxLayout>   
-    <ListView row='1' [items]="teams$">
+<GridLayout rows="auto, auto,*,62.5" class="page">
+    <SearchBar row='0'hint="Team search" [text]="searchPhrase" (submit)="onSubmit($event)" (clear)="onClear($event)" textFieldHintColor="#e39e2c"></SearchBar>
+
+    <ListView  row='1' [items]="searchTeams">
+        <ng-template let-team="item">
+            <label (tap)='onTap(team.id)' [text]="team.teamName" class="search-item"></label>
+        </ng-template>
+    </ListView> 
+
+    <ListView row='2' [items]="teams$">
         <ng-template let-team="item" let-i="index">
             <label class="t-30 m-b-2 m-l-12 " (tap)='onTap(team.id)' [text]="team.teamName"></label>
         </ng-template>
     </ListView>
-    <StackLayout row="2" orientation="horizontal">
+
+    <StackLayout row="3" orientation="horizontal">
         <Button textWrap="true" width="33%" textAlignment="center" (onTap)="tasksTapped()">
             <FormattedString>
                 <Span text="&#xf03a;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>

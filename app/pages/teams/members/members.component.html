@@ -7,7 +7,7 @@
     <SearchBar hint="Member search by last name" [text]="searchPhrase" (submit)="onSubmit($event)" (clear)="onClear($event)" textFieldHintColor="#e39e2c" ></SearchBar>
 </ActionBar>
 <!-- Make grid layout for the page naming row sizes-->
-<Gridlayout class='page' rows="auto, auto, auto, auto, auto, *">
+<Gridlayout class='page' rows="auto, auto, auto, auto, auto, auto, *">
     <!-- Make labels to display name and description of team-->
     <FlexboxLayout class="m-t-4" width="100%" justifyContent ='center' row='0'>
         <Label width="100%" class="t-30 text-center" [text]="teamName" textWrap="true" visibility="{{ editTeamNameHit ? 'collapse': 'visible' }}"></Label>
@@ -70,7 +70,9 @@
         </Button>
     </FlexboxLayout>
 
-    <FlexboxLayout row='4'>
+    <SearchBar row='4' hint="Member search by last name" [text]="searchPhrase" (submit)="onSubmit($event)" (clear)="onClear($event)" textFieldHintColor="#e39e2c" ></SearchBar>
+
+    <FlexboxLayout row='5'>
             <ListView  [items]="searchMembers">
                 <ng-template let-member="item">
                      <label [text]="member.firstName + ' ' + member.lastName" class="search-item"></label>
@@ -79,7 +81,7 @@
     </FlexboxLayout>
 
     <!-- Print members in list form visible to members-->
-    <FlexboxLayout row='5'>
+    <FlexboxLayout row='6'>
         <ListView visibility="{{ teamVisible ?  'visible':'collapse' }}" [items]="members">
             <ng-template let-member="item" let-i="index">
                     <FlexboxLayout flexWrap='wrap' orientation="horizontal">
@@ -105,7 +107,7 @@
         </ListView>
     </FlexboxLayout>
     <!-- Print teams for permissions in list form-->
-    <ListView *ngIf="isOwner"  visibility="{{ permissionVisible ?  'visible':'collapse' }}" [items]="teams$" row='4' class="list-group">
+    <ListView *ngIf="isOwner"  visibility="{{ permissionVisible ?  'visible':'collapse' }}" [items]="teams$" row='6' class="list-group">
         <ng-template let-team="item">
           <StackLayout>
             <Label class="t-30 m-b-2 m-l-15" [text]="team.teamName" (tap)="teamPermissionTapped(team)"></Label>    
@@ -114,7 +116,7 @@
     </ListView>
 
     <!-- print open invites for owner -->
-        <GridLayout *ngIf="isOwner" visibility="{{ inviteVisible ?  'visible':'collapse' }}"  rows="auto,*,auto, *" row='4'>
+        <GridLayout *ngIf="isOwner" visibility="{{ inviteVisible ?  'visible':'collapse' }}"  rows="auto,*,auto, *" row='6'>
             <Label class="t-30 m-b-2 m-l-15" style="color:black" row="0" text="Your Invites" textWrap="true"></Label>
             <ListView [items]="invitees" row='1'>
                 <ng-template let-invitee="item" let-i="index">
