@@ -11,7 +11,7 @@ import { TeamService } from '~/shared/services/teams.service';
   selector: 'notifications',
   moduleId: module.id,
   templateUrl: './notifications.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./notifications.component.css']
 })
 
   export class NotificationsComponent implements OnInit {
