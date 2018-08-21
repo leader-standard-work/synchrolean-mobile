@@ -61,7 +61,7 @@ Setting up local building on windows
 ## Authors
 
 - **David Lively** - _Initial work_ - [iAmRobots](https://github.com/iamrobots)
-- **Jorden Garcia** -_Intial Work_ - [Jorden3](https://github.com/Jorden3)
+- **Jorden Garcia** -_Intial work_ - [Jorden3](https://github.com/Jorden3)
 
 See also the list of [contributors](https://github.com/cs-capstone-team-c/synchrolean-mobile/contributors) who participated in this project.
 
