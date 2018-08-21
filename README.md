@@ -24,10 +24,11 @@ What you need to run Synchrolean on MacOS
 
 ### Prerequisites Windows
 
-What things you need to install the software.
+What you need to run Synchrolean on Windows
 
 ```
-Give examples
+- Install Andriod studio (https://developer.android.com/studio)
+- Install Nativescript sidekick app (https://www.nativescript.org/nativescript-sidekick)
 ```
 
 ### Installing on Windows
@@ -35,7 +36,22 @@ Give examples
 What things you need to install the software.
 
 ```
-Give examples
+- Open Andriod studio and navigate to AVD manager
+- Add a new emulator with API 25 or above
+- Start emulator
+- Download the repository and Unzip it
+- Open sidekick
+- Open project in Sidekick
+- Choose cloud build or local 
+```
+Setting up local building on windows
+```
+- download nativescript cli 
+- open command line run `tns setup` follow prompt
+- WARNING: It's possible that ANDROID_HOME or ANDIOD_SDK is not defined
+  naviagte to SDK manager next to ADV manager in Andriod studio and click the tab
+  Path Varibles. Define the missing location to point to the SDK folder in Andriod
+  folder in the program folders. then reset the your system before launching the app.
 ```
 
 ## Built With
