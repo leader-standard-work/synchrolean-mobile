@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { Team } from '~/shared/models/team';
 import { Account } from '~/shared/models/account';
 import { AuthenticationService } from '~/shared/services/auth.service';
+import {AddUserRequest } from '~/shared/models/AddUserRequest';
 
 @Injectable({
   providedIn: 'root'
@@ -175,4 +176,26 @@ export class TeamService {
     let body = '';
     return this.http.put(endpoint, body);
   }
+
+  //Fetches all outstanding team invites awaiting a user's input.
+  fetchTeamInvites(): Observable<AddUserRequest[]> {
+    let endpoint =
+      this.authService.url+'/api/teams/invite/incoming/accept/';
+    return this.http.get<AddUserRequest[]>(endpoint);    
+  }
+
+  //Accepts an invite to a team, adding the invitee to the team
+  acceptTeamInvite(teamId: number): Observable<any> {
+    let endpoint =
+      this.authService.url+'/api/teams/invite/accept/' + teamId;
+    return this.http.put(endpoint, null);
+  }
+
+  //Declines an invite to a team. 
+  declineTeamInvite(teamId: number): Observable<any> {
+    let endpoint = 
+      this.authService.url+'/api/teams/invite/reject/' + teamId;
+    return this.http.put(endpoint, null);
+  }
+
 }
