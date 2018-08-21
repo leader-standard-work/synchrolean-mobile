@@ -16,7 +16,7 @@ What you need to run Synchrolean on MacOS
 
 ### Installing on MacOS
 
-- Download the repository and Unzip it if necessary.
+- Download the repository and Unzip it.
 - Open the terminal and navigate to the repository.
 - Run the command `tns update`.
 - Run the command `tns install`.
@@ -37,3 +37,24 @@ What things you need to install the software.
 ```
 Give examples
 ```
+
+## Built With
+
+- [Visual Studio Code](https://code.visualstudio.com) - Code editor
+- [NativeScript with Angular](https://www.nativescript.org) - Cross platform framework
+- [Angular](https://angular.io) - Web framework
+- [NativeScript Checkbox](https://www.npmjs.com/package/nativescript-checkbox) - Checkbox plugin
+
+## Authors
+
+- **David Lively** - _Initial work_ - [iAmRobots](https://github.com/iamrobots)
+
+See also the list of [contributors](https://github.com/cs-capstone-team-c/synchrolean-mobile/contributors) who participated in this project.
+
+## License
+
+This project is licensed under the GNU License - see the [LICENSE.md](LICENSE.md) file for details
+
+## Acknowledgments
+
+We would like to acknowledge Matthew Horvat for sponsoring this project as our senior capstone.
