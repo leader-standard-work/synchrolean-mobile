@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { AccountService } from '~/shared/services/account.service';
-var appSettings = require('application-settings');
+import { Component } from '@angular/core';
+import { AuthenticationService } from '~/shared/services/auth.service';
 
 @Component({
   selector: 'ns-app',
   templateUrl: 'app.component.html'
 })
 export class AppComponent {
-  constructor(private accountService: AccountService) {}
+  constructor() {}
 }

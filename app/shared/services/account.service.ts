@@ -1,80 +1,49 @@
 import { Injectable } from '@angular/core';
-import * as AppSettings from 'application-settings';
-
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { Account } from '~/shared/models/account';
-
-export enum State {
-  LoggedIn,
-  LoggedOut
-}
+import { AuthenticationService } from '~/shared/services/auth.service';
+import { Team } from '~/shared/models/team';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccountService {
-  private _account: Account;
-  private _state: State = State.LoggedOut;
+  account: Account;
 
-  constructor() {
-    let email = AppSettings.getString('email', '');
-    let firstname = AppSettings.getString('firstname', '');
-    let lastname = AppSettings.getString('lastname', '');
-    let ownerId = AppSettings.getNumber('ownerId', -1);
-    let serverUrl = AppSettings.getString('serverUrl', '');
+  constructor(
+    private http: HttpClient,
+    private authService: AuthenticationService
+  ) {}
 
-    if (
-      email === '' ||
-      firstname === '' ||
-      lastname === '' ||
-      ownerId === -1 ||
-      serverUrl === ''
-    ) {
-      this._account = null;
-      this._state = State.LoggedOut;
-    } else {
-      let account = new Account({
-        ownerId: ownerId,
-        firstName: firstname,
-        lastName: lastname,
-        email: email,
-        isDeleted: false
-      });
-      this._account = account;
-      this._account.serverUrl = serverUrl;
-      this._state = State.LoggedIn;
-    }
+  /**
+   * Registers a user account
+   * @param url The url of the server to send registration
+   * @param account The account to send to the server
+   * @returns Observable<Account> account verification.
+   */
+  register(url: string, account: Account): Observable<Account> {
+    const endpoint = url + '/api/accounts';
+    return this.http.post<Account>(endpoint, account);
   }
 
-  get state(): State {
-    return this._state;
+  /**
+   * Retrieves the account information for a given user email
+   * @param email the email of the user account
+   * @returns Observable<Account> account requested
+   */
+  getAccountByEmail(email: string): Observable<Account> {
+    const endpoint = this.authService.url + '/api/accounts/' + email;
+    return this.http.get<Account>(endpoint);
   }
 
-  get serverUrl(): string {
-    if (this._account === null) {
-      return '';
-    }
-    return this._account.serverUrl;
-  }
-
-  logout() {
-    this._account = null;
-    this._state = State.LoggedOut;
-    AppSettings.clear();
-  }
-
-  set account(account: Account) {
-    this._account = account;
-    this._state = State.LoggedIn;
-
-    AppSettings.setString('email', account.email);
-    AppSettings.setString('firstname', account.firstname);
-    AppSettings.setString('lastname', account.lastname);
-    AppSettings.setNumber('ownerId', account.ownerId);
-    AppSettings.setString('serverUrl', account.serverUrl);
-    //appSettings.setString("token", account.token);
-  }
-
-  get account(): Account {
-    return this._account;
+  /**
+   * Retrieves the teams that an account belongs to
+   * @param id the user id
+   * @returns Observal
+   */
+  getTeamsForAccount(email: string): Observable<Team[]> {
+    const endpoint = this.authService.url + '/api/accounts/teams/' + email;
+    return this.http.get<Team[]>(endpoint);
   }
 }

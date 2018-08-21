@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { ListPicker } from 'ui/list-picker';
+import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { PageRoute, RouterExtensions } from 'nativescript-angular/router';
 import {
@@ -9,7 +11,9 @@ import {
 import { action, alert } from 'tns-core-modules/ui/dialogs/dialogs';
 
 import { TaskService } from '~/shared/services/tasks.service';
-import { Task, Duration } from '~/shared/models/task';
+import { Task, Frequency } from '~/shared/models/task';
+import { AuthenticationService } from '~/shared/services/auth.service';
+import { AccountService } from '~/shared/services/account.service';
 
 enum Mode {
   New,
@@ -24,16 +28,27 @@ enum Mode {
 })
 export class TaskFormComponent implements OnInit {
   private mode: Mode = Mode.New;
-  private duration: Duration;
+  private frequency: Frequency;
+  private teamId: number;
 
+  public task: Task;
+  public teams: Array<{ name: string; id: number }>;
+  public teamNames: Array<string>;
+  public listPickerText: Observable<string[]>;
+  public pickerIndex: number;
   public taskFormGroup: FormGroup;
   public title: string;
-  public task: Task;
+  public weekdays: number;
+  public loggedIn: boolean;
+
+  public dayBoxesVisible = false;
   public deleteButtonVisible: string;
   public durationBarItems: Array<SegmentedBarItem>;
   public durationBarIndex: number;
 
   constructor(
+    private authService: AuthenticationService,
+    private accountService: AccountService,
     private tasksService: TaskService,
     private formBuilder: FormBuilder,
     private pageRoute: PageRoute,
@@ -48,6 +63,10 @@ export class TaskFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.title = 'New Task';
+    this.frequency = 0;
+    this.weekdays = 0;
+    this.teamId = 0;
+    this.loggedIn = false;
     this.deleteButtonVisible = 'collapse';
     let name = '';
     let description = '';
@@ -56,17 +75,57 @@ export class TaskFormComponent implements OnInit {
     let weeklyItem = new SegmentedBarItem();
     let monthlyItem = new SegmentedBarItem();
 
-    onceItem.title = Duration.Once;
-    dailyItem.title = Duration.Daily;
-    weeklyItem.title = Duration.Weekly;
-    monthlyItem.title = Duration.Monthly;
+    onceItem.title = 'Once';
+    dailyItem.title = 'Daily';
+    weeklyItem.title = 'Weekly';
+    monthlyItem.title = 'Monthly';
 
     this.durationBarItems = [onceItem, dailyItem, weeklyItem, monthlyItem];
+    this.pickerIndex = 0;
 
-    if (this.task != null) {
+    // If the user is logged in display a list of teams.
+    if (this.authService.isLoggedIn()) {
+      this.teamNames = new Array<string>();
+      this.teams = new Array<{ name: string; id: number }>();
+      this.teams.push({ name: 'No Team Selected', id: -1 });
+      this.teamNames.push('No Team Selected');
+      this.accountService.getTeamsForAccount(this.authService.email).subscribe(
+        teams => {
+          for (let team of teams) {
+            this.teams.push({ name: team.teamName, id: team.id });
+            this.teamNames.push(team.teamName);
+          }
+          this.listPickerText = of(this.teamNames);
+          if (this.task !== null && this.task.teamId !== -1) {
+            this.teams.forEach((team, index) => {
+              if (team.id === this.task.teamId) {
+                this.pickerIndex = index;
+              }
+            });
+          }
+          this.loggedIn = true;
+        },
+        error => {
+          console.log(
+            'could not get teams for account: ',
+            this.authService.email,
+            error
+          );
+        }
+      );
+    }
+
+    // Set the task variables if a task as been passed in
+    if (this.task !== null) {
       name = this.task.name;
       description = this.task.description;
-      this.duration = this.task.duration;
+      this.frequency = this.task.frequency;
+      this.weekdays = this.task.weekdays;
+      if (this.frequency === Frequency.Daily) {
+        this.dayBoxesVisible = true;
+      } else {
+        this.dayBoxesVisible = false;
+      }
       this.title = 'Edit Task';
       this.mode = Mode.Edit;
       this.deleteButtonVisible = 'visible';
@@ -75,85 +134,73 @@ export class TaskFormComponent implements OnInit {
     this.setDurationBar();
 
     this.taskFormGroup = this.formBuilder.group({
-      description: [name, Validators.required],
-      note: description
+      name: [name, Validators.required],
+      description: description
     });
   }
 
   private setDurationBar() {
-    let index: number = 0;
-    switch (this.duration) {
-      case Duration.Once: {
-        index = 0;
-        break;
-      }
-      case Duration.Daily: {
-        index = 1;
-        break;
-      }
-      case Duration.Weekly: {
-        index = 2;
-        break;
-      }
-      case Duration.Monthly: {
-        index = 3;
-        break;
-      }
-      default: {
-        index = 0;
-        break;
-      }
-    }
-    this.durationBarIndex = index;
+    this.durationBarIndex = this.frequency;
   }
 
   onDurationSelected(args) {
     let segmentedBar = <SegmentedBar>args.object;
-    switch (segmentedBar.selectedIndex) {
-      case 0: {
-        this.duration = Duration.Once;
-        break;
-      }
-      case 1: {
-        this.duration = Duration.Daily;
-        break;
-      }
-      case 2: {
-        this.duration = Duration.Weekly;
-        break;
-      }
-      case 3: {
-        this.duration = Duration.Monthly;
-        break;
-      }
-      default: {
-        this.duration = Duration.Once;
-        break;
-      }
+    this.frequency = segmentedBar.selectedIndex;
+    if (this.frequency === Frequency.Daily) {
+      this.dayBoxesVisible = true;
+    } else {
+      this.dayBoxesVisible = false;
+    }
+  }
+
+  daySelected(weekdays: number) {
+    this.weekdays = weekdays;
+  }
+
+  selectedIndexChanged(args) {
+    let picker = <ListPicker>args.object;
+    const index = picker.selectedIndex;
+    if (index > 0 || index < this.teams.length) {
+      this.teamId = this.teams[index].id;
     }
   }
 
   onSave() {
-    let name = this.taskFormGroup.value.description;
-    let description = this.taskFormGroup.value.note;
+    let name = this.taskFormGroup.value.name;
+    let description = this.taskFormGroup.value.description;
     let options = {
       title: 'Descripton Required',
       okButtonText: 'Ok'
     };
 
     if (name !== '') {
+      let task: Task;
+
+      if (this.mode === Mode.Edit) {
+        task = new Task(this.task);
+      } else {
+        task = new Task();
+      }
+      task.name = name;
+      task.description = description;
+      task.frequency = this.frequency;
+      task.weekdays = this.weekdays;
+      task.teamId = this.teamId === 0 ? -1 : this.teamId;
+      if (this.frequency === Frequency.Once) {
+        task.isRecurring = false;
+      } else {
+        task.isRecurring = true;
+      }
       switch (this.mode) {
         case Mode.New: {
           options.title = 'New task added';
-          let task: Task = new Task(name, description, this.duration);
           this.tasksService.addTask(task);
           this.taskFormGroup.reset();
+          this.weekdays = 0;
           alert(options);
           break;
         }
         case Mode.Edit: {
-          let task: Task = new Task(name, description, this.duration);
-          task.databaseId = this.task.databaseId;
           this.tasksService.updateTask(task);
           this.routerExtensions.backToPreviousPage();
           break;

@@ -41,7 +41,7 @@ export class TeamFormComponent implements OnInit {
     let teamName = this.teamFormGroup.value.teamName;
     let teamDesc = this.teamFormGroup.value.teamDesc;
     let options = {
-      title: 'Description Required',
+      title: 'Could not add team',
       okButtonText: 'Ok'
     };
 
@@ -61,7 +61,7 @@ export class TeamFormComponent implements OnInit {
           });
         },
         error => {
-          console.error('could not add team');
+          console.error('could not add team', error);
           this.teamFormGroup.reset();
           alert(options);
         }

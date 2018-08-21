@@ -1,0 +1,10 @@
+.teamName{
+    font-size : 33%;
+    margin-top : 5%;
+    text-align: center;
+    height: 50%;
+}
+
+.list-group-item{
+    height: 20%;
+}

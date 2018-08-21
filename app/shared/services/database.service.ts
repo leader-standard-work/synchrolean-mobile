@@ -7,81 +7,64 @@ var Sqlite = require('nativescript-sqlite');
 const CreateTasksTable: string = `CREATE TABLE IF NOT EXISTS tasks (
           databaseId INTEGER PRIMARY KEY AUTOINCREMENT, 
           serverId INTEGER, 
-          name TEXT NOT NULL, 
-          description TEXT, 
-          duration TEXT, 
-          complete INTEGER, 
-          completedOn TEXT, 
-          expires TEXT, 
-          created TEXT, 
-          updated TEXT, 
-          deleted TEXT
+          name TEXT NOT NULL,
+          description TEXT,
+          isRecurring INTEGER,
+          weekdays INTEGER,
+          creationDate TEXT,
+          isCompleted INTEGER,
+          completionDate TEXT,
+          isDeleted INTEGER,
+          ownerEmail TEXT,
+          frequency INTEGER,
+          teamId INTEGER,
+          dirty INTEGER,
+          expires TEXT
         )`;
 
-const CreateCompletionTable: string = `CREATE TABLE IF NOT EXISTS completion (
-          id INTEGER PRIMARY KEY AUTOINCREMENT, 
-          taskId INTEGER NOT NULL, 
-          completedOn TEXT, 
-          FOREIGN KEY(taskId) REFERENCES tasks(databaseId)
-        )`;
-
-const CreateAccountTable: string = `CREATE TABLE IF NOT EXISTS account (
-          id INTEGER PRIMARY KEY AUTOINCREMENT, 
-          serverUrl Text,
-          email TEXT, 
-          firstname TEXT,
-          lastname TEXT,
-          token TEXT 
-        )`;
 /****************** End Table Creation  **********************/
 
-/****************** Begin Task SQL  **************************/
+/****************** Begin SQL Statements **********************/
 
-const QueryUndeletedTasks: string = `SELECT * FROM tasks WHERE deleted = 'null'`;
+const QueryUndeletedTasks: string = `SELECT * FROM tasks WHERE isDeleted = 0`;
 
 const InsertTask: string = `INSERT into tasks (
           serverId, 
-          name, 
-          description, 
-          duration, 
-          complete, 
-          completedOn, 
-          expires, 
-          created, 
-          updated, 
-          deleted
-) VALUES (?,?,?,?,?,?,?,?,?,?)`;
+          name,
+          description,
+          isRecurring,
+          weekdays,
+          creationDate,
+          isCompleted,
+          completionDate,
+          isDeleted,
+          ownerEmail,
+          frequency,
+          teamId,
+          dirty,
+          expires
+) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 
 const UpdateTask: string = `UPDATE tasks SET 
           serverId = ?, 
-          name = ?, 
-          description = ?, 
-          duration = ?, 
-          complete = ?, 
-          completedOn = ?, 
-          expires = ?, 
-          created = ?, 
-          updated = ?, 
-          deleted = ?
+          name = ?,
+          description = ?,
+          isRecurring = ?,
+          weekdays = ?,
+          creationDate = ?,
+          isCompleted = ?,
+          completionDate = ?,
+          isDeleted = ?,
+          ownerEmail = ?,
+          frequency = ?,
+          teamId = ?,
+          dirty = ?,
+          expires = ?
           WHERE databaseId = ?`;
 
-/****************** End Task SQL  ****************************/
-/****************** Begin Completion SQL *********************/
-const InsertCompletionEntry: string = `INSERT INTO completion (
-  taskId,
-  completedOn
-) VALUES (?,?)`;
+/****************** End SQL Statements *************************/
 
-const DeleteLastCompletionEntry: string = `DELETE FROM completion WHERE taskId = ? ORDER BY date(completedOn) DESC LIMIT 1`;
-
-const QueryLastCompletion: string = `SELECT * FROM completion WHERE taskId = ? ORDER BY date(completedOn) DESC LIMIT 1`;
-
-const QueryAllCompletions: string = `SELECT * FROM completion`;
-/****************** End Completion SQL  **********************/
-
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class DatabaseService {
   private database: any;
 
@@ -99,78 +82,82 @@ export class DatabaseService {
             console.log('failed to create tasks table', error);
           }
         );
-
-        // Create Completion Table
-        this.database.execSQL(CreateCompletionTable).then(
-          () => {},
-          error => {
-            console.log('failed to create completion table', error);
-          }
-        );
-
-        // Create Account Table
-        this.database.execSQL(CreateAccountTable).then(
-          () => {},
-          error => {
-            console.error('failed to create account table', error);
-          }
-        );
       },
       error => {
         console.error('failed to create database', error);
       }
     );
   }
-  /****************** End Database Creation ******************/
+  /****************** End Database Construction **************/
 
   /****************** Begin Tasks Methods ********************/
 
-  getTasks(): Array<Task> {
-    let tasks = new Array<Task>();
+  getTasks(): Promise<Task[]> {
+    return new Promise((resolve, reject) => {
+      this.database.all(QueryUndeletedTasks).then(
+        results => {
+          let tasks = new Array<Task>();
+          for (var result of results) {
+            let task: Task = new Task();
+            task.databaseId = result.databaseId;
+            task.id = result.serverId;
+            task.name = result.name;
+            task.description = result.description;
+            task.isRecurring = result.isRecurring === 1 ? true : false;
+            task.weekdays = result.weekdays;
+            task.creationDate =
+              result.creationDate === 'null'
+                ? null
+                : new Date(result.creationDate);
+            task.isCompleted = result.isCompleted === 1 ? true : false;
+            task.completionDate =
+              result.completionDate === 'null'
+                ? null
+                : new Date(result.completionDate);
+            task.isDeleted = result.isDeleted === 1 ? true : false;
+            task.ownerEmail = result.ownerEmail;
+            task.frequency = result.frequency;
+            task.teamId = result.teamId;
+            task.dirty = result.dirty === 1 ? true : false;
+            task.expires =
+              result.expires === 'null' ? null : new Date(result.expires);
+            task.setResetDate();
+            tasks.push(task);
+          }
+          tasks.sort(compareTask);
 
-    this.database.all(QueryUndeletedTasks).then(
-      results => {
-        for (var result of results) {
-          let task: Task = new Task('');
-          task.populateFromDB(
-            result.databaseId,
-            result.serverId,
-            result.name,
-            result.description,
-            result.duration,
-            result.complete,
-            result.completedOn,
-            result.expires,
-            result.created,
-            result.updated,
-            result.deleted
-          );
-          tasks.push(task);
+          resolve(tasks);
+        },
+        error => {
+          console.error('database getTasks failed', error);
+          // return null;
+          reject(error);
         }
-        tasks.sort(compareTask);
-      },
-      error => {
-        console.error('database getTasks failed', error);
-        return null;
-      }
-    );
-    return tasks;
+      );
+      // return tasks;
+    });
   }
 
   insertTask(task: Task): Promise<number> {
     return new Promise((resolve, reject) => {
       this.database
         .execSQL(InsertTask, [
-          task.serverId,
+          task.id,
           task.name,
           task.description,
-          task.duration,
-          task.complete === true ? 1 : 0,
-          task.completedOn === null ? 'null' : task.completedOn.toISOString(),
-          task.expires === null ? 'null' : task.expires.toISOString(),
-          task.created === null ? 'null' : task.created.toISOString(),
-          task.updated === null ? 'null' : task.updated.toISOString(),
-          task.deleted === null ? 'null' : task.deleted.toISOString()
+          task.isRecurring === true ? 1 : 0,
+          task.weekdays,
+          task.creationDate === null ? 'null' : task.creationDate.toString(),
+          task.isCompleted === true ? 1 : 0,
+          task.completionDate === null
+            ? 'null'
+            : task.completionDate.toString(),
+          task.isDeleted === true ? 1 : 0,
+          task.ownerEmail,
+          task.frequency,
+          task.teamId,
+          task.dirty === true ? 1 : 0,
+          task.expires === null ? 'null' : task.expires.toISOString()
         ])
         .then(
           id => {
@@ -188,16 +175,22 @@ export class DatabaseService {
     return new Promise((resolve, reject) => {
       this.database
         .execSQL(UpdateTask, [
-          task.serverId,
+          task.id,
           task.name,
           task.description,
-          task.duration,
-          task.complete === true ? 1 : 0,
-          task.completedOn === null ? 'null' : task.completedOn.toISOString(),
+          task.isRecurring === true ? 1 : 0,
+          task.weekdays,
+          task.creationDate === null ? 'null' : task.creationDate.toString(),
+          task.isCompleted === true ? 1 : 0,
+          task.completionDate === null
+            ? 'null'
+            : task.completionDate.toString(),
+          task.isDeleted === true ? 1 : 0,
+          task.ownerEmail,
+          task.frequency,
+          task.teamId,
+          task.dirty === true ? 1 : 0,
           task.expires === null ? 'null' : task.expires.toISOString(),
-          task.created === null ? 'null' : task.created.toISOString(),
-          task.updated === null ? 'null' : task.updated.toISOString(),
-          task.deleted === null ? 'null' : task.deleted.toISOString(),
           task.databaseId
         ])
         .then(
@@ -211,42 +204,5 @@ export class DatabaseService {
         );
     });
   }
-  /****************** End Tasks Methods **********************/
-
-  /****************** Begin Completion Methods *****************/
-  completeTask(task: Task) {
-    this.updateTask(task);
-
-    if (task.complete) {
-      this.database.execSQL(InsertCompletionEntry, [
-        task.databaseId,
-        task.completedOn.toISOString()
-      ]);
-    } else {
-      this.database.execSQL(DeleteLastCompletionEntry, [task.databaseId]);
-    }
-  }
-
-  getCompletedTable() {
-    this.database.all(QueryAllCompletions).then(
-      results => {
-        for (let complete of results) {
-          console.log(
-            'RESULT',
-            complete.id,
-            complete.taskId,
-            complete.completedOn
-          );
-        }
-        console.log('***********************************************');
-      },
-      error => {
-        console.log('could not get all completed tasks in database', error);
-      }
-    );
-  }
-  /****************** End Completion Methods *******************/
-
-  /****************** Begin Account Methods ******************/
-  /****************** End Account Methods ********************/
 }
+/****************** End Tasks Methods **********************/
