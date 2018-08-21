@@ -26,8 +26,8 @@ What you need to run Synchrolean on MacOS
 
 What you need to run Synchrolean on Windows
 
-- Install Andriod studio (https://developer.android.com/studio)
-- Install Nativescript sidekick app (https://www.nativescript.org/nativescript-sidekick)
+- Install [Andriod studio] (https://developer.android.com/studio)
+- Install Nativescript [Sidekick App] (https://www.nativescript.org/nativescript-sidekick)
 
 
 ### Installing on Windows
