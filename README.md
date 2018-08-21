@@ -65,8 +65,8 @@ Choosing VS code over nativescript app
   naviagte to SDK manager next to AVD manager in Andriod studio and click the tab
   Path Varibles. Define the missing location to point to the SDK folder in Andriod
   folder in the program folders. Then reset the your system before launching the app.
-- Setup a launch file for the project in the VS Code debug window
-- Lanuch on andriod, then the emulator will lanuch and build the app
+- Setup a launch.json file for the project in the VS Code debug window
+- Launch on Android, then the emulator will launch and build the app
 
 ## Built With
 
