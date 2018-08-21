@@ -26,30 +26,30 @@ What you need to run Synchrolean on MacOS
 
 What you need to run Synchrolean on Windows
 
-- Install [Andriod studio] (https://developer.android.com/studio)
-- Install Nativescript [Sidekick App] (https://www.nativescript.org/nativescript-sidekick)
+- Install [Andriod studio](https://developer.android.com/studio).
+- Install Nativescript [Sidekick App](https://www.nativescript.org/nativescript-sidekick).
 
 
 ### Installing on Windows
 
 What things you need to install the software.
 
-- Open Andriod studio and navigate to AVD manager
-- Add a new emulator with API 25 or above
-- Start emulator
-- Download the repository and Unzip it
-- Open sidekick
-- Open project in Sidekick
-- Choose cloud build or local 
+- Open Andriod studio and navigate to AVD manager.
+- Add a new emulator with API 25 or above.
+- Start emulator.
+- Download the repository and Unzip it.
+- Open sidekick.
+- Open project in Sidekick.
+- Choose cloud build or local.
 
 Setting up local building on windows
 
-- Download Nativescript CLI 
-- Open command line run `tns setup` follow prompt
+- Download Nativescript CLI .
+- Open command line run `tns setup` follow prompt.
 - WARNING: It's possible that ANDROID_HOME or ANDIOD_SDK is not defined
-  naviagte to SDK manager next to ADV manager in Andriod studio and click the tab
+  naviagte to SDK manager next to AVD manager in Andriod studio and click the tab
   Path Varibles. Define the missing location to point to the SDK folder in Andriod
-  folder in the program folders. then reset the your system before launching the app.
+  folder in the program folders. Then reset the your system before launching the app.
 
 ## Built With
 
@@ -61,6 +61,7 @@ Setting up local building on windows
 ## Authors
 
 - **David Lively** - _Initial work_ - [iAmRobots](https://github.com/iamrobots)
+- **Jorden Garcia** -_Intial Work_ - [Jorden3]
 
 See also the list of [contributors](https://github.com/cs-capstone-team-c/synchrolean-mobile/contributors) who participated in this project.
 
