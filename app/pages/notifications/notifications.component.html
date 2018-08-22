@@ -1,9 +1,15 @@
 <ActionBar class="action-bar">
     <Label class="action-bar-title" fontSize="32" text="Notifications"></Label>
 </ActionBar>
-
-<div class="container">
-
-    
-</div>
-
+<ListView [items]="teamsObservable | async">
+    <ng-template let-team="item" let-i="index">
+        <StackLayout>
+            <Label [text]="team.teamName"></Label>
+            <Label [text]="team.teamDescription"></Label>
+            <FlexBoxLayout justifyContent="center">
+                <Button class="p-10 btn btn-primary w-full" text="Accept" (tap)="acceptTeamInvite(team.teamId)"></Button>
+                <Button class="p-10 btn  w-full" backgroundColor="red" color="white" text="Decline" (tap)="declineTeamInvite(team.teamId)"></Button>
+            </FlexBoxLayout>
+        </StackLayout>
+    </ng-template>
+</ListView>
