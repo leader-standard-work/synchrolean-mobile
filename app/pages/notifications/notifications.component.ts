@@ -25,11 +25,29 @@ import { TeamService } from '~/shared/services/teams.service';
       private authService: AuthenticationService,
       private accountService: AccountService,
       private teamService: TeamService,
+      private routerExtensions: RouterExtensions
     ){}
 
   ngOnInit(): void {
+    //grab the current pending invites to view
+    this.teamService.fetchTeamInvites().subscribe((invites) => {
+        this.invites = invites;
+        //this.getInviterAccounts();
+    }, err => console.log("Failed to grab pending invites"));
 
+    //get Created invites (if its even needed)?
   }
 
+  //accepts team invite and adds user to team
+  acceptTeamInvite(invite: AddUserRequest){
+    this.teamService.acceptTeamInvite(invite.teamId)
+      .subscribe(data => this.routerExtensions.navigate(['teams/' + invite.teamId]));
+  }
+
+  //declines an invite to a team 
+  declineTeamInvite(invite: AddUserRequest){
+      this.teamService.declineTeamInvite(invite.teamId)
+        .subscribe(data => this.routerExtensions.navigate(['teams/' + invite.teamId]));
+  }
 }
 
