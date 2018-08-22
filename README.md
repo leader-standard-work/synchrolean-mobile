@@ -45,11 +45,28 @@ What things you need to install the software.
 Setting up local building on windows
 
 - Download Nativescript CLI .
-- Open command line run `tns setup` follow prompt.
+- Open command line run `tns setup` in project directory and follow prompt.
 - WARNING: It's possible that ANDROID_HOME or ANDIOD_SDK is not defined
   naviagte to SDK manager next to AVD manager in Andriod studio and click the tab
   Path Varibles. Define the missing location to point to the SDK folder in Andriod
   folder in the program folders. Then reset the your system before launching the app.
+
+Choosing VS code over nativescript app
+
+- Open Andriod studio and navigate to AVD manager.
+- Add a new emulator with API 25 or above.
+- Start emulator.
+- Download the repository and Unzip it
+- Install [VS Code](https://code.visualstudio.com)
+- Download Nativescript CLI extension for VS code
+- Download Node extension for VS code
+- Run `tns setup` in integrated terminal of VS code while in project directory and folow the prompts
+- WARNING: It's possible that ANDROID_HOME or ANDIOD_SDK is not defined
+  naviagte to SDK manager next to AVD manager in Andriod studio and click the tab
+  Path Varibles. Define the missing location to point to the SDK folder in Andriod
+  folder in the program folders. Then reset the your system before launching the app.
+- Setup a launch.json file for the project in the VS Code debug window
+- Launch on Android, then the emulator will launch and build the app
 
 ## Built With
 
@@ -61,7 +78,7 @@ Setting up local building on windows
 ## Authors
 
 - **David Lively** - _Initial work_ - [iAmRobots](https://github.com/iamrobots)
-- **Jorden Garcia** -_Intial Work_ - [Jorden3]
+- **Jorden Garcia** -_Intial work_ - [Jorden3](https://github.com/Jorden3)
 
 See also the list of [contributors](https://github.com/cs-capstone-team-c/synchrolean-mobile/contributors) who participated in this project.
 
