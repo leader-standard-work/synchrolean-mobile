@@ -73,8 +73,8 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  metricsTapped() {
-    this.routerExtensions.navigate(['/metrics'], {
+  accountTapped() {
+    this.routerExtensions.navigate(['/account'], {
       clearHistory: true,
       animated: false
     });
