@@ -15,7 +15,7 @@ export class AuthenticationService {
   constructor(private http: HttpClient) {
     if (AppSettings.hasKey('token')) {
       this.token = AppSettings.getString('token', '');
-      this.email = AppSettings.getString('email', '');
+      this.email = AppSettings.getString('email', '').toLowerCase();
       this.url = AppSettings.getString('url', '');
       let jwt = JWT(this.token);
       this.userId = jwt['OwnerId'];
