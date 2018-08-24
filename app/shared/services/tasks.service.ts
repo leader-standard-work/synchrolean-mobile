@@ -40,7 +40,7 @@ export class TaskService {
                   if (dbTask.id === -1) {
                     this.addServerTask(dbTask).subscribe(
                       response => {
-                        dbTask.id = response.id;
+                        this.tasks[localIndex].id = response.id;
                         this.editDatabaseTask(dbTask);
                       },
                       error => {
@@ -48,7 +48,12 @@ export class TaskService {
                       }
                     );
                   } else {
-                    this.deleteTask(dbTask.databaseId);
+                    // Delete task
+                    this.tasks[localIndex].isDeleted = true;
+                    this.tasks[localIndex].dirty = false;
+                    this.databaseService.updateTask(this.tasks[localIndex]);
+                    this.tasks.splice(localIndex, 1);
+                    this.tasksSubject.next(this.tasks);
                   }
                 } else {
                   // local task is in server tasks
@@ -140,6 +145,7 @@ export class TaskService {
     if (index === -1) {
       return;
     }
+    this.tasks[index].dirty = true;
     if (this.authService.isLoggedIn()) {
       this.editServerTask(task).subscribe(
         () => {
@@ -148,10 +154,10 @@ export class TaskService {
         },
         error => {
           console.error('could not edit task on server', error);
+          this.editDatabaseTask(task);
         }
       );
     } else {
-      this.tasks[index].dirty = true;
       this.editDatabaseTask(task);
     }
   }
@@ -169,7 +175,14 @@ export class TaskService {
           this.tasks[index].dirty = false;
           this.databaseService.updateTask(this.tasks[index]);
         },
-        error => console.error('could not delete task on server', error)
+        error => {
+          console.error(
+            'could not delete task on server',
+            this.tasks[index],
+            error
+          );
+          this.databaseService.updateTask(this.tasks[index]);
+        }
       );
     } else {
       this.databaseService.updateTask(this.tasks[index]);
@@ -187,9 +200,13 @@ export class TaskService {
     }
     this.tasks[index].isCompleted = task.isCompleted;
     this.tasks[index].completionDate = task.isCompleted ? new Date() : null;
-    if (this.authService.isLoggedIn()) {
+    this.tasks[index].dirty = true;
+    if (this.authService.isLoggedIn() && this.tasks[index].id !== -1) {
       this.editServerTask(this.tasks[index]).subscribe(
-        () => {},
+        () => {
+          this.tasks[index].dirty = false;
+          this.databaseService.updateTask(this.tasks[index]);
+        },
         error => {
           console.error(
             'could not set task to: ',
@@ -197,10 +214,12 @@ export class TaskService {
             ' on the server',
             error
           );
+          this.databaseService.updateTask(this.tasks[index]);
         }
       );
+    } else {
+      this.databaseService.updateTask(this.tasks[index]);
     }
-    this.databaseService.updateTask(this.tasks[index]);
     console.log(this.tasks[index]);
   }
 

@@ -30,6 +30,7 @@ import { RegisterComponent } from '~/pages/account/register/register.component';
 import { MembersTasksComponent } from '~/pages/teams/members-tasks-list/members-tasks.component';
 import { DayBoxesComponent } from '~/pages/tasks/day-boxes/day-boxes.component';
 import { MetricsItemComponent } from '~/pages/metrics/metrics-item/metrics-item.component';
+import { NotificationsComponent } from '~/pages/notifications/notifications.component';
 
 import { AuthInterceptor } from '~/shared/helpers/auth.interceptor';
 import { AccountComponent } from '~/pages/account/account.component';
@@ -66,7 +67,9 @@ import { EditAccountComponent } from '~/pages/account/edit-account/edit-account.
     DayBoxesComponent,
     MetricsItemComponent,
     AccountComponent,
-    EditAccountComponent
+    EditAccountComponent,
+    NotificationsComponent
+
   ],
   schemas: [NO_ERRORS_SCHEMA],
   providers: [

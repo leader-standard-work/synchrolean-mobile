@@ -14,6 +14,8 @@ import { RegisterComponent } from '~/pages/account/register/register.component';
 import { MembersTasksComponent } from '~/pages/teams/members-tasks-list/members-tasks.component';
 import { AccountComponent } from '~/pages/account/account.component';
 import { EditAccountComponent } from '~/pages/account/edit-account/edit-account.component';
+import { NotificationsComponent } from '~/pages/notifications/notifications.component';
+
 
 const routes: Routes = [
   { path: '', redirectTo: '/task-list', pathMatch: 'full' },
@@ -31,7 +33,9 @@ const routes: Routes = [
   { path: 'members-tasks', component: MembersTasksComponent },
   { path: 'members-tasks/:id', component: MembersTasksComponent },
   { path: 'account', component: AccountComponent},
-  { path: 'edit-account', component: EditAccountComponent}
+  { path: 'edit-account', component: EditAccountComponent},
+  { path: 'notifications', component: NotificationsComponent}
+
 ];
 
 @NgModule({
