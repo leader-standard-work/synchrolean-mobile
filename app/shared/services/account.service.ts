@@ -27,6 +27,11 @@ export class AccountService {
     return this.http.post<Account>(endpoint, account);
   }
 
+  edit(url: string, account: Account): Observable<Account> {
+    const endpoint = url + '/api/accounts';
+    return this.http.put<Account>(endpoint, account);
+  }
+
   /**
    * Retrieves the account information for a given user email
    * @param email the email of the user account

@@ -5,13 +5,13 @@ import { TeamService } from '~/shared/services/teams.service';
 
 import { Account } from '~/shared/models/account';
 import { Team } from '~/shared/models/team';
-import * as dialogs from 'ui/dialogs';
+import * as dialogs from 'tns-core-modules/ui/dialogs/dialogs';
 import { Task } from '~/shared/models/task';
-import { ObservableArray } from 'data/observable-array/observable-array';
+import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
 import { AuthenticationService } from '~/shared/services/auth.service';
 import { TaskService } from '~/shared/services/tasks.service';
 import { AccountService } from '~/shared/services/account.service';
-import { SearchBar } from "ui/search-bar";
+import { SearchBar } from "tns-core-modules/ui/search-bar/search-bar";
 
 
 //name component and the markup and stayle sheet
