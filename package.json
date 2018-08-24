@@ -31,7 +31,6 @@
     "nativescript-sqlite": "^2.2.1",
     "nativescript-theme-core": "~1.0.4",
     "nativescript-ui-chart": "^3.7.0",
-    "nativescript-ui-listview": "^3.5.11",
     "reflect-metadata": "~0.1.8",
     "router": "^1.3.3",
     "rxjs": "~6.1.0",

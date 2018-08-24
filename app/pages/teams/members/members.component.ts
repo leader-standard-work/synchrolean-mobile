@@ -137,13 +137,13 @@ export class MembersComponent implements OnInit {
               this.taskVisible.push(false);
 
               //check the user is a member of the team
-              if (account.email === this.authService.email) {
+              if (account.email.toUpperCase() === this.authService.email.toUpperCase()) { 
                 this.isMember = true;
                 this.addMember = true;
 
                 //check if they are the owner
                 this.isOwner =
-                  this.team.ownerEmail === this.authService.email ? true : false;
+                  this.team.ownerEmail.toUpperCase() === this.authService.email.toUpperCase() ? true : false;
               }
             });
             if(!this.isMember){
