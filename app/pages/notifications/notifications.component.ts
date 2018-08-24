@@ -61,15 +61,16 @@ export class NotificationsComponent implements OnInit {
 
   //accepts team invite and adds user to team
   acceptTeamInvite(teamId: number) {
+    console.log(teamId);
     this.teamService
       .acceptTeamInvite(teamId)
-      .subscribe(data => this.routerExtensions.navigate(['teams/' + teamId]));
+      .subscribe(() => this.routerExtensions.backToPreviousPage());
   }
 
   //declines an invite to a team
   declineTeamInvite(teamId: number) {
     this.teamService
       .declineTeamInvite(teamId)
-      .subscribe(data => this.routerExtensions.navigate(['teams/' + teamId]));
+      .subscribe(() => this.routerExtensions.backToPreviousPage());
   }
 }
