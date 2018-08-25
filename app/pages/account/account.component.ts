@@ -36,6 +36,13 @@ import { AuthenticationService } from '~/shared/services/auth.service';
       });
     }
 
+    notificationsTapped() {
+      this.routerExtensions.navigate(['/notifications'], {
+        clearHistory: true,
+        animated: false
+      });
+    }
+
     teamTapped() {
         this.routerExtensions.navigate(['/teams'], {
           clearHistory: true,
