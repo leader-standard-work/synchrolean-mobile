@@ -5,13 +5,12 @@ import { TeamService } from '~/shared/services/teams.service';
 
 import { Account } from '~/shared/models/account';
 import { Team } from '~/shared/models/team';
-import * as dialogs from 'ui/dialogs';
+import * as dialogs from 'tns-core-modules/ui/dialogs/dialogs';
 import { Task } from '~/shared/models/task';
-import { ObservableArray } from 'data/observable-array/observable-array';
 import { AuthenticationService } from '~/shared/services/auth.service';
 import { TaskService } from '~/shared/services/tasks.service';
 import { AccountService } from '~/shared/services/account.service';
-import { SearchBar } from "ui/search-bar";
+import { SearchBar } from "tns-core-modules/ui/search-bar/search-bar";
 
 
 //name component and the markup and stayle sheet
@@ -174,6 +173,12 @@ export class MembersComponent implements OnInit {
     if (tasks === undefined) return 0;
 
     return tasks.length;
+  }
+
+  getLength(item:Object[]){
+    if(item === undefined) return 0;
+
+    return item.length;
   }
 
   //navigate to members task list taking id with it
@@ -728,7 +733,7 @@ export class MembersComponent implements OnInit {
       dialogs
       .confirm({
         title: "Permissions",
-        message:"Would you like to REJECT permission to view you team from this team?",
+        message:"Would you like to REJECT permission to view your team from this team?",
         okButtonText:'Yes',
         cancelButtonText:'No'
       }).then(r=>{
@@ -753,7 +758,7 @@ export class MembersComponent implements OnInit {
       dialogs
       .confirm({
         title: "Permissions",
-        message:"Would you like to GRANT permission to view you team from this team?",
+        message:"Would you like to GRANT permission to view your team from this team?",
         okButtonText:'Yes',
         cancelButtonText:'No'
       }).then(r=>{
@@ -799,7 +804,7 @@ export class MembersComponent implements OnInit {
             
             this.routerE.navigate(['/teams'], {
               transition: {
-                name: 'slideLeft'
+                name: 'slideRight'
               },
               clearHistory: true
             });
@@ -820,4 +825,15 @@ export class MembersComponent implements OnInit {
 
     });
   }
+
+  backToTeams(){
+    this.routerE.navigate(['/teams'], {
+      transition: {
+        name: 'slideRight'
+      },
+      clearHistory: true
+    });
+  }
+
+
 }

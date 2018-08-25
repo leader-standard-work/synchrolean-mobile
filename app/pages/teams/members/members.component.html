@@ -1,10 +1,9 @@
 <!-- Make action bar if the user is the owner of the team show owner buttons-->
-<ActionBar class="action-bar">
+<ActionBar class="action-bar">  
+    <NavigationButton text="Back" android.systemIcon="ic_menu_back" (tap)="backToTeams()"></NavigationButton>
     <Label class="action-bar-title" fontSize="32" text=""></Label>
-    <ActionItem *ngIf="isOwner" visibility="{{ teamVisible ?  'visible':'collapse' }}" ios.position="right" text="Edit" android.position="actionBar"
-        (tap)="editTapped()"></ActionItem>
-    <ActionItem *ngIf="isMember" visibility="{{ teamVisible ?  'visible':'collapse' }}" ios.position="right" text="Leave" android.position="actionBar"
-        (tap)="leaveTapped()"></ActionItem>
+    <ActionItem *ngIf="isOwner" visibility="{{ teamVisible ?  'visible':'collapse' }}" ios.position="right" text="Edit" android.position="actionBar" (tap)="editTapped()"></ActionItem>
+    <ActionItem *ngIf="addMember" visibility="{{ teamVisible ?  'visible':'collapse' }}" ios.position="right" text="Leave" android.position="actionBar" (tap)="leaveTapped()"></ActionItem>
     <!-- <ActionItem visibility="{{ isOwner ?  'visible':'collapse' }}" (tap)="addTapped()" ios.position="left" text="Add" android.position="actionBar"></ActionItem> -->
 </ActionBar>
 <!-- Make grid layout for the page naming row sizes-->
@@ -46,7 +45,7 @@
     <Button class="btn w-full" style="background: tomato;color: whitesmoke" *ngIf="editHit" row="2" visibility="{{ isOwner ?  'visible':'collapse' }}"
         (tap)="deleteTeam()">
         <FormattedString>
-            <Span text="&#xf067; " fontFamily="FontAwesome" fontSize="12"></Span>
+            <Span text="&#xf068; " fontFamily="FontAwesome" fontSize="12"></Span>
             <Span text="Delete Team" textWrap="true"></Span>
         </FormattedString>
     </Button>
@@ -78,7 +77,7 @@
         </Button>
     </FlexboxLayout>
 
-    <SearchBar row='4' hint="Member search by last name" [text]="searchPhrase" (submit)="onSubmit($event)" (clear)="onClear($event)"
+    <SearchBar row='4' visibility="{{ teamVisible ?  'visible':'collapse' }}" hint="Member search by last name" [text]="searchPhrase" (submit)="onSubmit($event)" (clear)="onClear($event)"
         textFieldHintColor="#e39e2c"></SearchBar>
 
     <FlexboxLayout row='5'>
@@ -128,20 +127,22 @@
     </ListView>
 
     <!-- print open invites for owner -->
-    <GridLayout *ngIf="isOwner" visibility="{{ inviteVisible ?  'visible':'collapse' }}" rows="auto,*,auto, *" row='6'>
-        <Label class="t-30 m-b-2 m-l-15" style="color:black" row="0" text="Your Invites" textWrap="true"></Label>
-        <ListView [items]="invitees" row='1'>
-            <ng-template let-invitee="item" let-i="index">
-                <Label class="t-30 m-b-2 m-l-15" [text]="invitee.firstName +' '+ invitee.lastName " (tap)="inviteeTapped(i)"></Label>
-            </ng-template>
-        </ListView>
-        <Label class="t-30 m-b-2 m-l-15" style="color:black" text="Other Invites" textWrap="true" row="2"></Label>
-        <ListView [items]="authInvites" row='3'>
-            <ng-template let-auth="item" let-j="index">
-                <Label class="t-30 m-b-2 m-l-15" [text]="auth.firstName +' '+ auth.lastName +j" (tap)="authTapped(j)"></Label>
-            </ng-template>
-        </ListView>
-    </GridLayout>
+    <ScrollView *ngIf="isOwner" visibility="{{ inviteVisible ?  'visible':'collapse' }}" row='6'>
+        <GridLayout rows="*,*,*,*">
+            <Label row="0" class="t-30 m-b-2 m-l-15" style="color:black"  text="Your Invites" textWrap="true"></Label>
+            <ListView row="1" [items]="invitees" [height]="25*getLength(invitees)" >
+                <ng-template let-invitee="item" let-i="index">
+                    <Label class="t-16 m-b-2 m-l-15" [text]="invitee.firstName +' '+ invitee.lastName " (tap)="inviteeTapped(i)"></Label>
+                </ng-template>
+            </ListView>
+            <Label row="2" class="t-30 m-b-2 m-l-15" style="color:black" text="Other Invites" textWrap="true" row="2"></Label>
+            <ListView row="3" [items]="authInvites" [height]="25*getLength(authInvites)">
+                <ng-template let-auth="item" let-j="index">
+                    <Label class="t-16 m-b-2 m-l-15" [text]="auth.firstName +' '+ auth.lastName" (tap)="authTapped(j)"></Label>
+                </ng-template>
+            </ListView>
+        </GridLayout>
+    </ScrollView>
     <!--team Mertics -->
 
 </Gridlayout>

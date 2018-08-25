@@ -1,6 +1,6 @@
 <ActionBar class="action-bar">
     <Label class="action-bar-title" fontSize="32" text="Tasks"></Label>
-    <ActionItem nsRouterLink="/task-form" pageTransition="slideTop" ios.systemIcon="4" ios.position="right" text="Add" android.position="actionBar"></ActionItem>
+    <ActionItem nsRouterLink="/task-form" clearHistory="true" pageTransition="slideTop" ios.systemIcon="4" ios.position="right" text="Add" android.position="actionBar"></ActionItem>
 </ActionBar>
 
 <GridLayout rows="*, 62.5" class="page">
@@ -24,10 +24,10 @@
                 <Span text="Teams"></Span>
             </FormattedString>
         </Button>
-        <Button textWrap="true" width="33%" textAlignment="center" (onTap)="metricsTapped()">
+        <Button textWrap="true" width="33%" textAlignment="center" (onTap)="accountTapped()">
             <FormattedString>
-                <Span text="&#xf080;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>
-                <Span text="Metrics"></Span>
+                <Span text="&#xf007;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>
+                <Span text="Account"></Span>
             </FormattedString> 
         </Button>
     </StackLayout>

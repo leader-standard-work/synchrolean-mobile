@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ListPicker } from 'ui/list-picker';
+import { ListPicker } from 'tns-core-modules/ui/list-picker/list-picker';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { PageRoute, RouterExtensions } from 'nativescript-angular/router';
@@ -225,6 +225,15 @@ export class TaskFormComponent implements OnInit {
           transition: { name: 'slideRight' }
         });
       }
+    });
+  }
+
+  backToTasks(){
+    this.routerExtensions.navigate(['/task-list'], {
+      transition: {
+        name: 'slideBottom'
+      },
+      clearHistory: true
     });
   }
 }

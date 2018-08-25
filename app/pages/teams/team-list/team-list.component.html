@@ -1,6 +1,6 @@
 <ActionBar class="action-bar">
     <Label class="action-bar-title" fontSize="32" text="Teams"></Label>
-    <ActionItem nsRouterLink="/team-form" text="Create Team" android.position="actionBar" ios.position="right"></ActionItem>
+    <ActionItem nsRouterLink="/team-form" clearHistory="true" text="Create Team" android.position="actionBar" ios.position="right"></ActionItem>
     <ActionItem text="Logout" (tap)="logoutTapped()" android.position="actionBar"></ActionItem>
 </ActionBar>
 
@@ -32,10 +32,10 @@
                 <Span text="Teams"></Span>
             </FormattedString>
         </Button>
-        <Button textWrap="true" width="33%" textAlignment="center" (onTap)="metricsTapped()">
+        <Button textWrap="true" width="33%" textAlignment="center" (onTap)="accountTapped()">
             <FormattedString>
-                <Span text="&#xf080;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>
-                <Span text="Metrics"></Span>
+                <Span text="&#xf007;&#x000a;" fontFamily="FontAwesome" fontSize="28"></Span>
+                <Span text="Account"></Span>
             </FormattedString>
         </Button>
     </StackLayout>

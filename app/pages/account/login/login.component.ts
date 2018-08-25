@@ -14,7 +14,7 @@ import { AccountService } from '~/shared/services/account.service';
 })
 export class LoginComponent implements OnInit {
   public accountFormGroup: FormGroup;
-  public tempUrl: string = 'http://localhost:55542';
+  public tempUrl: string = 'http://10.0.2.2:55542';
 
   constructor(
     private authService: AuthenticationService,
@@ -50,7 +50,7 @@ export class LoginComponent implements OnInit {
         this.accountService.getAccountByEmail(email).subscribe(
           account => {
             this.accountService.account = account;
-            this.routerExtensions.navigate(['/teams'], {
+            this.routerExtensions.navigate(['/account'], {
               clearHistory: true,
               transition: { name: 'slideRight' }
             });
@@ -73,8 +73,8 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  metricsTapped() {
-    this.routerExtensions.navigate(['/metrics'], {
+  accountTapped() {
+    this.routerExtensions.navigate(['/account'], {
       clearHistory: true,
       animated: false
     });

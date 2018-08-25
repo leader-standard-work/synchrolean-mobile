@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { Team } from '~/shared/models/team';
 import { ServerService } from '~/shared/services/server.service';
 import { RouterExtensions } from 'nativescript-angular/router';
-import { ObservableArray } from 'data/observable-array';
+import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
 import { AccountService } from '~/shared/services/account.service';
 import { AuthenticationService } from '~/shared/services/auth.service';
 import { TeamService } from '~/shared/services/teams.service';
-import { SearchBar } from "ui/search-bar";
+import { SearchBar } from "tns-core-modules/ui/search-bar/search-bar";
 
 @Component({
   selector: 'team-list',
@@ -77,7 +77,8 @@ export class TeamListComponent implements OnInit {
     this.routerExtensions.navigate(['/Members', id], {
       transition: {
         name: 'slideLeft'
-      }
+      },
+      clearHistory: true
     });
   }
 
@@ -101,10 +102,12 @@ export class TeamListComponent implements OnInit {
     });
   }
 
-  metricsTapped() {
-    this.routerExtensions.navigate(['/metrics'], {
+  accountTapped() {
+    this.routerExtensions.navigate(['/account'], {
       clearHistory: true,
       animated: false
     });
   }
+
+
 }

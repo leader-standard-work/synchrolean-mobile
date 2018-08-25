@@ -1,0 +1,23 @@
+<ActionBar class="action-bar">
+    <NavigationButton text="Back" android.systemIcon="ic_menu_back" (tap)="backToAccount()"></NavigationButton>
+    <Label class="action-bar-title" fontSize="32" text="Edit Account Details"></Label>
+</ActionBar>
+
+<FlexBoxLayout class="page">
+    <StackLayout class="form">
+
+        <StackLayout class="input-field" [formGroup]="accountFormGroup">
+            <TextField class="input" formControlName="serverUrl" hint=" Server URL" required></TextField>
+            <StackLayout class="hr-light m-10"></StackLayout>
+
+            <TextField class="input" formControlName="firstname" hint=" First Name" required></TextField>
+            <StackLayout class="hr-light m-10"></StackLayout>
+
+            <TextField class="input" formControlName="lastname" hint=" Last Name" required></TextField>
+            <StackLayout class="hr-light m-10"></StackLayout>
+
+        </StackLayout>
+        <Button class="btn btn-primary" text="Apply Changes" (tap)="editAccountTapped()"></Button>
+    </StackLayout>
+
+</FlexBoxLayout>
