@@ -60,4 +60,13 @@ export class EditAccountComponent implements OnInit {
       }
     );
   }
+
+  backToAccount(){
+    this.routerExtensions.navigate(['/account'], {
+      transition: {
+        name: 'slideRight'
+      },
+      clearHistory: true
+    });
+  }
 }

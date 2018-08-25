@@ -227,4 +227,13 @@ export class TaskFormComponent implements OnInit {
       }
     });
   }
+
+  backToTasks(){
+    this.routerExtensions.navigate(['/task-list'], {
+      transition: {
+        name: 'slideBottom'
+      },
+      clearHistory: true
+    });
+  }
 }
