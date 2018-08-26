@@ -1,5 +1,10 @@
 <ActionBar class="action-bar">
     <NavigationButton text="Back" android.systemIcon="ic_menu_back" ios.position="left" (tap)="backToTasks()"></NavigationButton>
+    <ActionItem ios.position="left" (tap)="backToTasks()">
+            <FormattedString>
+                <Span text="&#xf060; " fontFamily="FontAwesome" fontSize="12"></Span>
+            </FormattedString>
+    </ActionItem>
     <Label class="action-bar-title" fontSize="32" [text]="title"></Label>
     <ActionItem (tap)="onSave()" ios.position="right" text="Save">
     </ActionItem>
