@@ -1,10 +1,6 @@
 <ActionBar class="action-bar">
     <NavigationButton text="Back" android.systemIcon="ic_menu_back" (tap)="backToTasks()"></NavigationButton>
-    <ActionItem ios.position="left" (tap)="backToTasks()">
-        <FormattedString>
-            <Span text="&#xf060; " fontFamily="FontAwesome" fontSize="12"></Span>
-        </FormattedString>
-    </ActionItem>
+    <ActionItem ios.position="left" text="Back" (tap)="backToTasks()"></ActionItem>
     <Label class="action-bar-title" fontSize="30" text="Task Details"></Label>
     <ActionItem [nsRouterLink]="['/task-edit', task.databaseId]" clearHistory="true" ios.position="right" text="Edit">
     </ActionItem>
