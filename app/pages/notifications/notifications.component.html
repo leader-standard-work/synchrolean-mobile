@@ -1,5 +1,6 @@
 <ActionBar class="action-bar">
-    <NavigationButton text="Back" android.systemIcon="ic_menu_back" (tap)="backToAccount()"></NavigationButton>
+    <NavigationButton android.systemIcon="ic_menu_back" (tap)="backToAccount()"></NavigationButton>
+    <ActionItem ios.position="left" text="&#xf060;" android:visibility="collapse" fontFamily="FontAwesome" fontSize="12" (tap)="backToAccount()"></ActionItem>
     <Label class="action-bar-title" fontSize="32" text="Notifications"></Label>
 </ActionBar>
 <ListView [items]="teamsObservable | async">
