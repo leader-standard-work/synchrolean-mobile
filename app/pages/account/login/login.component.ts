@@ -62,8 +62,9 @@ export class LoginComponent implements OnInit {
       },
       error => {
         console.error('could not login "', email, '" :', error);
-      }
-    );
+      });
+
+    
   }
 
   tasksTapped() {
