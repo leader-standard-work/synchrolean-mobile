@@ -142,7 +142,7 @@ export class MembersComponent implements OnInit {
                 .subscribe(tasks => {
                   this.tasks$[index] = new Array<Task>();
                   tasks.forEach(task => {
-                    if(task.teamId === this.team.id){
+                    if(task.teamId === this.team.id && task.isDeleted === false){
                       this.tasks$[index].push(task);
                     }
                   });
@@ -290,6 +290,10 @@ export class MembersComponent implements OnInit {
     if (this.teamVisible === true) {
       return;
     }
+    this.taskVisible.forEach(value=>{
+      value = false;
+    });
+
     let today = new Date();
     let tomorrow = new Date();
     let lastWeek = new Date();
@@ -311,7 +315,7 @@ export class MembersComponent implements OnInit {
             this.taskService.getuserTodo(account.email).subscribe(tasks => {
               this.tasks$[index] = new Array<Task>();
               tasks.forEach(task => {
-                if(task.teamId === this.team.id){
+                if(task.teamId === this.team.id && task.isDeleted === false){
                   this.tasks$[index].push(task);
                 }
               });
