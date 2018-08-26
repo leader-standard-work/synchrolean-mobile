@@ -77,7 +77,8 @@ export class TeamListComponent implements OnInit {
     this.routerExtensions.navigate(['/Members', id], {
       transition: {
         name: 'slideLeft'
-      }
+      },
+      clearHistory: true
     });
   }
 
@@ -107,4 +108,6 @@ export class TeamListComponent implements OnInit {
       animated: false
     });
   }
+
+
 }

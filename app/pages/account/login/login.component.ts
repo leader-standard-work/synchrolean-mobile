@@ -5,7 +5,8 @@ import { RouterExtensions } from 'nativescript-angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthenticationService } from '~/shared/services/auth.service';
 import { AccountService } from '~/shared/services/account.service';
-
+import * as dialogs from 'tns-core-modules/ui/dialogs/dialogs';
+const timer = require("tns-core-modules/timer");
 @Component({
   selector: 'login',
   moduleId: module.id,
@@ -15,6 +16,7 @@ import { AccountService } from '~/shared/services/account.service';
 export class LoginComponent implements OnInit {
   public accountFormGroup: FormGroup;
   public tempUrl: string = 'http://10.0.2.2:55542';
+
 
   constructor(
     private authService: AuthenticationService,
@@ -42,6 +44,8 @@ export class LoginComponent implements OnInit {
     let url = this.accountFormGroup.value.serverUrl;
     let email = this.accountFormGroup.value.email;
     let password = this.accountFormGroup.value.password;
+    
+    let err = 0;
 
     this.authService.login(url, email, password).subscribe(
       response => {
@@ -54,16 +58,25 @@ export class LoginComponent implements OnInit {
               clearHistory: true,
               transition: { name: 'slideRight' }
             });
+            err = 1;
           },
           error => {
+            err = 1;
             console.error(`could not get account for '${email}, ${error}`);
           }
         );
       },
       error => {
+        err = 1;
+        dialogs.alert("Could not login");
         console.error('could not login "', email, '" :', error);
-      }
-    );
+      });
+
+      setTimeout(() => {
+        if(this.authService.isLoggedIn() === false && err != 1){
+          dialogs.alert("Could not connect to server, make sure the URL is correct");
+        }
+      }, 2000);
   }
 
   tasksTapped() {

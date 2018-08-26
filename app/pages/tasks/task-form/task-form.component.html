@@ -1,4 +1,8 @@
 <ActionBar class="action-bar">
+    <NavigationButton android.systemIcon="ic_menu_back" (tap)="backToTasks()"></NavigationButton>
+    <ActionItem ios.position="left" android:visibility="collapse" (tap)="backToTasks()">
+        <Label text="&#xf060;" fontFamily="FontAwesome" fontSize="20"></Label>          
+    </ActionItem>
     <Label class="action-bar-title" fontSize="32" [text]="title"></Label>
     <ActionItem (tap)="onSave()" ios.position="right" text="Save">
     </ActionItem>

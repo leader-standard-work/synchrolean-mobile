@@ -44,17 +44,17 @@ import { AuthenticationService } from '~/shared/services/auth.service';
     }
 
     teamTapped() {
-        this.routerExtensions.navigate(['/teams'], {
-          clearHistory: true,
-          animated: false
-        });
-      }
+      this.routerExtensions.navigate(['/teams'], {
+        clearHistory: true,
+        animated: false
+      });
+    }
     
-      tasksTapped() {
-        this.routerExtensions.navigate(['/task-list'], {
-          clearHistory: true,
-          animated: false
-        });
-      }
+    tasksTapped() {
+      this.routerExtensions.navigate(['/task-list'], {
+        clearHistory: true,
+        animated: false
+      });
+    }
 
   }

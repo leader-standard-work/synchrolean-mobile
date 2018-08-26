@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PageRoute } from 'nativescript-angular/router';
+import { PageRoute, RouterExtensions } from 'nativescript-angular/router';
 import { switchMap } from 'rxjs/operators';
 
 import { TaskService } from '~/shared/services/tasks.service';
@@ -14,7 +14,10 @@ import { Task } from '~/shared/models/task';
 export class TaskDetailComponent implements OnInit {
   public task: Task;
 
-  constructor(private taskService: TaskService, private pageRoute: PageRoute) {
+  constructor(private taskService: TaskService, 
+    private pageRoute: PageRoute,
+    private routerExtensions: RouterExtensions
+    ) {
     this.pageRoute.activatedRoute
       .pipe(switchMap(activatedRoute => activatedRoute.params))
       .forEach(params => {
@@ -44,5 +47,11 @@ export class TaskDetailComponent implements OnInit {
         return 'Once';
       }
     }
+  }
+
+  backToTasks(){
+    this.routerExtensions.navigate(['/task-list'], {
+      clearHistory: true
+    });
   }
 }

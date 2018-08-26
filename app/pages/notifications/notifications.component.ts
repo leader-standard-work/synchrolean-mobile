@@ -72,4 +72,13 @@ export class NotificationsComponent implements OnInit {
       .declineTeamInvite(teamId)
       .subscribe(data => this.routerExtensions.navigate(['teams/' + teamId]));
   }
+
+  backToAccount(){
+    this.routerExtensions.navigate(['/account'], {
+      transition: {
+        name: 'slideRight'
+      },
+      clearHistory: true
+    });
+  }
 }

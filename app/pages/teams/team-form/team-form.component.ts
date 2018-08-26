@@ -68,4 +68,10 @@ export class TeamFormComponent implements OnInit {
       );
     }
   }
+
+  backToTeams(){
+    this.routerExtensions.navigate(['/teams'], {
+      clearHistory: true
+    });
+  }
 }
