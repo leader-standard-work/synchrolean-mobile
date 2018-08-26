@@ -7,10 +7,12 @@ import { Account } from '~/shared/models/account';
 import { Team } from '~/shared/models/team';
 import * as dialogs from 'tns-core-modules/ui/dialogs/dialogs';
 import { Task } from '~/shared/models/task';
+import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
 import { AuthenticationService } from '~/shared/services/auth.service';
 import { TaskService } from '~/shared/services/tasks.service';
 import { AccountService } from '~/shared/services/account.service';
 import { SearchBar } from "tns-core-modules/ui/search-bar/search-bar";
+import { MetricsService } from '~/shared/services/metrics.service';
 
 
 //name component and the markup and stayle sheet
@@ -33,6 +35,10 @@ export class MembersComponent implements OnInit {
   public permittedTeams:Array<Team>;
   public searchPhrase: string;
   public searchMembers: Array<Account>;
+  public startDate: Date; //used for metrics
+  public endDate: Date;  //used for metrics
+  public metricsValue; //used for metrics 
+  public memberIndex; //to track what member we are viewing (for metrics)
 
   //permissions check
   public isOwner: Boolean;
@@ -41,7 +47,7 @@ export class MembersComponent implements OnInit {
   //button presses
   public teamVisible: boolean;
   public taskVisible: Array<boolean>;
-  public metericsVisible: boolean;
+  public metricsVisible: boolean;
   public permissionVisible;
   public editHit: boolean;
   public inviteVisible: boolean;
@@ -59,7 +65,8 @@ export class MembersComponent implements OnInit {
     private teamService: TeamService,
     private pageR: PageRoute,
     private taskService: TaskService,
-    private routerE: RouterExtensions
+    private routerE: RouterExtensions,
+    private metricsService: MetricsService
   ) {
     this.pageR.activatedRoute
       .pipe(switchMap(activatedRoute => activatedRoute.params))
@@ -108,7 +115,7 @@ export class MembersComponent implements OnInit {
     //list visibilty with team being showed on page load
     this.teamVisible = true;
     this.taskVisible = new Array<boolean>(false);
-    this.metericsVisible = false;
+    this.metricsVisible = false;
     this.inviteVisible = false;
     this.editHit = false;
     this.addMember = false;
@@ -276,22 +283,70 @@ export class MembersComponent implements OnInit {
     this.editHit = false;
     this.permissionVisible = false;
     this.inviteVisible = false;
-    this.metericsVisible = false;
+    this.metricsVisible = false;
     this.teamVisible = true;
   }
 
+  //grabs team metrics
   metricsTapped() {
-    if (this.metericsVisible === true) {
+    if (this.metricsVisible === true) {
       return;
     }
 
     this.teamVisible = false;
-    this.metericsVisible = true;
+    this.metricsVisible = true;
     this.permissionVisible = false;
     this.inviteVisible = false;
     this.editHit = false;
+    //get data from metrics service, default is daily
+    this.startDate = new Date();
+    this.endDate = new Date();
+
+    this.startDate.setHours( 0,0,0,0 );
+    this.metricsService.getTeamCompletionRate(this.team.id,this.startDate,this.endDate).subscribe(
+      response => {this.metricsValue= response}, error => {console.error("Failed to get TeamCompletionRate in ngInit")});
+
+
   }
 
+  metricsTeamDailyTapped(){
+    this.startDate.setHours( 0,0,0,0 );
+    this.metricsService.getTeamCompletionRate(this.team.id,this.startDate,this.endDate).subscribe(
+      response => {this.metricsValue= response}, error => {console.error("Failed to get TeamCompletionRate in ngInit")});
+  }
+
+  metricsTeamWeeklyTapped(){
+    this.startDate = new Date();
+    this.endDate = new Date();
+    //calculate the start date and end date
+    this.startDate.setDate(this.endDate.getDate() - this.endDate.getDay());
+    this.metricsService.getTeamCompletionRate(this.team.id,this.startDate,this.endDate).subscribe(
+      response => {this.metricsValue= response}, error => {console.error("Failed to get TeamCompletionRate in ngInit")});
+  }
+
+  metricsTeamMonthlyTapped(){
+    this.startDate = new Date();
+    this.endDate = new Date();
+    this.startDate.setDate(1);
+    this.metricsService.getTeamCompletionRate(this.team.id,this.startDate,this.endDate).subscribe(
+      response => {this.metricsValue= response}, error => {console.error("Failed to get TeamCompletionRate in ngInit")});
+  }
+
+  metricsMemberDailyTapped(){
+    this.startDate = new Date();
+    this.endDate = new Date();
+    //this.members[index].email
+  }
+
+  metricsMemberWeeklyTapped(){
+    this.startDate = new Date();
+    this.endDate = new Date();
+  }
+
+  metricsMemberMonthyTapped(){
+    this.startDate = new Date();
+    this.endDate = new Date();
+  }
   //controls the edit buttions showing by when the edit buttons is hit
   editTapped() {
     if (this.teamVisible === true) {
@@ -306,7 +361,7 @@ export class MembersComponent implements OnInit {
 
     this.inviteVisible = false;
     this.permissionVisible = false;
-    this.metericsVisible = false;
+    this.metricsVisible = false;
     this.teamVisible = true;
     return;
   }
@@ -336,7 +391,7 @@ export class MembersComponent implements OnInit {
     //make sure lists and buttons for edit are hidden
     this.inviteVisible = false;
     this.teamVisible = false;
-    this.metericsVisible = false;
+    this.metricsVisible = false;
     this.permissionVisible = true;
     this.editHit = false;
   }
@@ -410,7 +465,7 @@ export class MembersComponent implements OnInit {
 
     //make other list invisible
     this.teamVisible = false;
-    this.metericsVisible = false;
+    this.metricsVisible = false;
     this.permissionVisible = false;
     this.inviteVisible = true;
     this.editHit = false;
@@ -825,7 +880,7 @@ export class MembersComponent implements OnInit {
 
     });
   }
-
+  
   backToTeams(){
     this.routerE.navigate(['/teams'], {
       transition: {
