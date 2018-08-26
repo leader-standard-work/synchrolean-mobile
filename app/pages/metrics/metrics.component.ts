@@ -28,17 +28,17 @@ export class MetricsComponent implements OnInit {
 ) {}
 
   ngOnInit(): void {
-    this.userEmail = this.authService.email;
-    let startDate = new Date();
-    let endDate = new Date();
+    // this.userEmail = this.authService.email;
+    // let startDate = new Date();
+    // let endDate = new Date();
 
-    startDate.setDate(startDate.getDate()-7);
-    this.metricsService.getTeamCompletionRate(1,startDate,endDate).subscribe(
-      response => {this.TeamCompletionRate$= response}, error => {console.error("Failed to get TeamCompletionRate in ngInit")});
+    // startDate.setDate(startDate.getDate()-7);
+    // this.metricsService.getTeamCompletionRate(1,startDate,endDate).subscribe(
+    //   response => {this.TeamCompletionRate$= response}, error => {console.error("Failed to get TeamCompletionRate in ngInit")});
 
-    this.metricsService.getMemberCompletionRate("a",startDate,endDate).subscribe(
-      response => {this.MemberCompletionRate$= response}, error => {console.error("Failed to get MemberCompletionRate in ngInit")});
-    console.log("Values are: ", this.TeamCompletionRate$, this.MemberCompletionRate$)
+    // //this.metricsService.getMemberCompletionRate("a",startDate,endDate).subscribe(
+    //   response => {this.MemberCompletionRate$= response}, error => {console.error("Failed to get MemberCompletionRate in ngInit")});
+    // console.log("Values are: ", this.TeamCompletionRate$, this.MemberCompletionRate$)
   }
 
   teamTapped() {
