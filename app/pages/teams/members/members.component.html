@@ -1,6 +1,7 @@
 <!-- Make action bar if the user is the owner of the team show owner buttons-->
 <ActionBar class="action-bar">  
-    <NavigationButton text="Back" android.systemIcon="ic_menu_back" (tap)="backToTeams()"></NavigationButton>
+    <NavigationButton android.systemIcon="ic_menu_back" (tap)="backToTeams()"></NavigationButton>
+    <ActionItem ios.position="left" text="&#xf060;"  android:visibility="collapse"fontFamily="FontAwesome" fontSize="12" (tap)="backToTeams()"></ActionItem>
     <Label class="action-bar-title" fontSize="32" text=""></Label>
     <ActionItem *ngIf="isOwner" visibility="{{ teamVisible ?  'visible':'collapse' }}" ios.position="right" text="Edit" android.position="actionBar" (tap)="editTapped()"></ActionItem>
     <ActionItem *ngIf="addMember" visibility="{{ teamVisible ?  'visible':'collapse' }}" ios.position="right" text="Leave" android.position="actionBar" (tap)="leaveTapped()"></ActionItem>
