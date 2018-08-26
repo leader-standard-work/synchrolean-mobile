@@ -1,5 +1,5 @@
 <ActionBar class="action-bar">
-    <NavigationButton text="Back" android.systemIcon="ic_menu_back" (tap)="backToTasks()"></NavigationButton>
+    <NavigationButton text="Back" ios.position="left" android.systemIcon="ic_menu_back" (tap)="backToTasks()"></NavigationButton>
     <Label class="action-bar-title" fontSize="30" text="Task Details"></Label>
     <ActionItem [nsRouterLink]="['/task-edit', task.databaseId]" clearHistory="true" ios.position="right" text="Edit">
     </ActionItem>
