@@ -114,7 +114,7 @@
                         <Label row="0" col="2" text="Monthly" class="m-l-10 t-15" textWrap="true"></Label>
                         <Label row="1" col="0" [text]="metrics[i][0]" class="m-l-10 t-15" textWrap="true"></Label>
                         <Label row="1" col="1" [text]="metrics[i][1]" class="m-l-10 t-15" textWrap="true"></Label>
-                        <Label row="1" col="2" [text]="metrics[i][0]" class="m-l-10 t-15" textWrap="true"></Label>
+                        <Label row="1" col="2" [text]="metrics[i][2]" class="m-l-10 t-15" textWrap="true"></Label>
                     <!-- make list of tasks to display underteam member name -->
                     <ListView row="2" colSpan="3" *ngIf="taskVisible[i]" visibility="{{ isMember ?  'visible':'collapse' }}" width="100%" class="list" [height]="23.75 *getTaskListLength(tasks$[i])"
                         AlignSelf="stretch" [items]="tasks$[i]">
