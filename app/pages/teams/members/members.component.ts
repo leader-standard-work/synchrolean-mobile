@@ -117,7 +117,7 @@ export class MembersComponent implements OnInit {
     this.isMember = false;
 
     //list visibilty with team being showed on page load
-    this.teamVisible = true;
+    this.teamVisible = false;
     this.taskVisible = new Array<boolean>(false);
     this.metricsVisible = false;
     this.inviteVisible = false;
@@ -166,12 +166,12 @@ export class MembersComponent implements OnInit {
                 this.metrics[index][0]= res.toFixed(2).toString() +'%'; 
                 //get weekly comp rate for member
                 this.metricsService
-                .getMemberCompletionRate(this.team.id, account.email, lastWeek.toDateString(), today.toDateString(), )
+                .getMemberCompletionRate(this.team.id, account.email, lastWeek.toDateString(), tomorrow.toDateString(), )
                 .subscribe(res=>{
                   res = res*100;
                   this.metrics[index][1]=res.toFixed(2).toString() +'%'; 
                   this.metricsService
-                  .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), today.toDateString(), )
+                  .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), tomorrow.toDateString(), )
                   .subscribe(res=>{
                     res = res*100;
                     this.metrics[index][2] = res.toFixed(2).toString() +'%';                        
@@ -191,7 +191,7 @@ export class MembersComponent implements OnInit {
                 },err=>{
                   //get monthly comp rate for member
                   this.metricsService
-                  .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), today.toDateString(), )
+                  .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), tomorrow.toDateString(), )
                   .subscribe(res=>{
                     res = res*100;
                     this.metrics[index][2] = res.toFixed(2).toString() +'%'; 
@@ -213,12 +213,12 @@ export class MembersComponent implements OnInit {
               },err=>{
                 //get weekly comp rate for member
                 this.metricsService
-                .getMemberCompletionRate(this.team.id, account.email, lastWeek.toDateString(), today.toDateString(), )
+                .getMemberCompletionRate(this.team.id, account.email, lastWeek.toDateString(), tomorrow.toDateString(), )
                 .subscribe(res=>{
                   res = res*100;
                   this.metrics[index][1]=res.toFixed(2).toString() +'%';
                   this.metricsService
-                  .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), today.toDateString(), )
+                  .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), tomorrow.toDateString(), )
                   .subscribe(res=>{
                     res = res*100;
                     this.metrics[index][2] = res.toFixed(2).toString() +'%';                        
@@ -238,7 +238,7 @@ export class MembersComponent implements OnInit {
                 },err=>{ 
                   this.metrics[index][1]= '0%';
                   this.metricsService
-                  .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), today.toDateString(), )
+                  .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), tomorrow.toDateString(), )
                   .subscribe(res=>{
                     res = res*100;
                     this.metrics[index][2] = res.toFixed(2).toString() +'%';                        
@@ -259,12 +259,12 @@ export class MembersComponent implements OnInit {
                 this.metrics[index][0] = '0%';
                 //get weekly comp rate for member
                 this.metricsService
-                .getMemberCompletionRate(this.team.id, account.email, lastWeek.toDateString(), today.toDateString(), )
+                .getMemberCompletionRate(this.team.id, account.email, lastWeek.toDateString(), tomorrow.toDateString(), )
                 .subscribe(res=>{
                   res = res*100;
                   this.metrics[index][1]=res.toFixed(2).toString() +'%'; 
                   this.metricsService
-                  .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), today.toDateString(), )
+                  .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), tomorrow.toDateString(), )
                   .subscribe(res=>{
                     res = res*100;
                     this.metrics[index][2] = res.toFixed(2).toString() +'%';                        
@@ -284,7 +284,7 @@ export class MembersComponent implements OnInit {
                 },err=>{
                   //get monthly comp rate for member
                   this.metricsService
-                  .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), today.toDateString(), )
+                  .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), tomorrow.toDateString(), )
                   .subscribe(res=>{
                     res = res*100;
                     this.metrics[index][2] = res.toFixed(2).toString() +'%'; 
@@ -417,9 +417,12 @@ export class MembersComponent implements OnInit {
     if (this.teamVisible === true) {
       return;
     }
-    this.taskVisible.forEach(value=>{
-      value = false;
-    });
+    
+    this.editHit = false;
+    this.permissionVisible = false;
+    this.inviteVisible = false;
+    this.metricsVisible = false;
+    this.taskVisible = new Array<boolean>(false);
 
     let today = new Date();
     let tomorrow = new Date();
@@ -458,12 +461,12 @@ export class MembersComponent implements OnInit {
               this.metrics[index][0]= res.toFixed(2).toString() +'%'; 
               //get weekly comp rate for member
               this.metricsService
-              .getMemberCompletionRate(this.team.id, account.email, lastWeek.toDateString(), today.toDateString(), )
+              .getMemberCompletionRate(this.team.id, account.email, lastWeek.toDateString(), tomorrow.toDateString(), )
               .subscribe(res=>{
                 res = res*100;
                 this.metrics[index][1]=res.toFixed(2).toString() +'%'; 
                 this.metricsService
-                .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), today.toDateString(), )
+                .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), tomorrow.toDateString(), )
                 .subscribe(res=>{
                   res = res*100;
                   this.metrics[index][2] = res.toFixed(2).toString() +'%';                        
@@ -483,7 +486,7 @@ export class MembersComponent implements OnInit {
               },err=>{
                 //get monthly comp rate for member
                 this.metricsService
-                .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), today.toDateString(), )
+                .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), tomorrow.toDateString(), )
                 .subscribe(res=>{
                   res = res*100;
                   this.metrics[index][2] = res.toFixed(2).toString() +'%'; 
@@ -505,12 +508,12 @@ export class MembersComponent implements OnInit {
             },err=>{
               //get weekly comp rate for member
               this.metricsService
-              .getMemberCompletionRate(this.team.id, account.email, lastWeek.toDateString(), today.toDateString(), )
+              .getMemberCompletionRate(this.team.id, account.email, lastWeek.toDateString(), tomorrow.toDateString(), )
               .subscribe(res=>{
                 res = res*100;
                 this.metrics[index][1]=res.toFixed(2).toString() +'%';
                 this.metricsService
-                .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), today.toDateString(), )
+                .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), tomorrow.toDateString(), )
                 .subscribe(res=>{
                   res = res*100;
                   this.metrics[index][2] = res.toFixed(2).toString() +'%';                        
@@ -530,7 +533,7 @@ export class MembersComponent implements OnInit {
               },err=>{ 
                 this.metrics[index][1]= '0%';
                 this.metricsService
-                .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), today.toDateString(), )
+                .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), tomorrow.toDateString(), )
                 .subscribe(res=>{
                   res = res*100;
                   this.metrics[index][2] = res.toFixed(2).toString() +'%';                        
@@ -551,12 +554,12 @@ export class MembersComponent implements OnInit {
               this.metrics[index][0] = '0%';
               //get weekly comp rate for member
               this.metricsService
-              .getMemberCompletionRate(this.team.id, account.email, lastWeek.toDateString(), today.toDateString(), )
+              .getMemberCompletionRate(this.team.id, account.email, lastWeek.toDateString(), tomorrow.toDateString(), )
               .subscribe(res=>{
                 res = res*100;
                 this.metrics[index][1]=res.toFixed(2).toString() +'%'; 
                 this.metricsService
-                .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), today.toDateString(), )
+                .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), tomorrow.toDateString(), )
                 .subscribe(res=>{
                   res = res*100;
                   this.metrics[index][2] = res.toFixed(2).toString() +'%';                        
@@ -576,7 +579,7 @@ export class MembersComponent implements OnInit {
               },err=>{
                 //get monthly comp rate for member
                 this.metricsService
-                .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), today.toDateString(), )
+                .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), tomorrow.toDateString(), )
                 .subscribe(res=>{
                   res = res*100;
                   this.metrics[index][2] = res.toFixed(2).toString() +'%'; 
