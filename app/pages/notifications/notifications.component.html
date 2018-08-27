@@ -11,7 +11,7 @@
             <Label width="100%" class="t-30 text-center" [text]="team.teamName" textWrap="true"></Label>
             <Label width="100%" class="t-20 text-center" [text]="team.teamDescription" textWrap="true"></Label>
             <FlexBoxLayout justifyContent="center">
-                <Button class="p-10 btn btn-primary w-full" text="Accept" (tap)="acceptTeamInvite(team.teamId)"></Button>
+                <Button class="p-10 btn btn-primary w-full" text="Accept" (tap)="acceptTeamInvite(team.id)"></Button>
                 <Button class="p-10 btn  w-full" backgroundColor="red" color="white" text="Decline" (tap)="declineTeamInvite(team.teamId)"></Button>
             </FlexBoxLayout>
         </StackLayout>
