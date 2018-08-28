@@ -107,6 +107,7 @@ export class TaskService {
                 // server task is not found in local tasks
                 if (found === undefined) {
                   let newTask = new Task(task);
+                  newTask.ownerEmail = this.authService.email;
                   console.log(newTask);
                   this.addDatabaseTask(newTask);
                 }

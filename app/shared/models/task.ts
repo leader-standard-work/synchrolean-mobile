@@ -70,7 +70,6 @@ export class Task {
       this.description === task.description &&
       this.weekdays === task.weekdays &&
       this.isCompleted === task.isCompleted &&
-      this.completionDate === task.completionDate &&
       this.isDeleted === task.isDeleted &&
       this.frequency === task.frequency &&
       this.teamId === task.teamId
