@@ -64,14 +64,14 @@ export class NotificationsComponent implements OnInit {
     console.log(teamId);
     this.teamService
       .acceptTeamInvite(teamId)
-      .subscribe(() => this.routerExtensions.backToPreviousPage());
+      .subscribe(data => this.routerExtensions.navigate(['/Members', teamId]));
   }
 
   //declines an invite to a team
   declineTeamInvite(teamId: number) {
     this.teamService
       .declineTeamInvite(teamId)
-      .subscribe(() => this.routerExtensions.backToPreviousPage());
+      .subscribe(data => this.routerExtensions.navigate([['/Members', teamId]]));
   }
 
   backToAccount(){

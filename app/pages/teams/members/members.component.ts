@@ -7,10 +7,12 @@ import { Account } from '~/shared/models/account';
 import { Team } from '~/shared/models/team';
 import * as dialogs from 'tns-core-modules/ui/dialogs/dialogs';
 import { Task } from '~/shared/models/task';
+import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
 import { AuthenticationService } from '~/shared/services/auth.service';
 import { TaskService } from '~/shared/services/tasks.service';
 import { AccountService } from '~/shared/services/account.service';
 import { SearchBar } from "tns-core-modules/ui/search-bar/search-bar";
+import { MetricsService } from '~/shared/services/metrics.service';
 
 
 //name component and the markup and stayle sheet
@@ -34,6 +36,13 @@ export class MembersComponent implements OnInit {
   public searchPhrase: string;
   public searchMembers: Array<Account>;
 
+  public metrics: Array<Array<string>>;
+  public startDate: Date; //used for metrics
+  public endDate: Date;  //used for metrics
+  public metricsValue; //used for metrics 
+  public memberIndex; //to track what member we are viewing (for metrics)
+
+
   //permissions check
   public isOwner: Boolean;
   public isMember: boolean;
@@ -41,7 +50,7 @@ export class MembersComponent implements OnInit {
   //button presses
   public teamVisible: boolean;
   public taskVisible: Array<boolean>;
-  public metericsVisible: boolean;
+  public metricsVisible: boolean;
   public permissionVisible;
   public editHit: boolean;
   public inviteVisible: boolean;
@@ -59,7 +68,8 @@ export class MembersComponent implements OnInit {
     private teamService: TeamService,
     private pageR: PageRoute,
     private taskService: TaskService,
-    private routerE: RouterExtensions
+    private routerE: RouterExtensions,
+    private metricsService: MetricsService
   ) {
     this.pageR.activatedRoute
       .pipe(switchMap(activatedRoute => activatedRoute.params))
@@ -100,15 +110,16 @@ export class MembersComponent implements OnInit {
     this.teams$ = new Array<Team>();
     this.permittedTeams = new Array<Team>();
     this.authInvites = new Array<Account>();
+    this.metrics = new Array<Array<string>>();
 
     //permission intialized
     this.isOwner = false;
     this.isMember = false;
 
     //list visibilty with team being showed on page load
-    this.teamVisible = true;
+    this.teamVisible = false;
     this.taskVisible = new Array<boolean>(false);
-    this.metericsVisible = false;
+    this.metricsVisible = false;
     this.inviteVisible = false;
     this.editHit = false;
     this.addMember = false;
@@ -116,6 +127,15 @@ export class MembersComponent implements OnInit {
     // Get team by id
     this.teamService.getTeam(this.id).subscribe(
       response => {
+        let today = new Date();
+        let tomorrow = new Date();
+        let lastWeek = new Date();
+        let month = new Date();
+
+        tomorrow.setDate(lastWeek.getDate() + 1); 
+        lastWeek.setDate(lastWeek.getDate() - 7); 
+        month.setDate(month.getDate() - 31);
+
         this.teamName = response.teamName;
         this.teamDesc = response.teamDescription;
         this.team = response;
@@ -129,12 +149,162 @@ export class MembersComponent implements OnInit {
                 .subscribe(tasks => {
                   this.tasks$[index] = new Array<Task>();
                   tasks.forEach(task => {
-                    this.tasks$[index].push(task);
+                    if(task.teamId === this.team.id && task.isDeleted === false && task.isCompleted === false){
+                      this.tasks$[index].push(task);
+                    }
                   });
                 });
               this.members.push(account);
               this.taskVisible.push(false);
 
+              this.metrics[index] = new Array<string>();
+              //get daily comp rate for member
+              this.metricsService
+              .getMemberCompletionRate(this.team.id, account.email, today.toDateString(), tomorrow.toDateString())
+              .subscribe(res=>{
+                res = res*100;
+                this.metrics[index][0]= res.toFixed(2).toString() +'%'; 
+                //get weekly comp rate for member
+                this.metricsService
+                .getMemberCompletionRate(this.team.id, account.email, lastWeek.toDateString(), tomorrow.toDateString(), )
+                .subscribe(res=>{
+                  res = res*100;
+                  this.metrics[index][1]=res.toFixed(2).toString() +'%'; 
+                  this.metricsService
+                  .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), tomorrow.toDateString(), )
+                  .subscribe(res=>{
+                    res = res*100;
+                    this.metrics[index][2] = res.toFixed(2).toString() +'%';                        
+                    this.editHit = false;
+                    this.permissionVisible = false;
+                    this.inviteVisible = false;
+                    this.metricsVisible = false;
+                    this.teamVisible = true; 
+                  },err=>{
+                    this.metrics[index][2] = '0%';                 
+                    this.editHit = false;
+                    this.permissionVisible = false;
+                    this.inviteVisible = false;
+                    this.metricsVisible = false;
+                    this.teamVisible = true;
+                  });
+                },err=>{
+                  //get monthly comp rate for member
+                  this.metricsService
+                  .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), tomorrow.toDateString(), )
+                  .subscribe(res=>{
+                    res = res*100;
+                    this.metrics[index][2] = res.toFixed(2).toString() +'%'; 
+                    this.editHit = false;
+                    this.permissionVisible = false;
+                    this.inviteVisible = false;
+                    this.metricsVisible = false;
+                    this.teamVisible = true;
+                  },err=>{
+                    this.metrics[index][2] = '0%';
+                    this.editHit = false;
+                    this.permissionVisible = false;
+                    this.inviteVisible = false;
+                    this.metricsVisible = false;
+                    this.teamVisible = true;
+                  }); 
+                  this.metrics[index][1]= '0%';
+                });
+              },err=>{
+                //get weekly comp rate for member
+                this.metricsService
+                .getMemberCompletionRate(this.team.id, account.email, lastWeek.toDateString(), tomorrow.toDateString(), )
+                .subscribe(res=>{
+                  res = res*100;
+                  this.metrics[index][1]=res.toFixed(2).toString() +'%';
+                  this.metricsService
+                  .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), tomorrow.toDateString(), )
+                  .subscribe(res=>{
+                    res = res*100;
+                    this.metrics[index][2] = res.toFixed(2).toString() +'%';                        
+                    this.editHit = false;
+                    this.permissionVisible = false;
+                    this.inviteVisible = false;
+                    this.metricsVisible = false;
+                    this.teamVisible = true; 
+                  },err=>{
+                    this.metrics[index][2] = '0%';                 
+                    this.editHit = false;
+                    this.permissionVisible = false;
+                    this.inviteVisible = false;
+                    this.metricsVisible = false;
+                    this.teamVisible = true;
+                  }); 
+                },err=>{ 
+                  this.metrics[index][1]= '0%';
+                  this.metricsService
+                  .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), tomorrow.toDateString(), )
+                  .subscribe(res=>{
+                    res = res*100;
+                    this.metrics[index][2] = res.toFixed(2).toString() +'%';                        
+                    this.editHit = false;
+                    this.permissionVisible = false;
+                    this.inviteVisible = false;
+                    this.metricsVisible = false;
+                    this.teamVisible = true; 
+                  },err=>{
+                    this.metrics[index][2] = '0%';                 
+                    this.editHit = false;
+                    this.permissionVisible = false;
+                    this.inviteVisible = false;
+                    this.metricsVisible = false;
+                    this.teamVisible = true;
+                  });
+                });
+                this.metrics[index][0] = '0%';
+                //get weekly comp rate for member
+                this.metricsService
+                .getMemberCompletionRate(this.team.id, account.email, lastWeek.toDateString(), tomorrow.toDateString(), )
+                .subscribe(res=>{
+                  res = res*100;
+                  this.metrics[index][1]=res.toFixed(2).toString() +'%'; 
+                  this.metricsService
+                  .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), tomorrow.toDateString(), )
+                  .subscribe(res=>{
+                    res = res*100;
+                    this.metrics[index][2] = res.toFixed(2).toString() +'%';                        
+                    this.editHit = false;
+                    this.permissionVisible = false;
+                    this.inviteVisible = false;
+                    this.metricsVisible = false;
+                    this.teamVisible = true; 
+                  },err=>{
+                    this.metrics[index][2] = '0%';                 
+                    this.editHit = false;
+                    this.permissionVisible = false;
+                    this.inviteVisible = false;
+                    this.metricsVisible = false;
+                    this.teamVisible = true;
+                  });
+                },err=>{
+                  //get monthly comp rate for member
+                  this.metricsService
+                  .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), tomorrow.toDateString(), )
+                  .subscribe(res=>{
+                    res = res*100;
+                    this.metrics[index][2] = res.toFixed(2).toString() +'%'; 
+                    this.editHit = false;
+                    this.permissionVisible = false;
+                    this.inviteVisible = false;
+                    this.metricsVisible = false;
+                    this.teamVisible = true;
+                  },err=>{
+                    this.metrics[index][2] = '0%';
+                    this.editHit = false;
+                    this.permissionVisible = false;
+                    this.inviteVisible = false;
+                    this.metricsVisible = false;
+                    this.teamVisible = true;
+                  }); 
+                  this.metrics[index][1]= '0%';
+                });
+              });
+          
               //check the user is a member of the team
               if (account.email.toUpperCase() === this.authService.email.toUpperCase()) { 
                 this.isMember = true;
@@ -145,6 +315,8 @@ export class MembersComponent implements OnInit {
                   this.team.ownerEmail.toUpperCase() === this.authService.email.toUpperCase() ? true : false;
               }
             });
+
+            //check if they have permission to view the team
             if(!this.isMember){
               this.teamService.getTeamPermissions(this.team.id)
               .subscribe(res=>{
@@ -245,9 +417,25 @@ export class MembersComponent implements OnInit {
     if (this.teamVisible === true) {
       return;
     }
+    
+    this.editHit = false;
+    this.permissionVisible = false;
+    this.inviteVisible = false;
+    this.metricsVisible = false;
+    this.taskVisible = new Array<boolean>(false);
+
+    let today = new Date();
+    let tomorrow = new Date();
+    let lastWeek = new Date();
+    let month = new Date();
+
+    tomorrow.setDate(lastWeek.getDate() + 1); 
+    lastWeek.setDate(lastWeek.getDate() - 7); 
+    month.setDate(month.getDate() - 31);
 
     this.tasks$ = new Array<Array<Task>>();
     this.members = new Array<Account>();
+    this.metrics = new Array<Array<string>>();
     // Get team members call
     this.teamService.getTeamMembers(this.id).subscribe(
       accounts => {
@@ -257,11 +445,160 @@ export class MembersComponent implements OnInit {
             this.taskService.getuserTodo(account.email).subscribe(tasks => {
               this.tasks$[index] = new Array<Task>();
               tasks.forEach(task => {
-                this.tasks$[index].push(task);
+                if(task.teamId === this.team.id && task.isDeleted === false && task.isCompleted === false){
+                  this.tasks$[index].push(task);
+                }
               });
             });
             this.members.push(account); // push account onto the component array
             this.taskVisible.push(false); //push false to array for visible members list
+            //get daily comp rate for member
+            this.metrics[index] = new Array<string>();
+            this.metricsService
+            .getMemberCompletionRate(this.team.id, account.email, today.toDateString(), tomorrow.toDateString())
+            .subscribe(res=>{
+              res = res*100;
+              this.metrics[index][0]= res.toFixed(2).toString() +'%'; 
+              //get weekly comp rate for member
+              this.metricsService
+              .getMemberCompletionRate(this.team.id, account.email, lastWeek.toDateString(), tomorrow.toDateString(), )
+              .subscribe(res=>{
+                res = res*100;
+                this.metrics[index][1]=res.toFixed(2).toString() +'%'; 
+                this.metricsService
+                .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), tomorrow.toDateString(), )
+                .subscribe(res=>{
+                  res = res*100;
+                  this.metrics[index][2] = res.toFixed(2).toString() +'%';                        
+                  this.editHit = false;
+                  this.permissionVisible = false;
+                  this.inviteVisible = false;
+                  this.metricsVisible = false;
+                  this.teamVisible = true; 
+                },err=>{
+                  this.metrics[index][2] = '0%';                 
+                  this.editHit = false;
+                  this.permissionVisible = false;
+                  this.inviteVisible = false;
+                  this.metricsVisible = false;
+                  this.teamVisible = true;
+                });
+              },err=>{
+                //get monthly comp rate for member
+                this.metricsService
+                .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), tomorrow.toDateString(), )
+                .subscribe(res=>{
+                  res = res*100;
+                  this.metrics[index][2] = res.toFixed(2).toString() +'%'; 
+                  this.editHit = false;
+                  this.permissionVisible = false;
+                  this.inviteVisible = false;
+                  this.metricsVisible = false;
+                  this.teamVisible = true;
+                },err=>{
+                  this.metrics[index][2] = '0%';
+                  this.editHit = false;
+                  this.permissionVisible = false;
+                  this.inviteVisible = false;
+                  this.metricsVisible = false;
+                  this.teamVisible = true;
+                }); 
+                this.metrics[index][1]= '0%';
+              });
+            },err=>{
+              //get weekly comp rate for member
+              this.metricsService
+              .getMemberCompletionRate(this.team.id, account.email, lastWeek.toDateString(), tomorrow.toDateString(), )
+              .subscribe(res=>{
+                res = res*100;
+                this.metrics[index][1]=res.toFixed(2).toString() +'%';
+                this.metricsService
+                .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), tomorrow.toDateString(), )
+                .subscribe(res=>{
+                  res = res*100;
+                  this.metrics[index][2] = res.toFixed(2).toString() +'%';                        
+                  this.editHit = false;
+                  this.permissionVisible = false;
+                  this.inviteVisible = false;
+                  this.metricsVisible = false;
+                  this.teamVisible = true; 
+                },err=>{
+                  this.metrics[index][2] = '0%';                 
+                  this.editHit = false;
+                  this.permissionVisible = false;
+                  this.inviteVisible = false;
+                  this.metricsVisible = false;
+                  this.teamVisible = true;
+                }); 
+              },err=>{ 
+                this.metrics[index][1]= '0%';
+                this.metricsService
+                .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), tomorrow.toDateString(), )
+                .subscribe(res=>{
+                  res = res*100;
+                  this.metrics[index][2] = res.toFixed(2).toString() +'%';                        
+                  this.editHit = false;
+                  this.permissionVisible = false;
+                  this.inviteVisible = false;
+                  this.metricsVisible = false;
+                  this.teamVisible = true; 
+                },err=>{
+                  this.metrics[index][2] = '0%';                 
+                  this.editHit = false;
+                  this.permissionVisible = false;
+                  this.inviteVisible = false;
+                  this.metricsVisible = false;
+                  this.teamVisible = true;
+                });
+              });
+              this.metrics[index][0] = '0%';
+              //get weekly comp rate for member
+              this.metricsService
+              .getMemberCompletionRate(this.team.id, account.email, lastWeek.toDateString(), tomorrow.toDateString(), )
+              .subscribe(res=>{
+                res = res*100;
+                this.metrics[index][1]=res.toFixed(2).toString() +'%'; 
+                this.metricsService
+                .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), tomorrow.toDateString(), )
+                .subscribe(res=>{
+                  res = res*100;
+                  this.metrics[index][2] = res.toFixed(2).toString() +'%';                        
+                  this.editHit = false;
+                  this.permissionVisible = false;
+                  this.inviteVisible = false;
+                  this.metricsVisible = false;
+                  this.teamVisible = true; 
+                },err=>{
+                  this.metrics[index][2] = '0%';                 
+                  this.editHit = false;
+                  this.permissionVisible = false;
+                  this.inviteVisible = false;
+                  this.metricsVisible = false;
+                  this.teamVisible = true;
+                });
+              },err=>{
+                //get monthly comp rate for member
+                this.metricsService
+                .getMemberCompletionRate(this.team.id, account.email, month.toDateString(), tomorrow.toDateString(), )
+                .subscribe(res=>{
+                  res = res*100;
+                  this.metrics[index][2] = res.toFixed(2).toString() +'%'; 
+                  this.editHit = false;
+                  this.permissionVisible = false;
+                  this.inviteVisible = false;
+                  this.metricsVisible = false;
+                  this.teamVisible = true;
+                },err=>{
+                  this.metrics[index][2] = '0%';
+                  this.editHit = false;
+                  this.permissionVisible = false;
+                  this.inviteVisible = false;
+                  this.metricsVisible = false;
+                  this.teamVisible = true;
+                }); 
+                this.metrics[index][1]= '0%';
+              });
+            });
           },
           error => {
             console.error('could not get team members', error);
@@ -272,26 +609,68 @@ export class MembersComponent implements OnInit {
         console.error('could not load team in members', error);
       }
     );
-
-    this.editHit = false;
-    this.permissionVisible = false;
-    this.inviteVisible = false;
-    this.metericsVisible = false;
-    this.teamVisible = true;
   }
 
+  //grabs team metrics
   metricsTapped() {
-    if (this.metericsVisible === true) {
+    if (this.metricsVisible === true) {
       return;
     }
 
     this.teamVisible = false;
-    this.metericsVisible = true;
+    this.metricsVisible = true;
     this.permissionVisible = false;
     this.inviteVisible = false;
     this.editHit = false;
+    //get data from metrics service, default is daily
+    this.startDate = new Date();
+    this.endDate = new Date();
+
+    this.startDate.setHours( 0,0,0,0 );
+    this.metricsService.getTeamCompletionRate(this.team.id,this.startDate,this.endDate).subscribe(
+      response => {this.metricsValue= response}, error => {console.error("Failed to get TeamCompletionRate in ngInit")});
+
+
   }
 
+  metricsTeamDailyTapped(){
+    this.startDate.setHours( 0,0,0,0 );
+    this.metricsService.getTeamCompletionRate(this.team.id,this.startDate,this.endDate).subscribe(
+      response => {this.metricsValue= response}, error => {console.error("Failed to get TeamCompletionRate in ngInit")});
+  }
+
+  metricsTeamWeeklyTapped(){
+    this.startDate = new Date();
+    this.endDate = new Date();
+    //calculate the start date and end date
+    this.startDate.setDate(this.endDate.getDate() - this.endDate.getDay());
+    this.metricsService.getTeamCompletionRate(this.team.id,this.startDate,this.endDate).subscribe(
+      response => {this.metricsValue= response}, error => {console.error("Failed to get TeamCompletionRate in ngInit")});
+  }
+
+  metricsTeamMonthlyTapped(){
+    this.startDate = new Date();
+    this.endDate = new Date();
+    this.startDate.setDate(1);
+    this.metricsService.getTeamCompletionRate(this.team.id,this.startDate,this.endDate).subscribe(
+      response => {this.metricsValue= response}, error => {console.error("Failed to get TeamCompletionRate in ngInit")});
+  }
+
+  metricsMemberDailyTapped(){
+    this.startDate = new Date();
+    this.endDate = new Date();
+    //this.members[index].email
+  }
+
+  metricsMemberWeeklyTapped(){
+    this.startDate = new Date();
+    this.endDate = new Date();
+  }
+
+  metricsMemberMonthyTapped(){
+    this.startDate = new Date();
+    this.endDate = new Date();
+  }
   //controls the edit buttions showing by when the edit buttons is hit
   editTapped() {
     if (this.teamVisible === true) {
@@ -306,7 +685,7 @@ export class MembersComponent implements OnInit {
 
     this.inviteVisible = false;
     this.permissionVisible = false;
-    this.metericsVisible = false;
+    this.metricsVisible = false;
     this.teamVisible = true;
     return;
   }
@@ -336,7 +715,7 @@ export class MembersComponent implements OnInit {
     //make sure lists and buttons for edit are hidden
     this.inviteVisible = false;
     this.teamVisible = false;
-    this.metericsVisible = false;
+    this.metricsVisible = false;
     this.permissionVisible = true;
     this.editHit = false;
   }
@@ -410,7 +789,7 @@ export class MembersComponent implements OnInit {
 
     //make other list invisible
     this.teamVisible = false;
-    this.metericsVisible = false;
+    this.metricsVisible = false;
     this.permissionVisible = false;
     this.inviteVisible = true;
     this.editHit = false;
@@ -825,7 +1204,7 @@ export class MembersComponent implements OnInit {
 
     });
   }
-
+  
   backToTeams(){
     this.routerE.navigate(['/teams'], {
       transition: {
