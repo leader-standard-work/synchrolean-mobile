@@ -202,7 +202,12 @@ export class TaskFormComponent implements OnInit {
         }
         case Mode.Edit: {
           this.tasksService.updateTask(task);
-          this.routerExtensions.backToPreviousPage();
+          this.routerExtensions.navigate(['/task-list'], {
+            transition: {
+              name: 'slideBottom'
+            },
+            clearHistory: true
+          });
           break;
         }
       }
@@ -228,7 +233,7 @@ export class TaskFormComponent implements OnInit {
     });
   }
 
-  backToTasks(){
+  backToTasks() {
     this.routerExtensions.navigate(['/task-list'], {
       transition: {
         name: 'slideBottom'
