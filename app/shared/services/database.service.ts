@@ -26,7 +26,7 @@ const CreateTasksTable: string = `CREATE TABLE IF NOT EXISTS tasks (
 
 /****************** Begin SQL Statements **********************/
 
-const QueryUndeletedTasks: string = `SELECT * FROM tasks WHERE isDeleted = 0`;
+const QueryUndeletedTasks: string = `SELECT * FROM tasks WHERE dirty = 1  || isDeleted = 0`;
 
 const InsertTask: string = `INSERT into tasks (
           serverId, 

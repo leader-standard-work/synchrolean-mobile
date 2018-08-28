@@ -45,12 +45,11 @@ export class Task {
       this.frequency = Frequency.Once;
       this.teamId = -1;
     } else {
-      console.log(task);
       this.databaseId = task.databaseId === null ? -1 : task.databaseId;
       this.id = task.id === null ? -1 : task.id;
       this.name = task.name;
       this.description = task.description;
-      this.isRecurring = task.isRecurring;
+      this.isRecurring = true;
       this.weekdays = task.weekdays;
       this.creationDate = task.creationDate;
       this.isCompleted = task.isCompleted;
@@ -69,7 +68,6 @@ export class Task {
     if (
       this.name === task.name &&
       this.description === task.description &&
-      this.isRecurring === task.isRecurring &&
       this.weekdays === task.weekdays &&
       this.isCompleted === task.isCompleted &&
       this.completionDate === task.completionDate &&
