@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { RouterExtensions } from 'nativescript-angular/router';
 
 import { Task } from '~/shared/models/task';
 import { TaskService } from '~/shared/services/tasks.service';
-import { ServerService } from '~/shared/services/server.service';
 import { AuthenticationService } from '~/shared/services/auth.service';
 
 @Component({
@@ -25,7 +25,11 @@ export class TaskListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.tasks$ = this.tasksService.getTasks();
+    this.tasks$ = this.tasksService.getTasks().pipe(
+      tap(results => {
+        results.sort();
+      })
+    );
 
     this.midnight = new Date();
     this.midnight.setHours(24, 0, 0, 0);

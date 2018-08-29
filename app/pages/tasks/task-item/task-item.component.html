@@ -1,7 +1,7 @@
 <StackLayout orientation="horizontal" style="padding-top: 8; padding-bottom: 8;" [backgroundColor]="backgroundColor">
-    <StackLayout width="85%" orientation="vertical">
+    <StackLayout width="85%" orientation="vertical" [nsRouterLink]="['/task-detail', task.databaseId]" clearHistory="true">
         <Label [text]="task.getFrequency()" style="font-size: 12; padding-left: 8; "></Label>
-        <Label [text]="task.name" class="m-l-10 m-t-10 list-group-item" [nsRouterLink]="['/task-detail', task.databaseId]" clearHistory="true"></Label>
+        <Label [text]="task.name" class="m-l-10 m-t-10 list-group-item"></Label>
     </StackLayout>
     <CheckBox #CB (checkedChange)="onChecked()" horizontalAlignment="right" style="font-size: 40px;"></CheckBox>
 </StackLayout>

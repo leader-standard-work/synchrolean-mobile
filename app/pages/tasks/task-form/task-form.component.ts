@@ -106,7 +106,7 @@ export class TaskFormComponent implements OnInit {
           this.loggedIn = true;
         },
         error => {
-          console.log(
+          console.error(
             'could not get teams for account: ',
             this.authService.email,
             error

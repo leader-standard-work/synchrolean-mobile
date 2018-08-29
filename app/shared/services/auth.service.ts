@@ -41,7 +41,7 @@ export class AuthenticationService {
    */
   setSession(url: string, email: string, token: string) {
     this.url = url;
-    this.email = email;
+    this.email = email.toLowerCase();
     this.token = token;
     let jwt = JWT(token);
     this.userId = jwt['OwnerId'];
