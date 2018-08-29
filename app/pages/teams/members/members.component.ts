@@ -12,8 +12,6 @@ import { TaskService } from '~/shared/services/tasks.service';
 import { AccountService } from '~/shared/services/account.service';
 import { SearchBar } from "tns-core-modules/ui/search-bar/search-bar";
 import { MetricsService } from '~/shared/services/metrics.service';
-import { Observable, Subject } from 'rxjs';
-
 
 //name component and the markup and stayle sheet
 @Component({
@@ -199,93 +197,30 @@ export class MembersComponent implements OnInit {
     lastWeek.setDate(lastWeek.getDate() - 7); 
     month.setDate(month.getDate() - 31);
 
-    this.metrics[index] = new Array<string>();
-    //get daily comp rate for member
+    this.metrics[index] = new Array<string>(3);
     this.metricsService
-    .getMemberCompletionRate(this.team.id, this.members[index].email, today.toDateString(), tomorrow.toDateString())
-    .subscribe(res=>{
-      res = res*100;
-      this.metrics[index][0]= res.toFixed(2).toString() +'%'; 
-      //get weekly comp rate for member
-      this.metricsService
-      .getMemberCompletionRate(this.team.id, this.members[index].email, lastWeek.toDateString(), tomorrow.toDateString(), )
-      .subscribe(res=>{
-        res = res*100;
-        this.metrics[index][1]=res.toFixed(2).toString() +'%'; 
-        this.metricsService
-        .getMemberCompletionRate(this.team.id, this.members[index].email, month.toDateString(), tomorrow.toDateString(), )
-        .subscribe(res=>{
-          res = res*100;
-          this.metrics[index][2] = res.toFixed(2).toString() +'%';                         
-        },err=>{
-          this.metrics[index][2] = '0%';                 
-        });
-      },err=>{
-        //get monthly comp rate for member
-        this.metricsService
-        .getMemberCompletionRate(this.team.id, this.members[index].email, month.toDateString(), tomorrow.toDateString(), )
-        .subscribe(res=>{
-          res = res*100;
-          this.metrics[index][2] = res.toFixed(2).toString() +'%'; 
-        },err=>{
-          this.metrics[index][2] = '0%';
-        }); 
-        this.metrics[index][1]= '0%';
-      });
-    },err=>{
-      //get weekly comp rate for member
-      this.metricsService
-      .getMemberCompletionRate(this.team.id, this.members[index].email, lastWeek.toDateString(), tomorrow.toDateString(), )
-      .subscribe(res=>{
-        res = res*100;
-        this.metrics[index][1]=res.toFixed(2).toString() +'%';
-        this.metricsService
-        .getMemberCompletionRate(this.team.id, this.members[index].email, month.toDateString(), tomorrow.toDateString(), )
-        .subscribe(res=>{
-          res = res*100;
-          this.metrics[index][2] = res.toFixed(2).toString() +'%';                        
-        },err=>{
-          this.metrics[index][2] = '0%';                 
-        }); 
-      },err=>{ 
-        this.metrics[index][1]= '0%';
-        this.metricsService
-        .getMemberCompletionRate(this.team.id, this.members[index].email, month.toDateString(), tomorrow.toDateString(), )
-        .subscribe(res=>{
-          res = res*100;
-          this.metrics[index][2] = res.toFixed(2).toString() +'%';                        
-        },err=>{
-          this.metrics[index][2] = '0%';                 
-        });
-      });
-      this.metrics[index][0] = '0%';
-      //get weekly comp rate for member
-      this.metricsService
-      .getMemberCompletionRate(this.team.id, this.members[index].email, lastWeek.toDateString(), tomorrow.toDateString(), )
-      .subscribe(res=>{
-        res = res*100;
-        this.metrics[index][1]=res.toFixed(2).toString() +'%'; 
-        this.metricsService
-        .getMemberCompletionRate(this.team.id, this.members[index].email, month.toDateString(), tomorrow.toDateString(), )
-        .subscribe(res=>{
-          res = res*100;
-          this.metrics[index][2] = res.toFixed(2).toString() +'%';                        
-        },err=>{
-          this.metrics[index][2] = '0%';                 
+     .getMemberCompletionRate(this.team.id, this.members[index].email, today.toDateString(), tomorrow.toDateString())
+     .subscribe(res=>{
+       this.metrics[index][0] = (res*100).toString() +'%'; 
+     },err=>{
+      this.metrics[index][0] = "0%";
+     });
 
-        });
-      },err=>{
-        //get monthly comp rate for member
-        this.metricsService
-        .getMemberCompletionRate(this.team.id, this.members[index].email, month.toDateString(), tomorrow.toDateString(), )
-        .subscribe(res=>{
-          res = res*100;
-          this.metrics[index][2] = res.toFixed(2).toString() +'%'; 
-        },err=>{
-        }); 
-        this.metrics[index][1]= '0%';
-      });
-    });
+     this.metricsService
+     .getMemberCompletionRate(this.team.id, this.members[index].email, lastWeek.toDateString(), tomorrow.toDateString())
+     .subscribe(res=>{
+       this.metrics[index][1] = (res*100).toString() +'%'; 
+     },err=>{
+      this.metrics[index][1] = "0%";
+     });
+
+     this.metricsService
+     .getMemberCompletionRate(this.team.id, this.members[index].email, month.toDateString(), tomorrow.toDateString())
+     .subscribe(res=>{
+       this.metrics[index][2] = (res*100).toString() +'%'; 
+     },err=>{
+      this.metrics[index][2] = "0%";
+     });
 
     this.taskService
     .getuserTodo(this.members[index].email)
@@ -399,11 +334,11 @@ export class MembersComponent implements OnInit {
     //get data from metrics service, default is daily
 
     this.metricsService.getTeamCompletionRate(this.team.id,today,tomorrow).subscribe(
-      response => {this.teamMetrics[0]= (response*100).toFixed(2).toString() +'%'}, error => {console.error("Failed to get TeamCompletionRate in ngInit")});
+      response => {this.teamMetrics[0]= (response*100).toString() +'%'}, error => {console.error("Failed to get TeamCompletionRate in ngInit")});
     this.metricsService.getTeamCompletionRate(this.team.id,lastWeek,tomorrow).subscribe(
-      response => {this.teamMetrics[1]= (response*100).toFixed(2).toString() +'%'}, error => {console.error("Failed to get TeamCompletionRate in ngInit")});
+      response => {this.teamMetrics[1]= (response*100).toString() +'%'}, error => {console.error("Failed to get TeamCompletionRate in ngInit")});
     this.metricsService.getTeamCompletionRate(this.team.id,month,tomorrow).subscribe(
-      response => {this.teamMetrics[2]= (response*100).toFixed(2).toString() +'%'}, error => {console.error("Failed to get TeamCompletionRate in ngInit")});
+      response => {this.teamMetrics[2]= (response*100).toString() +'%'}, error => {console.error("Failed to get TeamCompletionRate in ngInit")});
   
     this.teamVisible = false;
     this.metricsVisible = true;
@@ -589,8 +524,7 @@ export class MembersComponent implements OnInit {
             console.log('Error editing team in change ownership\n', err);
           });
       }
-    });
-    
+    }); 
   }
 
   //lets member leave team
@@ -608,7 +542,6 @@ export class MembersComponent implements OnInit {
           console.log('Dialog closed!');
         });
     }
-
 
     dialogs.confirm({
       title: "Are you sure?",
@@ -674,7 +607,6 @@ export class MembersComponent implements OnInit {
         });
     }
 
-    
     dialogs.confirm({
       title: "Are you sure?",
       message: "Are you sure you want to delete " + this.members[index].firstName +' ' + this.members[index].lastName,
@@ -954,6 +886,4 @@ export class MembersComponent implements OnInit {
       clearHistory: true
     });
   }
-
-
 }
