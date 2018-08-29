@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { RouterExtensions } from 'nativescript-angular/router';
 
-import { Task } from '~/shared/models/task';
+import { Task, compareTask } from '~/shared/models/task';
 import { TaskService } from '~/shared/services/tasks.service';
 import { AuthenticationService } from '~/shared/services/auth.service';
 
@@ -27,7 +27,7 @@ export class TaskListComponent implements OnInit {
   ngOnInit(): void {
     this.tasks$ = this.tasksService.getTasks().pipe(
       tap(results => {
-        results.sort();
+        results.sort(compareTask);
       })
     );
 
