@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Account } from '~/shared/models/account';
 import { AuthenticationService } from '~/shared/services/auth.service';
 import { Team } from '~/shared/models/team';
@@ -39,7 +40,9 @@ export class AccountService {
    */
   getAccountByEmail(email: string): Observable<Account> {
     const endpoint = this.authService.url + '/api/accounts/' + email;
-    return this.http.get<Account>(endpoint);
+    return this.http
+      .get<Account>(endpoint)
+      .pipe(map(account => (this.account = account)));
   }
 
   /**
