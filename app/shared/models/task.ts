@@ -125,7 +125,7 @@ export class Task {
             let day = 1 << i;
             if (day & this.weekdays) {
               this.expires.setDate(
-                today.getDate() + (i + today.getDay() - 7) + 1
+                today.getDate() + (i + 7 - today.getDay()) + 1
               );
               break;
             }
