@@ -285,13 +285,18 @@ export class MembersComponent implements OnInit {
       });
   }
 
-  teamTapped() {
+  teamTapped(flag:boolean) {
     //if team is already visible just leave
-    if (this.teamVisible === true) {
+    if (this.teamVisible === true && flag ===false) {
       return;
     }
     
-    this.editHit = false;
+    if(flag === true){
+      this.editHit = true;
+    }else{
+      this.editHit =false;
+    }
+
     this.permissionVisible = false;
     this.inviteVisible = false;
     this.metricsVisible = false;
@@ -527,9 +532,8 @@ export class MembersComponent implements OnInit {
 
   //lets member leave team
   leaveTapped() {
-    //if the team owner is trying to leave don't let em
-    const email = this.authService.email
-    if (email === this.team.ownerEmail && this.members.length > 1) {
+    const email = this.authService.email;
+    if (email === this.team.ownerEmail) {
       dialogs
         .confirm({
           title: 'WARNING',
@@ -538,7 +542,7 @@ export class MembersComponent implements OnInit {
           cancelButtonText: "Cancel",
           cancelable: true
         })
-        .then(function(result) {
+        .then(result => {
           console.log('Dialog closed!', result);
           if(result){
             dialogs.confirm({
@@ -547,8 +551,8 @@ export class MembersComponent implements OnInit {
               okButtonText: "Yes",
               cancelButtonText: "No",
               cancelable: true
-            }).then(result=>{
-              if(result){
+            }).then(res=>{
+              if(res){
                 //call to remove team member
                 this.teamService.removeMember(this.team.id, this.authService.email).subscribe(
                   res => {
@@ -562,14 +566,12 @@ export class MembersComponent implements OnInit {
                     });
                   },
                   err => {
-                    if(this.members.length === 1){          
+                    if(err.status === 200){          
                       console.log('Successfully Left', err);
                       dialogs.alert({
                         title: "You have left and deleted " + this.team.teamName,
                         okButtonText: "Ok",
-                      }).then(res=>{
-                        
-                      }); 
+                      }).then(res=>{}); 
                       this.routerE.navigate(['/teams'], {
                         transition: {
                           name: 'slideRight'
@@ -581,9 +583,7 @@ export class MembersComponent implements OnInit {
                       dialogs.alert({
                         title: "Could not remove leave",
                         okButtonText: "Ok",
-                      }).then(res=>{
-                        
-                      });
+                      }).then(res=>{});
                     }
                   }
                 );
@@ -591,49 +591,21 @@ export class MembersComponent implements OnInit {
             });
           }
         });
-    }
-  }
-
-  deleteMember(index:number) {
-    //if the target is the team owner that can't be let go
-    if (this.members[index].email === this.team.ownerEmail && this.members.length > 1) {
-      dialogs
-        .alert({
-          title: 'WARNING',
-          message: 'deleting the owner will pass onwership to a random member',
-          okButtonText: 'Ok'
-        })
-        .then(function() {
-          console.log('Dialog closed!');
-        });
-    }
-
-    dialogs.confirm({
-      title: "Are you sure?",
-      message: "Are you sure you want to delete " + this.members[index].firstName +' ' + this.members[index].lastName,
-      okButtonText: "Yes",
-      cancelButtonText: "No",
-      cancelable: true
-    }).then(result=>{
-      if(result){
-        //call to remove member
-        this.teamService.removeMember(this.team.id,this.members[index].email)
-        .subscribe(res => {
-          dialogs.alert({
-            title: "They were removed from the team",
-            okButtonText: "Ok",
-          }).then(res=>{});
-            this.teamTapped();
-        },
-        err => {
-          if(this.members.length === 1){          
-            console.log('Successfully Left', err);
-            dialogs.alert({
-              title: "You have left and deleted " + this.team.teamName,
-              okButtonText: "Ok",
-            }).then(res=>{
-              
-            }); 
+    }else{
+      this.teamService.removeMember(this.team.id, this.authService.email).subscribe(
+        res => {
+          console.log('Successfully Left');
+          //navigate back to teams after leaving
+          this.routerE.navigate(['/teams'], {
+            transition: {
+              name: 'slideRight'
+            },
+            clearHistory: true
+          });
+        },err=>{
+          console.log('Successfully Left ', err.status);
+          //navigate back to teams after leaving
+          if(err.status ===200){
             this.routerE.navigate(['/teams'], {
               transition: {
                 name: 'slideRight'
@@ -641,19 +613,120 @@ export class MembersComponent implements OnInit {
               clearHistory: true
             });
           }else{
-            console.log('could not leave team')
-          
+            console.log('could not leave team');
             dialogs.alert({
-              title: "Could not remove team member",
+              title: "Could not leave " + this.team.teamName,
               okButtonText: "Ok",
-            }).then(res=>{
-              
-            });
+            }).then(res=>{});
           }
         }
-        );
-      }
-    });
+      );
+    }
+  }
+
+  deleteMember(index:number) {
+    //if the target is the team owner that can't be let go
+    if (this.members[index].email === this.team.ownerEmail) {
+      dialogs
+        .confirm({
+          title: 'WARNING',
+          message: 'Deleting the owner will pass ownership to a random member if one exists, otherwise the team will be deleted',
+          okButtonText: 'Ok',
+          cancelButtonText: 'Cancel',
+          cancelable: true
+        })
+        .then(result => {
+          console.log('Dialog closed!');
+          if(result){
+            dialogs.confirm({
+              title: "Are you sure?",
+              message: "Are you sure you want to delete " + this.members[index].firstName +' ' + this.members[index].lastName +'?',
+              okButtonText: "Yes",
+              cancelButtonText: "No",
+              cancelable: true
+            }).then(res=>{
+              if(res){
+                //call to remove member
+                this.teamService.removeMember(this.team.id,this.members[index].email)
+                .subscribe(res => {
+                  dialogs.alert({
+                    title: "They were removed from the team",
+                    okButtonText: "Ok",
+                  }).then(res=>{});
+                    this.teamTapped(true);
+                },
+                err => {
+                  if(err.status === 200){          
+                    console.log('Successfully Left', err);
+                    dialogs.alert({
+                      title: "You have left and deleted " + this.team.teamName,
+                      okButtonText: "Ok",
+                    }).then(res=>{}); 
+                    this.routerE.navigate(['/teams'], {
+                      transition: {
+                        name: 'slideRight'
+                      },
+                      clearHistory: true
+                    });
+                  }else{
+                    console.log('could not leave team', err)
+                  
+                    dialogs.alert({
+                      title: "Could not remove yourself and delte the team",
+                      okButtonText: "Ok",
+                    }).then(res=>{});
+                  }
+                }
+                );
+              }
+            });
+          }
+        });
+    }else{
+      dialogs.confirm({
+        title: "Are you sure?",
+        message: "Are you sure you want to delete " + this.members[index].firstName +' ' + this.members[index].lastName,
+        okButtonText: "Yes",
+        cancelButtonText: "No",
+        cancelable: true
+      }).then(result=>{
+        if(result){
+          //call to remove member
+          this.teamService.removeMember(this.team.id,this.members[index].email)
+          .subscribe(res => {
+            dialogs.confirm({
+              title: this.members[index].firstName + " " +this.members[index].lastName + " was removed from the team",
+              okButtonText: "Ok",
+              cancelable: true
+            }).then(res=>{this.teamTapped(true);});
+              
+            },
+            err => {
+              console.log('could not leave team', err)
+              if(err.status === 200){   
+                dialogs.confirm({
+                  title: "Removed " + this.members[index].firstName + " " +this.members[index].lastName ,
+                  okButtonText: "Ok",
+                  cancelable: true
+                }).then(result=>{
+                   this.teamTapped(true);
+                });
+               
+              }else{ 
+                dialogs.confirm({
+                  title: "Counld not remove " + this.members[index].firstName + " " +this.members[index].lastName,
+                  okButtonText: "Ok",
+                  cancelable: true
+                }).then(res=>{
+                  this.teamTapped(true);
+                });
+               
+              }
+            }  
+          );
+        }
+      });
+    }
   }
 
   //edit team name called
