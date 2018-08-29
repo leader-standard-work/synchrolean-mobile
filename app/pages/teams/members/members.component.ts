@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { PageRoute, RouterExtensions } from 'nativescript-angular/router';
 import { switchMap } from 'rxjs/operators';
 import { TeamService } from '~/shared/services/teams.service';
@@ -12,6 +12,7 @@ import { TaskService } from '~/shared/services/tasks.service';
 import { AccountService } from '~/shared/services/account.service';
 import { SearchBar } from "tns-core-modules/ui/search-bar/search-bar";
 import { MetricsService } from '~/shared/services/metrics.service';
+import { Observable, Subscription } from 'rxjs';
 
 //name component and the markup and stayle sheet
 @Component({
@@ -20,7 +21,7 @@ import { MetricsService } from '~/shared/services/metrics.service';
   templateUrl: './members.component.html',
   styleUrls: ['./members.component.css']
 })
-export class MembersComponent implements OnInit {
+export class MembersComponent implements OnInit, OnDestroy{
   public team: Team; //holds team
   public teamName: string; //holds team name
   public teamDesc: string; //holds team description
@@ -33,9 +34,11 @@ export class MembersComponent implements OnInit {
   public permittedTeams:Array<Team>;
   public searchPhrase: string;
   public searchMembers: Array<Account>;
+  private team$: Subscription;
 
   public metrics: Array<Array<string>>;
   public teamMetrics: Array<string>;
+  private subs$: Subscription[];
 
   //permissions check
   public isOwner: Boolean;
@@ -106,6 +109,8 @@ export class MembersComponent implements OnInit {
     this.authInvites = new Array<Account>();
     this.metrics = new Array<Array<string>>();
     this.teamMetrics = new Array<string>();
+    this.subs$ = new Array<Subscription>();
+    this.team$ = new Subscription(); 
 
     //permission intialized
     this.isOwner = false;
@@ -120,13 +125,13 @@ export class MembersComponent implements OnInit {
     this.addMember = false;
 
     // Get team by id
-    this.teamService.getTeam(this.id).subscribe(
+    this.team$ = this.teamService.getTeam(this.id).subscribe(
       response => {
         this.teamName = response.teamName;
         this.teamDesc = response.teamDescription;
         this.team = response;
         // Get team members call
-        this.teamService.getTeamMembers(this.id).subscribe(
+        this.team$ = this.teamService.getTeamMembers(this.id).subscribe(
           accounts => {
             accounts.forEach((account, index) => {
               // get each members todo list
@@ -146,12 +151,12 @@ export class MembersComponent implements OnInit {
 
             //check if they have permission to view the team
             if(!this.isMember){
-              this.teamService.getTeamPermissions(this.team.id)
+              this.subs$.push(this.teamService.getTeamPermissions(this.team.id)
               .subscribe(res=>{
                 this.isMember = res
               },err=>{
                 console.log('Could not get permitted teams!');
-              });
+              }));
             }
           },
           error => {
@@ -198,31 +203,31 @@ export class MembersComponent implements OnInit {
     month.setDate(month.getDate() - 31);
 
     this.metrics[index] = new Array<string>(3);
-    this.metricsService
-     .getMemberCompletionRate(this.team.id, this.members[index].email, today.toDateString(), tomorrow.toDateString())
-     .subscribe(res=>{
-       this.metrics[index][0] = (res*100).toString() +'%'; 
-     },err=>{
-      this.metrics[index][0] = "0%";
-     });
+    this.subs$.push(this.metricsService
+    .getMemberCompletionRate(this.team.id, this.members[index].email, today.toDateString(), tomorrow.toDateString())
+    .subscribe(res=>{
+      this.metrics[index][0] = (res*100).toFixed(0).toString() +'%'; 
+    },err=>{
+    this.metrics[index][0] = "0%";
+    }));
 
-     this.metricsService
-     .getMemberCompletionRate(this.team.id, this.members[index].email, lastWeek.toDateString(), tomorrow.toDateString())
-     .subscribe(res=>{
-       this.metrics[index][1] = (res*100).toString() +'%'; 
-     },err=>{
-      this.metrics[index][1] = "0%";
-     });
+    this.subs$.push(this.metricsService
+    .getMemberCompletionRate(this.team.id, this.members[index].email, lastWeek.toDateString(), tomorrow.toDateString())
+    .subscribe(res=>{
+      this.metrics[index][1] = (res*100).toFixed(0).toString() +'%'; 
+    },err=>{
+    this.metrics[index][1] = "0%";
+    }));
 
-     this.metricsService
-     .getMemberCompletionRate(this.team.id, this.members[index].email, month.toDateString(), tomorrow.toDateString())
-     .subscribe(res=>{
-       this.metrics[index][2] = (res*100).toString() +'%'; 
-     },err=>{
-      this.metrics[index][2] = "0%";
-     });
+    this.subs$.push(this.metricsService
+    .getMemberCompletionRate(this.team.id, this.members[index].email, month.toDateString(), tomorrow.toDateString())
+    .subscribe(res=>{
+      this.metrics[index][2] = (res*100).toFixed(0).toString() +'%'; 
+    },err=>{
+    this.metrics[index][2] = "0%";
+    }));
 
-    this.taskService
+    this.subs$.push(this.taskService
     .getuserTodo(this.members[index].email)
     .subscribe(tasks => {
       this.tasks$[index] = new Array<Task>();
@@ -231,7 +236,7 @@ export class MembersComponent implements OnInit {
           this.tasks$[index].push(task);
         }
       });
-    });
+    }));
 
     this.taskVisible[index] = true;
   }
@@ -250,7 +255,7 @@ export class MembersComponent implements OnInit {
           //make server call to add by email
           var user: Account;
             //SErver call to invite user to team
-          this.teamService
+          this.subs$.push(this.teamService
             .inviteToTeam(r.text, this.team.id)
             .subscribe(
               res => {
@@ -280,7 +285,7 @@ export class MembersComponent implements OnInit {
                     okButtonText: 'Ok'
                   })
                   .then();
-              });      
+              }));      
         }
       });
   }
@@ -290,7 +295,15 @@ export class MembersComponent implements OnInit {
     if (this.teamVisible === true && flag ===false) {
       return;
     }
-    
+
+    //console.log(this.subs$);
+
+    this.subs$.forEach(sub=>{
+      sub.unsubscribe();
+    });
+
+    this.subs$ = new Array<Subscription>();
+
     if(flag === true){
       this.editHit = true;
     }else{
@@ -307,7 +320,7 @@ export class MembersComponent implements OnInit {
     this.members = new Array<Account>();
 
     // Get team members call
-    this.teamService.getTeamMembers(this.id).subscribe(
+    this.subs$.push(this.teamService.getTeamMembers(this.id).subscribe(
       accounts => {
         accounts.forEach(
           (account) => {
@@ -318,7 +331,7 @@ export class MembersComponent implements OnInit {
       error => {
         console.error('could not load team in members', error);
       }
-    );
+    ));
   }
 
   //grabs team metrics
@@ -326,6 +339,13 @@ export class MembersComponent implements OnInit {
     if (this.metricsVisible === true) {
       return;
     }
+
+    this.subs$.forEach(sub=>{
+      sub.unsubscribe();
+    });
+
+    this.subs$ = new Array<Subscription>();
+
     let today = new Date();
     let tomorrow = new Date();
     let lastWeek = new Date();
@@ -336,12 +356,39 @@ export class MembersComponent implements OnInit {
     month.setDate(month.getDate() - 31);
 
     //get data from metrics service, default is daily
-    this.metricsService.getTeamCompletionRate(this.team.id,today,tomorrow).subscribe(
-      response => {this.teamMetrics[0] = (response*100).toString() +'%'}, error => {console.error("Failed to get TeamCompletionRate in ngInit")});
-    this.metricsService.getTeamCompletionRate(this.team.id,lastWeek,tomorrow).subscribe(
-      response => {this.teamMetrics[1] = (response*100).toString() +'%'}, error => {console.error("Failed to get TeamCompletionRate in ngInit")});
-    this.metricsService.getTeamCompletionRate(this.team.id,month,tomorrow).subscribe(
-      response => {this.teamMetrics[2] = (response*100).toString() +'%'}, error => {console.error("Failed to get TeamCompletionRate in ngInit")});
+    this.subs$.push(this.metricsService.getTeamCompletionRate(this.team.id,today.toDateString(),tomorrow.toDateString())
+    .subscribe(
+      response => {this.teamMetrics[0] = (response*100).toFixed(0).toString() +'%'},
+      error => {
+        if(error.status === 200){
+          this.teamMetrics[0] = '0%'
+        }else{
+          console.error("Failed to get TeamCompletionRate in ngInit");
+        }
+      }
+    ));
+    this.subs$.push(this.metricsService.getTeamCompletionRate(this.team.id,lastWeek.toDateString(),tomorrow.toDateString())
+    .subscribe(
+      response => {this.teamMetrics[1] = (response*100).toFixed(0).toString() +'%'}, 
+      error => {
+        if(error.status === 200){
+          this.teamMetrics[0] = '0%'
+        }else{
+          console.error("Failed to get TeamCompletionRate in ngInit");
+        }
+      }
+    ));
+    this.subs$.push(this.metricsService.getTeamCompletionRate(this.team.id,month.toDateString(),tomorrow.toDateString())
+    .subscribe(
+      response => {this.teamMetrics[2] = (response*100).toFixed(0).toString() +'%'}, 
+      error => {
+        if(error.status === 200){
+          this.teamMetrics[0] = '0%'
+        }else{
+          console.error("Failed to get TeamCompletionRate in ngInit");
+        }
+      }
+    ));
   
     this.teamVisible = false;
     this.metricsVisible = true;
@@ -375,11 +422,17 @@ export class MembersComponent implements OnInit {
       return;
     }
 
+    this.subs$.forEach(sub=>{
+      sub.unsubscribe();
+    });
+
+    this.subs$ = new Array<Subscription>();
+
     //make new team array
     this.teams$ = new Array<Team>();
 
     //get list of teams in organization
-    this.teamService.getTeams().subscribe(
+    this.subs$.push(this.teamService.getTeams().subscribe(
       res => {
         res.forEach(value => {
           if(value.id != this.team.id)
@@ -389,7 +442,7 @@ export class MembersComponent implements OnInit {
       err => {
         console.error('couldnt get teams from server', err);
       }
-    );
+    ));
 
     //make sure lists and buttons for edit are hidden
     this.inviteVisible = false;
@@ -408,9 +461,14 @@ export class MembersComponent implements OnInit {
     //make new arrays
     this.invites = new Array<any>();
     this.invitees = new Array<Account>();
+    this.subs$.forEach(sub=>{
+      sub.unsubscribe();
+    });
+
+    this.subs$ = new Array<Subscription>();
 
     //get invite resources
-    this.teamService.getInvites().subscribe(
+    this.subs$.push(this.teamService.getInvites().subscribe(
       res => {
         res.forEach(value => {
           this.invites.push(value);
@@ -418,7 +476,7 @@ export class MembersComponent implements OnInit {
 
         //get accounts for invite
         this.invites.forEach(value => {
-          this.accountService.getAccountByEmail(value.inviteeEmail).subscribe(
+          this.subs$.push(this.accountService.getAccountByEmail(value.inviteeEmail).subscribe(
             res => {
               //push invitee onto an accounts array
               //if they are for this team
@@ -429,15 +487,15 @@ export class MembersComponent implements OnInit {
             err => {
               console.log('Error getting user info for invites', err);
             }
-          );
+          ));
         });
       },
       err => {
         console.error('Error getting invites', err);
       }
-    );
+    ));
 
-    this.teamService.getAuthInvites().subscribe(
+    this.subs$.push(this.teamService.getAuthInvites().subscribe(
       res => {
         this.invites = new Array<any>();
         this.authInvites = new Array<Account>();
@@ -447,7 +505,7 @@ export class MembersComponent implements OnInit {
 
         //get accounts for invite
         this.invites.forEach(value => {
-          this.accountService.getAccountByEmail(value.inviteeEmail).subscribe(
+          this.subs$.push(this.accountService.getAccountByEmail(value.inviteeEmail).subscribe(
             res => {
               //push invitee onto an accounts array
               //if they are for this team
@@ -458,13 +516,13 @@ export class MembersComponent implements OnInit {
             err => {
               console.log('Error getting user info for invites', err);
             }
-          );
+          ));
         });
       },
       err => {
         console.error('Error getting invites', err);
       }
-    );
+    ));
 
     //make other list invisible
     this.teamVisible = false;
@@ -499,7 +557,7 @@ export class MembersComponent implements OnInit {
         this.team.ownerEmail = this.members[index].email;
 
         //server call to pass ownership
-        this.teamService.passOwner(this.team).subscribe(
+        this.subs$.push(this.teamService.passOwner(this.team).subscribe(
           rep => {
             console.log('Saved new owner');
             this.editHit = false;
@@ -525,7 +583,7 @@ export class MembersComponent implements OnInit {
                 console.log('Dialog closed!');
               });
             console.log('Error editing team in change ownership\n', err);
-          });
+          }));
       }
     }); 
   }
@@ -554,7 +612,7 @@ export class MembersComponent implements OnInit {
             }).then(res=>{
               if(res){
                 //call to remove team member
-                this.teamService.removeMember(this.team.id, this.authService.email).subscribe(
+                this.subs$.push(this.teamService.removeMember(this.team.id, this.authService.email).subscribe(
                   res => {
                     console.log('Successfully Left');
                     //navigate back to teams after leaving
@@ -586,13 +644,13 @@ export class MembersComponent implements OnInit {
                       }).then(res=>{});
                     }
                   }
-                );
+                ));
               }
             });
           }
         });
     }else{
-      this.teamService.removeMember(this.team.id, this.authService.email).subscribe(
+      this.subs$.push(this.teamService.removeMember(this.team.id, this.authService.email).subscribe(
         res => {
           console.log('Successfully Left');
           //navigate back to teams after leaving
@@ -620,7 +678,7 @@ export class MembersComponent implements OnInit {
             }).then(res=>{});
           }
         }
-      );
+      ));
     }
   }
 
@@ -647,7 +705,7 @@ export class MembersComponent implements OnInit {
             }).then(res=>{
               if(res){
                 //call to remove member
-                this.teamService.removeMember(this.team.id,this.members[index].email)
+                this.subs$.push(this.teamService.removeMember(this.team.id,this.members[index].email)
                 .subscribe(res => {
                   dialogs.alert({
                     title: "They were removed from the team",
@@ -677,7 +735,7 @@ export class MembersComponent implements OnInit {
                     }).then(res=>{});
                   }
                 }
-                );
+                ));
               }
             });
           }
@@ -692,7 +750,7 @@ export class MembersComponent implements OnInit {
       }).then(result=>{
         if(result){
           //call to remove member
-          this.teamService.removeMember(this.team.id,this.members[index].email)
+          this.subs$.push(this.teamService.removeMember(this.team.id,this.members[index].email)
           .subscribe(res => {
             dialogs.confirm({
               title: this.members[index].firstName + " " +this.members[index].lastName + " was removed from the team",
@@ -702,7 +760,6 @@ export class MembersComponent implements OnInit {
               
             },
             err => {
-              console.log('could not leave team', err)
               if(err.status === 200){   
                 dialogs.confirm({
                   title: "Removed " + this.members[index].firstName + " " +this.members[index].lastName ,
@@ -723,7 +780,7 @@ export class MembersComponent implements OnInit {
                
               }
             }  
-          );
+          ));
         }
       });
     }
@@ -738,14 +795,14 @@ export class MembersComponent implements OnInit {
       this.teamName = name;
       this.team.teamName = name;
       //call to edit team
-      this.teamService.editTeam(this.team).subscribe(
+      this.subs$.push(this.teamService.editTeam(this.team).subscribe(
         res => {
           console.log(res);
         },
         err => {
           console.error('Error updating the team in the server', err);
         }
-      );
+      ));
       return;
     }
     this.editTeamNameHit = true;
@@ -759,14 +816,14 @@ export class MembersComponent implements OnInit {
       this.teamDesc = desc;
       this.team.teamDescription = desc;
       //call to edit team
-      this.teamService.editTeam(this.team).subscribe(
+      this.subs$.push(this.teamService.editTeam(this.team).subscribe(
         res => {
           console.log(res);
         },
         err => {
           console.error('Error updating the team in the server', err);
         }
-      );
+      ));
       return;
     }
     this.editTeamDescHit = true;
@@ -781,7 +838,7 @@ export class MembersComponent implements OnInit {
       cancelable: true
     }).then(result=>{
       if(result){
-       this.teamService.recindInvite(this.team.id, this.invitees[index].email)
+       this.subs$.push(this.teamService.recindInvite(this.team.id, this.invitees[index].email)
        .subscribe(res=>{
         dialogs.alert({
           title: "The invite was rescind",
@@ -795,7 +852,7 @@ export class MembersComponent implements OnInit {
           title: "Could not rescind invite",
           okButtonText: "Ok",
         }).then();
-       })
+       }))
       }
     })
   }
@@ -813,7 +870,7 @@ export class MembersComponent implements OnInit {
         return;
       }
       if(result === true){
-       this.teamService.authorizeInvite(this.team.id, this.authInvites[index].email)
+       this.subs$.push(this.teamService.authorizeInvite(this.team.id, this.authInvites[index].email)
        .subscribe(res=>{
         dialogs.alert({
           title: "Invite authorized",
@@ -827,10 +884,10 @@ export class MembersComponent implements OnInit {
           title: "Could not authorize invite",
           okButtonText: "Ok",
         }).then();
-       });
+       }));
       }
       if(result === false){
-        this.teamService.vetoInvite(this.team.id, this.authInvites[index].email)
+        this.subs$.push(this.teamService.vetoInvite(this.team.id, this.authInvites[index].email)
         .subscribe(res=>{
           dialogs.alert({
             title: "Invite vetoed",
@@ -844,7 +901,7 @@ export class MembersComponent implements OnInit {
             title: "Could not veto invite",
             okButtonText: "Ok",
           }).then();
-        });
+        }));
       }
  
     });
@@ -864,7 +921,7 @@ export class MembersComponent implements OnInit {
         cancelButtonText:'No'
       }).then(r=>{
           if(r){
-            this.teamService.forbidTeam(this.team.id, teamToTarget.id)
+            this.subs$.push(this.teamService.forbidTeam(this.team.id, teamToTarget.id)
             .subscribe(res=>{
               dialogs.alert({
                 title: "Team Permissions",
@@ -877,7 +934,7 @@ export class MembersComponent implements OnInit {
                 message: "Could not DENY viewing rights to " + teamToTarget.teamName,
                 okButtonText:'ok',
               }).then();
-            });
+            }));
           }
       });
     }else{
@@ -889,7 +946,7 @@ export class MembersComponent implements OnInit {
         cancelButtonText:'No'
       }).then(r=>{
           if(r){
-            this.teamService.permitTeam(this.team.id, teamToTarget.id)
+            this.subs$.push(this.teamService.permitTeam(this.team.id, teamToTarget.id)
             .subscribe(res=>{
               dialogs.alert({
                 title: "Team Permissions",
@@ -903,7 +960,7 @@ export class MembersComponent implements OnInit {
                 message: "Could not GRANT viewing rights to " + teamToTarget.teamName,
                 okButtonText:'ok',
               }).then();
-            });
+            }));
           }
       });
     }
@@ -917,7 +974,7 @@ export class MembersComponent implements OnInit {
       cancelButtonText: "No",
     }).then(res=>{
       if(res){
-        this.teamService.deleteTeam(this.team.id)
+        this.subs$.push(this.teamService.deleteTeam(this.team.id)
         .subscribe(res=>{
             dialogs
             .alert( {         
@@ -945,7 +1002,7 @@ export class MembersComponent implements OnInit {
           .then(function(){
             
           });  
-      });
+      }));
       }
     },err=>{
 
@@ -960,4 +1017,16 @@ export class MembersComponent implements OnInit {
       clearHistory: true
     });
   }
+
+  ngOnDestroy(): void {
+    //Called once, before the instance is destroyed.
+    //Add 'implements OnDestroy' to the class.
+    this.subs$.forEach(sub=>{
+      sub.unsubscribe();
+    });
+
+    this.team$.unsubscribe();
+
+  }
+
 }

@@ -97,8 +97,8 @@ export class MetricsItemComponent implements OnInit {
             }
             
         }
-        this.metricsService.getTeamCompletionRate(this.teamId,startDate,endDate).subscribe(
-            response => {this.value= response}, error => {console.error("Failed to get TeamCompletionRate in ngInit")});
+        // this.metricsService.getTeamCompletionRate(this.teamId,startDate,endDate).subscribe(
+        //     response => {this.value= response}, error => {console.error("Failed to get TeamCompletionRate in ngInit")});
     }
   }
   
