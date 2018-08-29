@@ -318,6 +318,9 @@ export class MembersComponent implements OnInit {
 
   //grabs team metrics
   metricsTapped() {
+    if (this.metricsVisible === true) {
+      return;
+    }
     let today = new Date();
     let tomorrow = new Date();
     let lastWeek = new Date();
@@ -327,18 +330,13 @@ export class MembersComponent implements OnInit {
     lastWeek.setDate(lastWeek.getDate() - 7); 
     month.setDate(month.getDate() - 31);
 
-    if (this.metricsVisible === true) {
-      return;
-    }
-
     //get data from metrics service, default is daily
-
     this.metricsService.getTeamCompletionRate(this.team.id,today,tomorrow).subscribe(
-      response => {this.teamMetrics[0]= (response*100).toString() +'%'}, error => {console.error("Failed to get TeamCompletionRate in ngInit")});
+      response => {this.teamMetrics[0] = (response*100).toString() +'%'}, error => {console.error("Failed to get TeamCompletionRate in ngInit")});
     this.metricsService.getTeamCompletionRate(this.team.id,lastWeek,tomorrow).subscribe(
-      response => {this.teamMetrics[1]= (response*100).toString() +'%'}, error => {console.error("Failed to get TeamCompletionRate in ngInit")});
+      response => {this.teamMetrics[1] = (response*100).toString() +'%'}, error => {console.error("Failed to get TeamCompletionRate in ngInit")});
     this.metricsService.getTeamCompletionRate(this.team.id,month,tomorrow).subscribe(
-      response => {this.teamMetrics[2]= (response*100).toString() +'%'}, error => {console.error("Failed to get TeamCompletionRate in ngInit")});
+      response => {this.teamMetrics[2] = (response*100).toString() +'%'}, error => {console.error("Failed to get TeamCompletionRate in ngInit")});
   
     this.teamVisible = false;
     this.metricsVisible = true;

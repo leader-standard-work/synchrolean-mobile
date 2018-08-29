@@ -140,15 +140,15 @@
     <ScrollView *ngIf="isOwner" visibility="{{ inviteVisible ?  'visible':'collapse' }}" row='6'>
         <GridLayout rows="*,*,*,*">
             <Label row="0" class="t-30 m-b-2 m-l-15" style="color:black"  text="Your Invites" textWrap="true"></Label>
-            <ListView row="1" [items]="invitees" [height]="25*getLength(invitees)" >
+            <ListView row="1" [items]="invitees" [height]="40*getLength(invitees)" >
                 <ng-template let-invitee="item" let-i="index">
-                    <Label class="t-16 m-b-2 m-l-15" [text]="invitee.firstName +' '+ invitee.lastName " (tap)="inviteeTapped(i)"></Label>
+                    <Label class="t-25 m-b-2 m-l-25" [text]="invitee.firstName +' '+ invitee.lastName " (tap)="inviteeTapped(i)"></Label>
                 </ng-template>
             </ListView>
             <Label row="2" class="t-30 m-b-2 m-l-15" style="color:black" text="Other Invites" textWrap="true" row="2"></Label>
-            <ListView row="3" [items]="authInvites" [height]="25*getLength(authInvites)">
+            <ListView row="3" [items]="authInvites" [height]="40*getLength(authInvites)">
                 <ng-template let-auth="item" let-j="index">
-                    <Label class="t-16 m-b-2 m-l-15" [text]="auth.firstName +' '+ auth.lastName" (tap)="authTapped(j)"></Label>
+                    <Label class="t-25 m-b-2 m-l-25" [text]="auth.firstName +' '+ auth.lastName" (tap)="authTapped(j)"></Label>
                 </ng-template>
             </ListView>
         </GridLayout>
