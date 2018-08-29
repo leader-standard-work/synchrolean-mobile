@@ -154,5 +154,12 @@
         </GridLayout>
     </ScrollView>
     <!--team Mertics -->
-
+    <FlexboxLayout row='6' alignItems="center" flexDirection="column" *ngIf="metricsVisible">
+        <Label order="0" text="Daily" class="m-t-30 t-20" textWrap="true"></Label>
+        <Label order="2" text="Weekly" class="t-20" textWrap="true"></Label>
+        <Label order="4" text="Monthly" class="t-20" textWrap="true"></Label>
+        <Label order="1" [text]="teamMetrics[0]" class="m-b-30 t-30" textWrap="true"></Label>
+        <Label order="3" [text]="teamMetrics[1]" class="m-b-30 t-30" textWrap="true"></Label>
+        <Label order="5" [text]="teamMetrics[2]" class="t-30" textWrap="true"></Label>
+    </FlexboxLayout>
 </Gridlayout>
