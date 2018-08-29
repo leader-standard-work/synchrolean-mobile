@@ -531,64 +531,67 @@ export class MembersComponent implements OnInit {
     const email = this.authService.email
     if (email === this.team.ownerEmail && this.members.length > 1) {
       dialogs
-        .alert({
+        .confirm({
           title: 'WARNING',
           message: 'Leaving as the owner will pass leadership to a randon member',
-          okButtonText: 'Ok'
+          okButtonText: 'Ok',
+          cancelButtonText: "Cancel",
+          cancelable: true
         })
-        .then(function() {
-          console.log('Dialog closed!');
+        .then(function(result) {
+          console.log('Dialog closed!', result);
+          if(result){
+            dialogs.confirm({
+              title: "Are you sure?",
+              message: "Are you sure you want to leave "+ this.team.teamName +"?",
+              okButtonText: "Yes",
+              cancelButtonText: "No",
+              cancelable: true
+            }).then(result=>{
+              if(result){
+                //call to remove team member
+                this.teamService.removeMember(this.team.id, this.authService.email).subscribe(
+                  res => {
+                    console.log('Successfully Left');
+                    //navigate back to teams after leaving
+                    this.routerE.navigate(['/teams'], {
+                      transition: {
+                        name: 'slideRight'
+                      },
+                      clearHistory: true
+                    });
+                  },
+                  err => {
+                    if(this.members.length === 1){          
+                      console.log('Successfully Left', err);
+                      dialogs.alert({
+                        title: "You have left and deleted " + this.team.teamName,
+                        okButtonText: "Ok",
+                      }).then(res=>{
+                        
+                      }); 
+                      this.routerE.navigate(['/teams'], {
+                        transition: {
+                          name: 'slideRight'
+                        },
+                        clearHistory: true
+                      });
+                    }else{
+                      console.log('could not leave team');
+                      dialogs.alert({
+                        title: "Could not remove leave",
+                        okButtonText: "Ok",
+                      }).then(res=>{
+                        
+                      });
+                    }
+                  }
+                );
+              }
+            });
+          }
         });
     }
-
-    dialogs.confirm({
-      title: "Are you sure?",
-      message: "Are you sure you want to leave "+ this.team.teamName +"?",
-      okButtonText: "Yes",
-      cancelButtonText: "No",
-      cancelable: true
-    }).then(result=>{
-      if(result){
-        //call to remove team member
-        this.teamService.removeMember(this.team.id, this.authService.email).subscribe(
-          res => {
-            console.log('Successfully Left');
-            //navigate back to teams after leaving
-            this.routerE.navigate(['/teams'], {
-              transition: {
-                name: 'slideRight'
-              },
-              clearHistory: true
-            });
-          },
-          err => {
-            if(this.members.length === 1){          
-              console.log('Successfully Left', err);
-              dialogs.alert({
-                title: "You have left and deleted " + this.team.teamName,
-                okButtonText: "Ok",
-              }).then(res=>{
-                
-              }); 
-              this.routerE.navigate(['/teams'], {
-                transition: {
-                  name: 'slideRight'
-                },
-                clearHistory: true
-              });
-            }else{
-              console.log('could not leave team');
-              dialogs.alert({
-                title: "Could not remove leave",
-                okButtonText: "Ok",
-              }).then(res=>{
-                
-              });
-            }
-          }
-        );
-      }
-    });
   }
 
   deleteMember(index:number) {
