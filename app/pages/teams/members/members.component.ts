@@ -12,7 +12,7 @@ import { TaskService } from '~/shared/services/tasks.service';
 import { AccountService } from '~/shared/services/account.service';
 import { SearchBar } from 'tns-core-modules/ui/search-bar/search-bar';
 import { MetricsService } from '~/shared/services/metrics.service';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 //name component and the markup and stayle sheet
 @Component({
@@ -414,7 +414,7 @@ export class MembersComponent implements OnInit, OnDestroy {
         )
         .subscribe(
           response => {
-            this.teamMetrics[0] = (response * 100).toFixed(2).toString() + '%';
+            this.teamMetrics[0] = (response * 100).toFixed(0).toString() + '%';
           },
           error => {
             if (error.status === 200) {
@@ -437,7 +437,7 @@ export class MembersComponent implements OnInit, OnDestroy {
         )
         .subscribe(
           response => {
-            this.teamMetrics[1] = (response * 100).toFixed(2).toString() + '%';
+            this.teamMetrics[1] = (response * 100).toFixed(0).toString() + '%';
           },
           error => {
             if (error.status === 200) {
@@ -460,7 +460,7 @@ export class MembersComponent implements OnInit, OnDestroy {
         )
         .subscribe(
           response => {
-            this.teamMetrics[2] = (response * 100).toFixed(2).toString() + '%';
+            this.teamMetrics[2] = (response * 100).toFixed(0).toString() + '%';
           },
           error => {
             if (error.status === 200) {

@@ -61,6 +61,18 @@ export class AccountComponent implements OnInit {
     });
   }
 
+  logoutTapped() {
+    if (this.authService.isLoggedIn()) {
+      this.authService.logout();
+      this.routerExtensions.navigate(['/login'], {
+        clearHistory: true,
+        transition: {
+          name: 'slideTop'
+        }
+      });
+    }
+  }
+
   teamTapped() {
     this.routerExtensions.navigate(['/teams'], {
       clearHistory: true,

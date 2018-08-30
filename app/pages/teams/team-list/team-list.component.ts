@@ -82,18 +82,7 @@ export class TeamListComponent implements OnInit {
     });
   }
 
-  logoutTapped() {
-    if (this.authService.isLoggedIn()) {
-      this.authService.logout();
-      this.teams$ = new ObservableArray<Team>();
-      this.routerExtensions.navigate(['/login'], {
-        clearHistory: true,
-        transition: {
-          name: 'slideTop'
-        }
-      });
-    }
-  }
+
 
   tasksTapped() {
     this.routerExtensions.navigate(['/task-list'], {
