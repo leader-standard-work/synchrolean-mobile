@@ -25,11 +25,7 @@ export class TaskListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.tasks$ = this.tasksService.getTasks().pipe(
-      tap(results => {
-        results.sort(compareTask);
-      })
-    );
+    this.tasks$ = this.tasksService.getTasks();
 
     this.midnight = new Date();
     this.midnight.setHours(24, 0, 0, 0);
