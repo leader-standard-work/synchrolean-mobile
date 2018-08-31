@@ -206,16 +206,13 @@ export class TaskService {
       return;
     }
     this.tasks[index].isDeleted = true;
-    if (this.tasks[index].id === -1) {
-      this.tasks[index].dirty = false;
-    } else {
-      this.tasks[index].dirty = true;
-    }
+    this.tasks[index].dirty = this.tasks[index].id === -1 ? false : true;
+    let task = this.tasks[index];
     if (this.authService.isLoggedIn() && this.tasks[index].id !== -1) {
       this.editServerTask(this.tasks[index]).subscribe(
         () => {
-          this.tasks[index].dirty = false;
-          this.databaseService.updateTask(this.tasks[index]);
+          task.dirty = false;
+          this.databaseService.updateTask(task);
         },
         error => {
           console.error(
