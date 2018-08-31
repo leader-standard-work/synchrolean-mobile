@@ -1,6 +1,5 @@
 <ActionBar class="action-bar">
     <Label class="action-bar-title" fontSize="32" text="Account"></Label>
-    <ActionItem nsRouterLink="/notifications" clearHistory="true" text="invites" android.position="actionBar" ios.position="right"></ActionItem>
 </ActionBar>
 
 <GridLayout rows="*, 62.5" class="page">
@@ -9,6 +8,7 @@
         <Label [text]='email'></Label>
         <Button class='btn btn-primary w-full' text="Edit Account" (tap)="editTapped()"></Button>
         <Button class='btn btn-primary w-full' text="Logout" (tap)="logoutTapped()"></Button>
+        <Button class='btn btn-primary w-full' text="Notifications" (tap)="notificationsTapped()"></Button>
     </FlexboxLayout>
 
     <!-- Begin Bottom Bar -->
