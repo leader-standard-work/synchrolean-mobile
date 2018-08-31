@@ -160,7 +160,7 @@ export class MembersComponent implements OnInit, OnDestroy {
             //check if they have permission to view the team
             if (!this.isMember) {
               this.subs$.push(
-                this.teamService.getTeamPermissions(this.team.id).subscribe(
+                this.teamService.getAccountPermissions(this.team.id).subscribe(
                   res => {
                     this.isMember = res;
                   },
@@ -529,6 +529,21 @@ export class MembersComponent implements OnInit, OnDestroy {
         }
       )
     );
+
+
+    //get permitted teams
+    this.subs$.push(
+      this.teamService.getTeamsPermitted(this.team.id).subscribe(
+        res=>{
+          this.permittedTeams = res;
+        },err=>{
+          dialogs.alert({
+            title: "ERROR!!",
+            message: "Could not get permitted teams"
+          }).then();
+        }
+      )
+    )
 
     //make sure lists and buttons for edit are hidden
     this.inviteVisible = false;
@@ -1127,7 +1142,7 @@ export class MembersComponent implements OnInit, OnDestroy {
 
   teamPermissionTapped(teamToTarget: Team) {
     let num = this.permittedTeams.findIndex(value => {
-      return teamToTarget.id === value.id;
+        return teamToTarget.id === value.id;
     });
 
     if (num > -1) {
