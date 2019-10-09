@@ -3,10 +3,7 @@ import { RouterExtensions } from 'nativescript-angular/router';
 import { Frame } from 'ui/frame';
 import { Observable } from 'rxjs';
 import { MetricsService } from '~/shared/services/metrics.service';
-import { dateProperty } from 'tns-core-modules/ui/date-picker/date-picker';
-import { endTimeRange } from '../../../node_modules/@angular/core/src/profile/wtf_impl';
 import { AuthenticationService } from '~/shared/services/auth.service';
-//import { PieDataModel } from '/../data-models/pie-data-model';
 
 @Component({
   selector: 'metrics',

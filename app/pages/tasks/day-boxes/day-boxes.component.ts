@@ -23,19 +23,19 @@ export class DayBoxesComponent implements OnInit {
   @Output()
   selection = new EventEmitter<number>();
 
-  @ViewChild('SUN')
+  @ViewChild('SUN', {static: false})
   sundayBox: ElementRef;
-  @ViewChild('MON')
+  @ViewChild('MON', {static: false})
   mondayBox: ElementRef;
-  @ViewChild('TUE')
+  @ViewChild('TUE', {static: false})
   tuesdayBox: ElementRef;
-  @ViewChild('WED')
+  @ViewChild('WED', {static: false})
   wednesdayBox: ElementRef;
-  @ViewChild('THU')
+  @ViewChild('THU', {static: false})
   thrusdayBox: ElementRef;
-  @ViewChild('FRI')
+  @ViewChild('FRI', {static: false})
   fridayBox: ElementRef;
-  @ViewChild('SAT')
+  @ViewChild('SAT', {static: false})
   saturdayBox: ElementRef;
 
   constructor() {}

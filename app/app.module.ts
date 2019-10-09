@@ -4,7 +4,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NativeScriptHttpClientModule } from 'nativescript-angular/http-client';
 import { NativeScriptModule } from 'nativescript-angular/nativescript.module';
 import { NativeScriptFormsModule } from 'nativescript-angular/forms';
-import { TNSCheckBoxModule } from 'nativescript-checkbox/angular';
+import { TNSCheckBoxModule } from '@nstudio/nativescript-checkbox/angular';
 import { NativeScriptUIChartModule } from 'nativescript-ui-chart/angular';
 
 import { TaskService } from '~/shared/services/tasks.service';
